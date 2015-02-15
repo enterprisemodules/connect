@@ -104,11 +104,18 @@ class HieraDsl
   end
 
   def method_missing(method_sym, *arguments, &block)
-    name = arguments.flatten.first
+    name    = arguments.flatten.first
+    options = arguments.flatten[1]
+    range   = options && options[:range]
+    range ||= 1
     if block # This is a definition of a new type
-      definition = Definition.new(name, method_sym)
-      definition.instance_eval(&block)
-      @definitions_table.merge!(definition)
+      range.each do | no|
+        full_name = name % [no]
+        puts full_name
+        definition = Definition.new(full_name, method_sym, nil, no)
+        definition.instance_eval(&block)
+        @definitions_table.merge!(definition)
+      end
     else # This is a reference to a type
       if name.is_a?(String)
         definition_for(method_sym, name)

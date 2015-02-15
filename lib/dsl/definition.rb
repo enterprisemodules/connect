@@ -3,9 +3,10 @@ require 'ostruct'
 class Definition
 
 
-  def initialize(name, type, value = nil)
+  def initialize(name, type, value = nil, no = nil)
     @name   = name
     @type   = type
+    @no     = no
     @values = OpenStruct.new(:__name__ => @name, :__type__ => @type)
   end
 
@@ -22,7 +23,13 @@ class Definition
   end
 
   def method_missing(method_sym, *arguments, &block)
-    @values[method_sym] = arguments.flatten.first
+    arguments = arguments.flatten.first
+    case arguments
+    when String
+      @values[method_sym] = arguments % @no
+    else
+      @values[method_sym] = arguments
+    end
   end
 
   def without_private_entries(hash)
