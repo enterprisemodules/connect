@@ -1,13 +1,18 @@
-$:.unshift('.')
 $:.unshift('../../examples')
-require 'dsl'
+$:.unshift('..')
+require 'dsl/dsl'
 
-HieraDsl.define do
+Dsl.define do
 
-  node 'stic%s.is.tribase.nl', :range => 1..10 do
-    ip '92.168.130.%s'
+  node 'bert.a.nl' do
+    ip '10.100.1.1'
   end
 
+  # node 'stic%s.is.tribase.nl', :range => 1..10 do
+  #   ip '92.168.130.%s'
+  # end
+
+  `node::bert::jan` == node('bert.a.nl').ip
 
 
   # include_config 'examples/base'
@@ -28,11 +33,11 @@ HieraDsl.define do
   #   priv  '10.101.1.55'
   # end
 
-  db_nodes (1..10).collect {|no| node("stic#{no}.is.tribase.nl")}
+  # db_nodes (1..10).collect {|no| node("stic#{no}.is.tribase.nl")}
 
 
   # db_nodes (1..10).collect {|no| node("stic#{no}.is.tribase.nl")}
-  #   node('t3dbnode1.development.org'),
+  #   node % 't3dbnode1.development.org'),
   #   node('t3dbnode2.development.org')
   # ]
 

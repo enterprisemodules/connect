@@ -1,10 +1,9 @@
-require 'byebug'
-require 'definition'
-require 'entry'
-require 'node'
-require 'config_includer'
+require 'dsl/definition'
+require 'dsl/entry'
+require 'dsl/node'
+require 'dsl/config_includer'
 
-class HieraDsl
+class Dsl
 
   include ConfigIncluder
 
@@ -53,7 +52,7 @@ class HieraDsl
 
   def set(name, value)
     name = name.to_s
-    external_value = to_external(value)
+    external_value = self.to_external(value)
     entry = value_entry(name, external_value)
     # TODO: Warning if value exists
     @lookup_table.merge!(entry)
@@ -65,7 +64,7 @@ class HieraDsl
     @lookup_table.merge!(entry)
   end
 
-  def to_external(data)
+  def self.to_external(data)
     case data
     when Array
       data.collect {|e| to_external(e)}
@@ -90,12 +89,24 @@ class HieraDsl
     end
   end
 
+  def `(variable)
+    entry = value_entry(variable, nil)
+    # TODO: Warning if value exists
+    @lookup_table.merge!(entry)
+    entry
+  end
+
   def empty_definitions
     OpenStruct.new
   end
 
   def lookup_entry(name, value, type = :value)
-    { name => { :value => value, :type  => type }}
+    name = name.to_s
+    entry = { name => { :value => value, :type  => type }}
+    def entry.==(value)
+      first[1][:value] = Dsl.to_external(value)
+    end
+    entry
   end
   alias_method :value_entry, :lookup_entry
 
@@ -104,14 +115,19 @@ class HieraDsl
   end
 
   def method_missing(method_sym, *arguments, &block)
+    if arguments == [] && !block  # Simulate an Entry
+      entry = value_entry(method_sym, nil)
+      # TODO: Warning if value exists
+      @lookup_table.merge!(entry)
+      return entry
+    end
     name    = arguments.flatten.first
     options = arguments.flatten[1]
     range   = options && options[:range]
-    range ||= 1
+    range ||= 0...1
     if block # This is a definition of a new type
       range.each do | no|
         full_name = name % [no]
-        puts full_name
         definition = Definition.new(full_name, method_sym, nil, no)
         definition.instance_eval(&block)
         @definitions_table.merge!(definition)
