@@ -1,16 +1,14 @@
 require 'dsl/definition'
 require 'dsl/entry'
 require 'dsl/node'
-require 'dsl/config_includer'
+require 'dsl/parser'
 
 class Dsl
 
-  include ConfigIncluder
-
-  def self.define(name = nil, &definition)
+  def self.parse(content)
     @instance   = self.new
-    @instance.instance_eval(&definition)
-    @instance.inspect
+    @instance.parse(content)
+    # puts @instance.tokenize(content)
   end  
 
   def initialize

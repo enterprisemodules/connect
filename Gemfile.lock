@@ -1,0 +1,20 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    byebug (3.5.1)
+      columnize (~> 0.8)
+      debugger-linecache (~> 1.2)
+      slop (~> 3.6)
+    columnize (0.9.0)
+    debugger-linecache (1.2.0)
+    racc (1.4.12)
+    rexical (1.0.5)
+    slop (3.6.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  byebug
+  racc
+  rexical
