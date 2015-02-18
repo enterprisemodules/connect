@@ -11,7 +11,8 @@ require 'racc/parser.rb'
 
 class Dsl < Racc::Parser
 
-module_eval(<<'...end dsl.y/module_eval...', 'dsl.y', 22)
+module_eval(<<'...end dsl.y/module_eval...', 'dsl.y', 35)
+
   def parse(input)
     scan_str(input)
   end
@@ -19,60 +20,75 @@ module_eval(<<'...end dsl.y/module_eval...', 'dsl.y', 22)
 ##### State transition tables begin ###
 
 racc_action_table = [
-     8,     6,     6,    14,    15,    10,     7,     7,    11,    12,
-    13,    16 ]
+     8,     6,    23,    24,     7,    10,    11,     6,    20,    13,
+     7,    14,    15,    18,    14,    15,    18,    14,    15,    18,
+    12 ]
 
 racc_action_check = [
-     1,     0,     1,    10,    10,     6,     0,     1,     6,     7,
-     8,    11 ]
+     1,     0,    21,    21,     0,     6,     6,     1,    11,     8,
+     1,    10,    10,    10,    24,    24,    24,    18,    18,    18,
+     7 ]
 
 racc_action_pointer = [
-    -1,     0,   nil,   nil,   nil,   nil,     2,     5,    10,   nil,
-    -1,     9,   nil,   nil,   nil,   nil,   nil ]
+    -6,     0,   nil,   nil,   nil,   nil,    -3,    18,     9,   nil,
+     9,     1,   nil,   nil,   nil,   nil,   nil,   nil,    15,   nil,
+   nil,    -3,   nil,   nil,    12,   nil ]
 
 racc_action_default = [
-   -10,   -10,    -1,    -3,    -4,    -5,   -10,   -10,   -10,    -2,
-   -10,   -10,    -9,    17,    -6,    -7,    -8 ]
+   -16,   -16,    -1,    -3,    -4,    -5,   -16,   -16,   -16,    -2,
+   -16,   -16,   -15,    26,    -6,    -7,    -8,    -9,   -16,   -13,
+   -14,   -16,   -12,   -10,   -16,   -11 ]
 
 racc_goto_table = [
-     2,     9,     1 ]
+    19,     2,     9,     1,    21,   nil,   nil,   nil,    22,   nil,
+   nil,   nil,   nil,   nil,    25 ]
 
 racc_goto_check = [
-     2,     2,     1 ]
+     7,     2,     2,     1,     9,   nil,   nil,   nil,     7,   nil,
+   nil,   nil,   nil,   nil,     7 ]
 
 racc_goto_pointer = [
-   nil,     2,     0,   nil,   nil,   nil ]
+   nil,     3,     1,   nil,   nil,   nil,   nil,   -10,   nil,   -14 ]
 
 racc_goto_default = [
-   nil,   nil,   nil,     3,     4,     5 ]
+   nil,   nil,   nil,     3,     4,     5,    16,   nil,    17,   nil ]
 
 racc_reduce_table = [
   0, 0, :racc_error,
-  1, 9, :_reduce_none,
-  2, 9, :_reduce_none,
-  1, 10, :_reduce_none,
-  1, 10, :_reduce_none,
-  1, 10, :_reduce_none,
-  3, 11, :_reduce_6,
-  3, 11, :_reduce_7,
-  3, 12, :_reduce_8,
-  2, 13, :_reduce_9 ]
+  1, 12, :_reduce_none,
+  2, 12, :_reduce_none,
+  1, 13, :_reduce_none,
+  1, 13, :_reduce_none,
+  1, 13, :_reduce_none,
+  1, 17, :_reduce_none,
+  1, 17, :_reduce_none,
+  1, 18, :_reduce_none,
+  1, 18, :_reduce_none,
+  3, 19, :_reduce_10,
+  3, 20, :_reduce_11,
+  1, 20, :_reduce_12,
+  3, 14, :_reduce_13,
+  3, 15, :_reduce_14,
+  2, 16, :_reduce_15 ]
 
-racc_reduce_n = 10
+racc_reduce_n = 16
 
-racc_shift_n = 17
+racc_shift_n = 26
 
 racc_token_table = {
   false => 0,
   :error => 1,
-  :FULL_IDENTIFIER => 2,
-  :ASSIGNMENT => 3,
-  :STRING => 4,
-  :NUMBER => 5,
-  :CONNECTION => 6,
-  :INCLUDE => 7 }
+  :STRING => 2,
+  :NUMBER => 3,
+  "[" => 4,
+  "]" => 5,
+  "," => 6,
+  :FULL_IDENTIFIER => 7,
+  "=" => 8,
+  :CONNECTION => 9,
+  :INCLUDE => 10 }
 
-racc_nt_base = 8
+racc_nt_base = 11
 
 racc_use_result_var = true
 
@@ -95,10 +111,13 @@ Racc_arg = [
 Racc_token_to_s_table = [
   "$end",
   "error",
-  "FULL_IDENTIFIER",
-  "ASSIGNMENT",
   "STRING",
   "NUMBER",
+  "\"[\"",
+  "\"]\"",
+  "\",\"",
+  "FULL_IDENTIFIER",
+  "\"=\"",
   "CONNECTION",
   "INCLUDE",
   "$start",
@@ -106,7 +125,11 @@ Racc_token_to_s_table = [
   "config",
   "assignment",
   "connection",
-  "include_stmnt" ]
+  "include_stmnt",
+  "scalar",
+  "value",
+  "array",
+  "values" ]
 
 Racc_debug_parser = false
 
@@ -124,29 +147,51 @@ Racc_debug_parser = false
 
 # reduce 5 omitted
 
-module_eval(<<'.,.,', 'dsl.y', 5)
-  def _reduce_6(val, _values, result)
-     puts 'string assignment'
-    result
-  end
-.,.,
+# reduce 6 omitted
 
-module_eval(<<'.,.,', 'dsl.y', 6)
-  def _reduce_7(val, _values, result)
-     puts 'number assignment'
-    result
-  end
-.,.,
+# reduce 7 omitted
+
+# reduce 8 omitted
+
+# reduce 9 omitted
 
 module_eval(<<'.,.,', 'dsl.y', 9)
-  def _reduce_8(val, _values, result)
-     puts 'connection'
+  def _reduce_10(val, _values, result)
+     result = val[1]
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'dsl.y', 12)
-  def _reduce_9(val, _values, result)
+module_eval(<<'.,.,', 'dsl.y', 13)
+  def _reduce_11(val, _values, result)
+     result = val[0] << val[2]
+    result
+  end
+.,.,
+
+module_eval(<<'.,.,', 'dsl.y', 14)
+  def _reduce_12(val, _values, result)
+     result = [val[0]]
+    result
+  end
+.,.,
+
+module_eval(<<'.,.,', 'dsl.y', 18)
+  def _reduce_13(val, _values, result)
+    puts val[2];set(val[0], val[2])
+    result
+  end
+.,.,
+
+module_eval(<<'.,.,', 'dsl.y', 21)
+  def _reduce_14(val, _values, result)
+     connect(val[0], val[2])
+    result
+  end
+.,.,
+
+module_eval(<<'.,.,', 'dsl.y', 25)
+  def _reduce_15(val, _values, result)
      puts 'include'
     result
   end

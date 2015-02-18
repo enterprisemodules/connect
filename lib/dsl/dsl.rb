@@ -2,8 +2,9 @@ require 'dsl/definition'
 require 'dsl/entry'
 require 'dsl/node'
 require 'dsl/parser'
+require 'ruby-debug'
 
-class Dsl
+class Dsl < Racc::Parser
 
   def self.parse(content)
     @instance   = self.new
@@ -49,9 +50,7 @@ class Dsl
   end
 
   def set(name, value)
-    name = name.to_s
-    external_value = self.to_external(value)
-    entry = value_entry(name, external_value)
+    entry = value_entry(name, value)
     # TODO: Warning if value exists
     @lookup_table.merge!(entry)
   end
@@ -87,13 +86,6 @@ class Dsl
     end
   end
 
-  def `(variable)
-    entry = value_entry(variable, nil)
-    # TODO: Warning if value exists
-    @lookup_table.merge!(entry)
-    entry
-  end
-
   def empty_definitions
     OpenStruct.new
   end
@@ -110,33 +102,6 @@ class Dsl
 
   def connection_entry(name, connection)
     lookup_entry(name, connection, :connection)
-  end
-
-  def method_missing(method_sym, *arguments, &block)
-    if arguments == [] && !block  # Simulate an Entry
-      entry = value_entry(method_sym, nil)
-      # TODO: Warning if value exists
-      @lookup_table.merge!(entry)
-      return entry
-    end
-    name    = arguments.flatten.first
-    options = arguments.flatten[1]
-    range   = options && options[:range]
-    range ||= 0...1
-    if block # This is a definition of a new type
-      range.each do | no|
-        full_name = name % [no]
-        definition = Definition.new(full_name, method_sym, nil, no)
-        definition.instance_eval(&block)
-        @definitions_table.merge!(definition)
-      end
-    else # This is a reference to a type
-      if name.is_a?(String)
-        definition_for(method_sym, name)
-      else
-        set(method_sym, arguments.flatten) 
-      end
-    end
   end
 
 end

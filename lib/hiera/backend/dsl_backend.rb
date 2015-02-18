@@ -27,9 +27,10 @@ class Hiera
       end
 
       def parse_file(file)
+        debugger
         Hiera.debug "parsing config file #{file}."
         config = File.read(file)
-        @dsl.instance_eval(config)
+        @dsl.parse(config)
       end
     end
   end

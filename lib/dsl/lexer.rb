@@ -57,20 +57,20 @@ class Dsl < Racc::Parser
     token = case @state
     when nil
       case
-      when (text = @ss.scan(/\#.*/))
+      when (text = @ss.scan(/\#.*\n/))
         ;
 
       when (text = @ss.scan(/[\s|\t]+/))
         ;
+
+      when (text = @ss.scan(/{COMMA}/))
+         action { [:COMMA, text] }
 
       when (text = @ss.scan(/include/))
          action { [:INCLUDE, text] }
 
       when (text = @ss.scan(/[a-zA-Z][a-zA-Z0-9]*(?:::[a-zA-Z][a-zA-Z0-9]*)?/))
          action { [:FULL_IDENTIFIER, text] }
-
-      when (text = @ss.scan(/\=/))
-         action { [:ASSIGNMENT, text] }
 
       when (text = @ss.scan(/\-\>/))
          action { [:CONNECTION, text] }
@@ -81,8 +81,11 @@ class Dsl < Racc::Parser
       when (text = @ss.scan(/[0-9]+/))
          action { [:NUMBER, text.to_i] }
 
-      when (text = @ss.scan(/'.*'|".*"/))
+      when (text = @ss.scan(/\"(\\.|[^\\"])*\"|\'(\\.|[^\\'])*\'/))
          action { [:STRING, dequote(text)]}
+
+      when (text = @ss.scan(/./))
+         action { [text, text] }
 
       else
         text = @ss.string[@ss.pos .. -1]
@@ -97,6 +100,7 @@ class Dsl < Racc::Parser
 
   def dequote(line)
     line.chop![0] = ''
+    line
   end
   def tokenize(code)
     scan_setup(code)
