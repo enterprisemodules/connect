@@ -13,12 +13,22 @@ macro
   INCLUDE             include
   COMMENT             \#.*\n
   STRING              \"(\\.|[^\\"])*\"|\'(\\.|[^\\'])*\'
+  TRUE                TRUE|true
+  FALSE               FALSE|false
+  UNDEF               undef|undefined|nil
+  HASH_ROCKET         \=\>
+
 
 rule
   {COMMENT} 
   {WHITESPACE}
+  {HASH_ROCKET}       { [:HASH_ROCKET, text]}
+  {TRUE}              { [:BOOLEAN, true]}
+  {FALSE}             { [:BOOLEAN, false]}
+  {UNDEF}             { [:UNDEF, nil]}
   {COMMA}             { [:COMMA, text] }
   {INCLUDE}           { [:INCLUDE, text] }
+  {IDENTIFIER}        { [:IDENTIFIER, text] }
   {FULL_IDENTIFIER}   { [:FULL_IDENTIFIER, text] }
   {CONNECTION}        { [:CONNECTION, text] }
   {FLOAT}             { [:NUMBER, text.to_f] }
