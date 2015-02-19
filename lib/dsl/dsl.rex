@@ -3,8 +3,7 @@ class Dsl
 macro
   WHITESPACE          \s
   IDENTIFIER          [a-zA-Z][a-zA-Z0-9]*
-  FULL_IDENTIFIER     {IDENTIFIER}(?:::{IDENTIFIER})?
-  CONNECTION          \-\>
+  SCOPE               {IDENTIFIER}::
   WHITESPACE          [\s|\t]+
   DIGIT               [0-9]
   EXPONENT            [eE][+-]?{DIGIT}+
@@ -17,23 +16,24 @@ macro
   FALSE               FALSE|false
   UNDEF               undef|undefined|nil
   HASH_ROCKET         \=\>
+  DOUBLE_COLON        ::
 
 
 rule
   {COMMENT} 
-  {WHITESPACE}
+  {INCLUDE}           { [:INCLUDE, text] }
+  {DOUBLE_COLON}      { [:DOUBLE_COLON, text]}
+  {SCOPE}             { [:SCOPE, text]} 
+  {IDENTIFIER}        { [:IDENTIFIER, text] }
   {HASH_ROCKET}       { [:HASH_ROCKET, text]}
   {TRUE}              { [:BOOLEAN, true]}
   {FALSE}             { [:BOOLEAN, false]}
   {UNDEF}             { [:UNDEF, nil]}
   {COMMA}             { [:COMMA, text] }
-  {INCLUDE}           { [:INCLUDE, text] }
-  {IDENTIFIER}        { [:IDENTIFIER, text] }
-  {FULL_IDENTIFIER}   { [:FULL_IDENTIFIER, text] }
-  {CONNECTION}        { [:CONNECTION, text] }
   {FLOAT}             { [:NUMBER, text.to_f] }
   {INT}               { [:NUMBER, text.to_i] }
   {STRING}            { [:STRING, dequote(text)]}
+  {WHITESPACE}
   .                   { [text, text] }
 
 inner

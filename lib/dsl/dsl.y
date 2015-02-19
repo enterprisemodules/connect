@@ -12,6 +12,11 @@ rule
     | include_stmnt
   ;
 
+  literal
+    : IDENTIFIER
+    | SCOPE IDENTIFIER                            {result = "#{val[0]}#{val[1]}" }
+  ;
+
   scalar
     : STRING
     | NUMBER
@@ -56,16 +61,15 @@ rule
   ;
 
 	assignment
-    : FULL_IDENTIFIER '=' value                     { set(val[0], val[2])}
-    | IDENTIFIER '=' value   			      	          { set(val[0], val[2])}
+    : literal '=' value                             { set(val[0], val[2])}
   ;
 
 	connection
-    : FULL_IDENTIFIER CONNECTION FULL_IDENTIFIER    { connect(val[0], val[2])}
+    : literal '=' literal                           { connect(val[0], val[2])}
   ;
 
 	include_stmnt
-    : INCLUDE STRING 													      { puts 'include'}
+    : INCLUDE STRING 													      { parse_file(val[1])}
   ;
 
 end
@@ -75,8 +79,7 @@ end
   require_relative 'lexer'
   require 'byebug'
 
+  DEFAULT_PATH = "/etc/puppet/config/"
+
 ---- inner
 
-  def parse(input)
-    scan_str(input)
-  end

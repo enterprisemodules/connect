@@ -8,13 +8,17 @@ class Dsl < Racc::Parser
 
   def self.parse(content)
     @instance   = self.new
+    puts @instance.tokenize(content)
     @instance.parse(content)
-    # puts @instance.tokenize(content)
   end  
 
   def initialize
     @definitions_table = {}
     @lookup_table      = {}
+  end
+
+  def parse_file(file)
+    content
   end
 
   def inspect
@@ -103,6 +107,30 @@ class Dsl < Racc::Parser
   def connection_entry(name, connection)
     lookup_entry(name, connection, :connection)
   end
+
+  def parse(input)
+    scan_str(input)
+  end
+
+  def parse_file(name)
+    full_name = full_name_for_file(name)
+    fail ArgumentError, "config file #{name} not found" unless full_name
+    content = IO.read(full_name)
+    scan_str(content)
+  end
+
+private
+
+  def full_name_for_file(name)
+    name = Pathname(name)
+    return name.to_s if name.absolute?
+    name = Pathname.new(name.to_s + '.config') unless name.extname == '.config'
+    name = name.to_s
+    path = DEFAULT_PATH.find { |dir|File.exist?(File.join(dir, name)) }
+    path && File.join(path, name)
+  end
+
+
 
 end
 
