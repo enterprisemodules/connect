@@ -1,9 +1,14 @@
 source 'https://rubygems.org'
 
-gem 'rake'
-gem 'rspec' 
-gem 'rexical'
-gem 'racc'
-gem 'byebug'
-gem 'guard-rspec'
-gem 'ruby_gntp'
+group :development, :test do
+	gem 'rake'
+	gem 'rspec' 
+	gem 'rexical'
+	gem 'racc'
+	gem 'byebug'
+	gem 'guard-rspec'	  ,:require => false
+	gem 'guard-bundler'	,:require => false
+	gem 'ruby_gntp'
+	gem 'wannabe_bool'
+	gem 'bogus'
+end

@@ -2,7 +2,7 @@ class Dsl
 
 macro
   IDENTIFIER          [a-zA-Z][a-zA-Z0-9]*
-  SCOPE               {IDENTIFIER}::
+  SCOPE               (?:{IDENTIFIER}::)+
   WHITESPACE          [\s|\t]+
   DIGIT               [0-9]
   INT                 {DIGIT}+
@@ -11,7 +11,7 @@ macro
   STRING              \"(\\.|[^\\"])*\"|\'(\\.|[^\\'])*\'
   TRUE                TRUE|true
   FALSE               FALSE|false
-  UNDEF               undef|undefined|nil
+  UNDEF               undefined|undef|nil
   HASH_ROCKET         \=\>
   DOUBLE_COLON        ::
 
@@ -21,15 +21,14 @@ rule
   end                 { [:END, text]}
   from                { [:FROM, text]}
   to                  { [:TO, text]}
-  include_dir         { [:INCL_DIR, text] }
   include             { [:INCLUDE, text] }
+  {TRUE}              { [:BOOLEAN, true]}
+  {FALSE}             { [:BOOLEAN, false]}
+  {UNDEF}             { [:UNDEF, nil]}
   \:\:                { [:DOUBLE_COLON, text]}
   {SCOPE}             { [:SCOPE, text]} 
   {IDENTIFIER}        { [:IDENTIFIER, text] }
   \=\>                { [:HASH_ROCKET, text]}
-  {TRUE}              { [:BOOLEAN, true]}
-  {FALSE}             { [:BOOLEAN, false]}
-  {UNDEF}             { [:UNDEF, nil]}
   {FLOAT}             { [:FLOAT, text.to_f] }
   {INT}               { [:INTEGER, text.to_i] }
   {STRING}            { [:STRING, dequote(text)]}

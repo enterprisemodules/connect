@@ -4,17 +4,19 @@ require 'dsl/objects_table'
 
 class Dsl < Racc::Parser
 
-  def initialize
-    @objects_table = ObjectsTable.new
-    @values_table  = ValuesTable.new
-  end
+  DEFAULT_PATH = "/etc/puppet/config/"
 
+  def initialize( values_table = ValuesTable.new, objects_table = ObjectsTable.new, default_path = DEFAULT_PATH)
+    @values_table  = values_table 
+    @objects_table = objects_table 
+    @default_path  = default_path
+  end
   ##
   #
   # Assign the value to the name
   #
   def assign(name, value)
-    entry = ValueTable.value_entry(name, value)
+    entry = ValuesTable.value_entry(name, value)
     add_value(entry)
   end
 
@@ -23,7 +25,7 @@ class Dsl < Racc::Parser
   # Connect the variable to an other variable in the value table
   #
   def connect(from, to)
-    entry = ValueTable.connection_entry(from, to)
+    entry = ValuesTable.connection_entry(from, to)
     add_value(entry)
   end
 
@@ -41,26 +43,16 @@ class Dsl < Racc::Parser
 
   ##
   #
-  # include the specfied directory in the parse process. This means all files with the 
-  # extension .config, will be added to the parse process. Files with other types will
-  # be skipped
-  #
-  def include_directory(name)
-    raise Error, 'parse directory not implemented yet'
-  end
-
-  ##
-  #
   # Define or lookup an object. If the values is empty, this method returns just the values.
   # It the values parameter is set, a new entry will be added to the objects table
   #
-  def define(type, name, iterator, values)
-    raise Error, 'no iterator allowed if no block defined' if values.nil? && ! iterator.nil?
+  def define(type, name, values = nil, iterator = nil)
+    raise ArgumentError, 'no iterator allowed if no block defined' if values.nil? && ! iterator.nil?
+    validate_iterator( iterator) unless iterator.nil?
     if values
-      entry = ObjectsTable.entry(type,name, values)
-      add_object(entry)
+      add_object(type, name, values)
     else
-      lookup_object(name, type)
+      lookup_object(type, name)
     end
   end
 
@@ -70,7 +62,6 @@ class Dsl < Racc::Parser
   #
   def self.parse(content)
     @instance   = self.new
-    puts @instance.tokenize(content)
     @instance.parse(content)
   end  
 
@@ -79,7 +70,7 @@ class Dsl < Racc::Parser
   # add an object with a specfied name and type and value to the objects table. 
   #
   def add_object(name, type, values)
-    @objects_table.add(name,type, values)
+    @objects_table.add(name, type, values)
   end
 
   ##
@@ -94,8 +85,8 @@ class Dsl < Racc::Parser
   #
   # Add the specified value identified by the name to the value table
   #
-  def add_value(name, value)
-    @values_table.add(name, value)
+  def add_value(entry)
+    @values_table.add(entry)
   end
 
   ##
@@ -108,13 +99,19 @@ class Dsl < Racc::Parser
 
 private
   
+  def validate_iterator(iterator)
+    invalid_keys = iterator.keys - [:from, :to]
+    raise ArgumentError, 'from value missing from iterator' if iterator[:from].nil?
+    raise ArgumentError, 'to value missing from iterator' if iterator[:to].nil?
+    raise ArgumentError, "iterator contains unknown key(s): #{invalid_keys}" if invalid_keys
+  end
+
   def full_name_for_file(name)
     name = Pathname(name)
     return name.to_s if name.absolute?
     name = Pathname.new(name.to_s + '.config') unless name.extname == '.config'
-    name = name.to_s
-    path = DEFAULT_PATH.find { |dir|File.exist?(File.join(dir, name)) }
-    path && File.join(path, name)
+    path = Pathname.new(@default_path) + name 
+    path.exist? ? path : nil
   end
 
 end

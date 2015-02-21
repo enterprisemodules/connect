@@ -15,7 +15,6 @@ rule
     : assignment
     | connection
     | include_file
-    | include_directory
     | definition
   ;
 
@@ -80,12 +79,8 @@ rule
     : INCLUDE STRING 													      { include_file(val[1])}
   ;
 
-  include_directory
-    : INCL_DIR STRING                               { include_directory(val[1])}
-  ;
-
   definition
-    : literal '(' STRING ')' iterator block         { define(val[0], val[2], val[4], val[5])}
+    : literal '(' STRING ')' iterator block         { define(val[0], val[2], val[5], val[4])}
   ;
 
   block
@@ -104,9 +99,9 @@ end
 ---- header
   require_relative 'dsl'
   require_relative 'lexer'
-  require 'byebug'
-
-  DEFAULT_PATH = "/etc/puppet/config/"
 
 ---- inner
 
+def parse(input)
+  scan_str(input)
+end

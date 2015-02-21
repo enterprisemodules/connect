@@ -1,4 +1,5 @@
-module ValuesTable
+
+class ValuesTable
 
   def initialize
     @values_table = {}
@@ -14,7 +15,7 @@ module ValuesTable
 
   ##
   #
-  # Lookup an entry in te values table
+  # Lookup an entry in the values table
   #
   def lookup(name)
     name = name.to_s
@@ -41,7 +42,7 @@ module ValuesTable
     entry = { name => { :value => value, :type  => type }}
     entry
   end
-  class << self; alias_method :value_entry_for, :entry_for end
+  class << self; alias_method :value_entry, :entry_for end
 
 
   ##
