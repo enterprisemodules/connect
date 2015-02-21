@@ -6,10 +6,17 @@ rule
     | dsl config
   ;
   
+  number
+    : INTEGER
+    | FLOAT
+  ;
+
   config
     : assignment
     | connection
-    | include_stmnt
+    | include_file
+    | include_directory
+    | definition
   ;
 
   literal
@@ -19,7 +26,7 @@ rule
 
   scalar
     : STRING
-    | NUMBER
+    | number
     | BOOLEAN
     | UNDEF
   ;
@@ -28,6 +35,7 @@ rule
     : scalar
     | array
     | hash
+    | definition
   ;
 
   array
@@ -61,15 +69,34 @@ rule
   ;
 
 	assignment
-    : literal '=' value                             { set(val[0], val[2])}
+    : literal '=' value                             { assign(val[0], val[2])}
   ;
 
 	connection
     : literal '=' literal                           { connect(val[0], val[2])}
   ;
 
-	include_stmnt
-    : INCLUDE STRING 													      { parse_file(val[1])}
+	include_file
+    : INCLUDE STRING 													      { include_file(val[1])}
+  ;
+
+  include_directory
+    : INCL_DIR STRING                               { include_directory(val[1])}
+  ;
+
+  definition
+    : literal '(' STRING ')' iterator block         { define(val[0], val[2], val[4], val[5])}
+  ;
+
+  block
+    : 
+    | '{' hashpairs '}'                             { result = val[1]}
+    | DO hashpairs END                              { result = val[1]}
+  ;
+
+  iterator
+    :
+    | FROM INTEGER TO INTEGER                       { result = {:from => val[1], :to => val[3]}}
   ;
 
 end

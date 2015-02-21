@@ -1,15 +1,12 @@
 class Dsl
 
 macro
-  WHITESPACE          \s
   IDENTIFIER          [a-zA-Z][a-zA-Z0-9]*
   SCOPE               {IDENTIFIER}::
   WHITESPACE          [\s|\t]+
   DIGIT               [0-9]
-  EXPONENT            [eE][+-]?{DIGIT}+
   INT                 {DIGIT}+
   FLOAT               {DIGIT}+\.{DIGIT}+
-  INCLUDE             include
   COMMENT             \#.*\n
   STRING              \"(\\.|[^\\"])*\"|\'(\\.|[^\\'])*\'
   TRUE                TRUE|true
@@ -18,20 +15,23 @@ macro
   HASH_ROCKET         \=\>
   DOUBLE_COLON        ::
 
-
 rule
   {COMMENT} 
-  {INCLUDE}           { [:INCLUDE, text] }
-  {DOUBLE_COLON}      { [:DOUBLE_COLON, text]}
+  do                  { [:DO, text]}
+  end                 { [:END, text]}
+  from                { [:FROM, text]}
+  to                  { [:TO, text]}
+  include_dir         { [:INCL_DIR, text] }
+  include             { [:INCLUDE, text] }
+  \:\:                { [:DOUBLE_COLON, text]}
   {SCOPE}             { [:SCOPE, text]} 
   {IDENTIFIER}        { [:IDENTIFIER, text] }
-  {HASH_ROCKET}       { [:HASH_ROCKET, text]}
+  \=\>                { [:HASH_ROCKET, text]}
   {TRUE}              { [:BOOLEAN, true]}
   {FALSE}             { [:BOOLEAN, false]}
   {UNDEF}             { [:UNDEF, nil]}
-  {COMMA}             { [:COMMA, text] }
-  {FLOAT}             { [:NUMBER, text.to_f] }
-  {INT}               { [:NUMBER, text.to_i] }
+  {FLOAT}             { [:FLOAT, text.to_f] }
+  {INT}               { [:INTEGER, text.to_i] }
   {STRING}            { [:STRING, dequote(text)]}
   {WHITESPACE}
   .                   { [text, text] }

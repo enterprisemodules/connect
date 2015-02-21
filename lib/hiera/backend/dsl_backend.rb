@@ -1,4 +1,3 @@
-require 'ruby-debug'
 require 'dsl/dsl'
 
 class Hiera
