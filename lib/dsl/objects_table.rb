@@ -1,4 +1,4 @@
-require 'dsl/entry'
+require 'dsl/object_entry'
 require 'byebug'
 
 class ObjectsTable
@@ -22,16 +22,20 @@ class ObjectsTable
 
   def self.entry(type, name, values)
     values.merge!({
-      :__name__ => name,
-      :__type__ => type
+      '__name__' => name,
+      '__type__' => type
     })
     case type
     when 'node'       then Node.new(values)
-    else  Entry.new(values)
+    else  ObjectEntry.new(values)
     end
   end
 
   private
+
+  def key(type,name)
+    "__#{name}__#{type}__"
+  end
 
   def add_new_object(type, name, values)
     object = ObjectsTable.entry(type, name, values)
@@ -39,16 +43,17 @@ class ObjectsTable
   end
 
   def from_table(type, name)
-    @objects_table["__#{name}__#{type}"]
+    @objects_table[key(type,name)]
   end
 
   def to_table(object)
-    @objects_table["__#{object.__name__}__#{object.__type__}"] = object
+    type = object.__type__
+    name = object.__name__
+    @objects_table[key(type,name)] = object
   end
 
   def add_values_to_existing!(object, values)
     object.merge!(values)
   end
-
 
 end

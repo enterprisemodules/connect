@@ -27,10 +27,14 @@ class ValuesTable
       entry[:value]
     when :connection
       lookup(entry[:value])
+    when :object
+      object = entry[:value]
+      object_name = object.__name__
+      value = selector ? select(selector, object) : object
+      { object_name => object.to_hash}
     else
       nil
     end
-    selector ? select(selector,value) : value
   end
 
   ##
@@ -52,6 +56,15 @@ class ValuesTable
   def self.connection_entry(name, connection)
     entry_for(name, connection, :connection)
   end
+
+  ##
+  #
+  # Create a connection entry for the value table
+  #
+  def self.object_entry(name, connection)
+    entry_for(name, connection, :object)
+  end
+
 
   private
 

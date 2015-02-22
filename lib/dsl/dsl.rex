@@ -1,8 +1,10 @@
 class Dsl
 
 macro
+  SCOPED              
   IDENTIFIER          [a-zA-Z][a-zA-Z0-9]*
-  SCOPE               (?:{IDENTIFIER}::)+
+  SCOPED              (?:{IDENTIFIER}::)+{IDENTIFIER}
+  SELECTOR            (?:\[\d+\]|\.{IDENTIFIER})*
   WHITESPACE          [\s|\t]+
   DIGIT               [0-9]
   INT                 {DIGIT}+
@@ -17,23 +19,22 @@ macro
 
 rule
   {COMMENT} 
-  do                  { [:DO, text]}
-  end                 { [:END, text]}
-  from                { [:FROM, text]}
-  to                  { [:TO, text]}
-  include             { [:INCLUDE, text] }
-  {TRUE}              { [:BOOLEAN, true]}
-  {FALSE}             { [:BOOLEAN, false]}
-  {UNDEF}             { [:UNDEF, nil]}
-  \:\:                { [:DOUBLE_COLON, text]}
-  {SCOPE}             { [:SCOPE, text]} 
-  {IDENTIFIER}        { [:IDENTIFIER, text] }
-  \=\>                { [:HASH_ROCKET, text]}
-  {FLOAT}             { [:FLOAT, text.to_f] }
-  {INT}               { [:INTEGER, text.to_i] }
-  {STRING}            { [:STRING, dequote(text)]}
+  do                      { [:DO, text]}
+  end                     { [:END, text]}
+  from                    { [:FROM, text]}
+  to                      { [:TO, text]}
+  include                 { [:INCLUDE, text] }
+  {TRUE}                  { [:BOOLEAN, true]}
+  {FALSE}                 { [:BOOLEAN, false]}
+  {UNDEF}                 { [:UNDEF, nil]}
+  {SCOPED}{SELECTOR}      { [:SCOPED, text]}
+  {IDENTIFIER}{SELECTOR}  { [:IDENTIFIER, text] }
+  \=\>                    { [:HASH_ROCKET, text]}
+  {FLOAT}                 { [:FLOAT, text.to_f] }
+  {INT}                   { [:INTEGER, text.to_i] }
+  {STRING}                { [:STRING, dequote(text)]}
   {WHITESPACE}
-  .                   { [text, text] }
+  .                       { [text, text] }
 
 inner
   def dequote(line)

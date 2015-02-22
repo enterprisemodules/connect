@@ -5,7 +5,7 @@ RSpec.describe ObjectsTable do
 
 	let(:table)  				{ObjectsTable.new}
 	let(:values) 				{{:age=> 20, :gender => 'male'}}
-	let(:other_values)  		{{:age=> 19, :gender => 'female'}}
+	let(:other_values)  {{:age=> 19, :gender => 'female'}}
 
 	describe '#add' do 
 
@@ -42,9 +42,7 @@ RSpec.describe ObjectsTable do
 				table.add('person', 'bert', {:age=> 20, :gender => ' male'})
 				expect(table.lookup('person', 'bert')).not_to be_nil
 			end
-
 		end
-
 
 	end
 

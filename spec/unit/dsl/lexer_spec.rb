@@ -83,13 +83,6 @@ RSpec.describe 'Lexer' do
 		expect(dsl.tokenize(content)).to eql([[:STRING, 'String \'1'], [:STRING, 'String 2']])
 	end
 
-	it 'recognises a double colon' do
-		content = <<-EOD
-		::
-		EOD
-		expect(dsl.tokenize(content)).to eql([[:DOUBLE_COLON, '::']])
-	end
-
 	it 'recognises a hash rocket' do
 		content = <<-EOD
 		=>
@@ -104,11 +97,33 @@ RSpec.describe 'Lexer' do
 		expect(dsl.tokenize(content)).to eql([[:IDENTIFIER, 'bertand3timesernie']])
 	end
 
-	it 'recognises a scope' do
+	it 'recognises a scoped identifier' do
 		content = <<-EOD
-		foo::bar::
+		foo::bar::baz
 		EOD
-		expect(dsl.tokenize(content)).to eql([[:SCOPE, 'foo::bar::']])
+		expect(dsl.tokenize(content)).to eql([[:SCOPED, 'foo::bar::baz']])
+	end
+
+	it 'recognises a scoped identifier with array selector' do
+		content = <<-EOD
+		foo::bar::baz[1]
+		EOD
+		expect(dsl.tokenize(content)).to eql([[:SCOPED, 'foo::bar::baz[1]']])
+	end
+
+
+	it 'recognises a scoped identifier with method selector' do
+		content = <<-EOD
+		foo::bar::baz.first
+		EOD
+		expect(dsl.tokenize(content)).to eql([[:SCOPED, 'foo::bar::baz.first']])
+	end
+
+	it 'recognises a scoped identifier with method and array selector' do
+		content = <<-EOD
+		foo::bar::baz[10].first
+		EOD
+		expect(dsl.tokenize(content)).to eql([[:SCOPED, 'foo::bar::baz[10].first']])
 	end
 
 	punctuation_marks = [

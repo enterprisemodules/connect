@@ -16,7 +16,9 @@ class Dsl < Racc::Parser
   # Assign the value to the name
   #
   def assign(name, value)
-    entry = ValuesTable.value_entry(name, value)
+    entry = value.is_a?(ObjectEntry) ?
+      ValuesTable.object_entry(name, value) :
+      ValuesTable.value_entry(name, value)
     add_value(entry)
   end
 
@@ -77,8 +79,8 @@ class Dsl < Racc::Parser
   #
   # Fetch object identified by the name and the type from the objects table
   #
-  def lookup_object(name, type)
-    @objects_table.lookup(name,type)
+  def lookup_object(type, name)
+    @objects_table.lookup(type,name)
   end
 
   ##

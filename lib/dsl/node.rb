@@ -1,6 +1,6 @@
-require 'ostruct'
+require 'dsl/object_entry'
 
-class Node < Entry
+class Node < ObjectEntry
   def initialize(data)
     super(data)
     if data

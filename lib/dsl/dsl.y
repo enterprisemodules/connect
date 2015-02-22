@@ -20,7 +20,7 @@ rule
 
   literal
     : IDENTIFIER
-    | SCOPE IDENTIFIER                            {result = "#{val[0]}#{val[1]}" }
+    | SCOPED
   ;
 
   scalar
@@ -80,7 +80,7 @@ rule
   ;
 
   definition
-    : literal '(' STRING ')' iterator block         { define(val[0], val[2], val[5], val[4])}
+    : literal '(' STRING ')' iterator block         { result = define(val[0], val[2], val[5], val[4])}
   ;
 
   block

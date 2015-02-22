@@ -1,8 +1,8 @@
 require 'spec_helper'
-require 'dsl/entry'
+require 'dsl/object_entry'
 
-RSpec.describe Entry do
+RSpec.describe ObjectEntry do
 
-
+# TODO: Make a spec
 
 end
