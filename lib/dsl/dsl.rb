@@ -1,6 +1,7 @@
 require 'dsl/parser'
 require 'dsl/values_table'
 require 'dsl/objects_table'
+require 'dsl/selector'
 
 class Dsl < Racc::Parser
 
@@ -26,8 +27,8 @@ class Dsl < Racc::Parser
   #
   # Connect the variable to an other variable in the value table
   #
-  def connect(from, to)
-    entry = ValuesTable.connection_entry(from, to)
+  def connect(from, to, selector = nil)
+    entry = ValuesTable.connection_entry(from, to, selector)
     add_value(entry)
   end
 
@@ -48,14 +49,15 @@ class Dsl < Racc::Parser
   # Define or lookup an object. If the values is empty, this method returns just the values.
   # It the values parameter is set, a new entry will be added to the objects table
   #
-  def define(type, name, values = nil, iterator = nil)
+  def define(type, name, values = nil, iterator = nil, selector = nil)
     raise ArgumentError, 'no iterator allowed if no block defined' if values.nil? && ! iterator.nil?
     validate_iterator( iterator) unless iterator.nil?
     if values
-      add_object(type, name, values)
+      value = add_object(type, name, values)
     else
-      lookup_object(type, name)
+      value = lookup_object(type, name)
     end
+    Selector.execute(value, selector)
   end
 
   ##

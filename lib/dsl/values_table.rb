@@ -1,3 +1,4 @@
+require 'dsl/selector'
 
 class ValuesTable
 
@@ -17,20 +18,19 @@ class ValuesTable
   #
   # Lookup an entry in the values table
   #
-  def lookup(name)
+  def lookup(name, selector = nil)
     name = name.to_s
-    scope, selector = name.split(/(\[\d+\]|\.\D.*)/)
     # TODO: Check if name is a valid name
-    entry = @values_table.fetch(scope) { {}}
+    entry = @values_table.fetch(name) { {}}
     value = case entry[:type]
     when :value
       entry[:value]
     when :connection
-      lookup(entry[:value])
+      value = lookup(entry[:value], entry[:selector])
     when :object
       object = entry[:value]
       object_name = object.__name__
-      selector ? select(selector, object) : { object_name => object.to_hash}
+      selector ? Selector.execute(object, selector) : { object_name => object.to_hash}
     else
       nil
     end
@@ -40,9 +40,9 @@ class ValuesTable
   #
   # Create an entry for the value table. 
   #
-  def self.entry_for(name, value, type = :value)
+  def self.entry_for(name, value, type = :value, selector = nil)
     name = name.to_s
-    entry = { name => { :value => value, :type  => type }}
+    entry = { name => { :value => value, :type  => type , :selector => selector}}
     entry
   end
   class << self; alias_method :value_entry, :entry_for end
@@ -52,8 +52,8 @@ class ValuesTable
   #
   # Create a connection entry for the value table
   #
-  def self.connection_entry(name, connection)
-    entry_for(name, connection, :connection)
+  def self.connection_entry(name, connection, selector)
+    entry_for(name, connection, :connection, selector)
   end
 
   ##
@@ -64,13 +64,6 @@ class ValuesTable
     entry_for(name, connection, :object)
   end
 
-
-  private
-
-  def select(selector, value)
-    raise ArgumentError, "using selector #{selector} on empty value" if value.nil?
-    instance_eval("value#{selector}")
-  end
 
 end
 

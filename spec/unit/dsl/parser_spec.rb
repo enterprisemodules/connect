@@ -88,12 +88,25 @@ RSpec.describe 'Parser' do
 
   describe 'connections' do
 
-    it 'connects two variables' do
-      expect(dsl).to receive(:connect).with('a', 'b')
-      dsl.parse(<<-EOD)
-      a = b
-      EOD
+    context 'no selector' do
+      it 'connects two variables' do
+        expect(dsl).to receive(:connect).with('a', 'b', nil)
+        dsl.parse(<<-EOD)
+        a = b
+        EOD
+      end
     end
+
+    context 'with a selector' do
+      it 'connects two variables' do
+        expect(dsl).to receive(:connect).with('a', 'b', '[0].ip')
+        dsl.parse(<<-EOD)
+        a = b[0].ip
+        EOD
+      end
+    end
+
+
   end
 
   describe 'include' do
@@ -110,7 +123,7 @@ RSpec.describe 'Parser' do
 
     context 'using curly braces' do
       it 'defines an object' do
-        expect(dsl).to receive(:define).with('host','dns', { :ip => '10.0.0.1', :fqdn => 'dns.a.b'}, nil)
+        expect(dsl).to receive(:define).with('host','dns', { :ip => '10.0.0.1', :fqdn => 'dns.a.b'}, nil, nil)
         dsl.parse(<<-EOD)
         host('dns') { ip: '10.0.0.1', fqdn: 'dns.a.b'}
         EOD
@@ -120,7 +133,7 @@ RSpec.describe 'Parser' do
 
   context 'using do end' do
     it 'defines an object' do
-      expect(dsl).to receive(:define).with('host','dns', { :ip => '10.0.0.1', :fqdn => 'dns.a.b'}, nil)
+      expect(dsl).to receive(:define).with('host','dns', { :ip => '10.0.0.1', :fqdn => 'dns.a.b'}, nil, nil)
       dsl.parse(<<-EOD)
       host('dns') do ip: '10.0.0.1', fqdn: 'dns.a.b'end
       EOD
@@ -129,11 +142,23 @@ RSpec.describe 'Parser' do
 
   context 'using an iterator' do
     it 'defines an object with an iterator' do
-      expect(dsl).to receive(:define).with('host','dns', { :ip => '10.0.0.1', :fqdn => 'dns.a.b'},  {:from => 10, :to => 20})
+      expect(dsl).to receive(:define).with('host','dns', { :ip => '10.0.0.1', :fqdn => 'dns.a.b'},  {:from => 10, :to => 20}, nil)
       dsl.parse(<<-EOD)
       host('dns') from 10 to 20 do 
       	ip:   '10.0.0.1', 
       	fqdn: 'dns.a.b'end
+      EOD
+    end
+  end
+
+  context 'using a selector' do
+    it 'defines an object and returns the selected part' do
+      expect(dsl).to receive(:define).with('host','dns', { :ip => '10.0.0.1', :fqdn => 'dns.a.b'},  nil, '[10].ip[10]')
+      dsl.parse(<<-EOD)
+      host('dns')[10].ip[10] {
+        ip:   '10.0.0.1', 
+        fqdn: 'dns.a.b'
+      }
       EOD
     end
   end

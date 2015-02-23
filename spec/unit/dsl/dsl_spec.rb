@@ -17,7 +17,7 @@ RSpec.describe Dsl do
 
   describe '#connect' do
     it 'add\'s a connection to the value table' do
-      expect(ValuesTable).to receive(:connection_entry).with('a','b').and_call_original
+      expect(ValuesTable).to receive(:connection_entry).with('a','b', nil).and_call_original
       expect(dsl).to receive(:add_value)
       dsl.connect('a', 'b')
     end
@@ -88,6 +88,8 @@ RSpec.describe Dsl do
         dsl.define('person','bert')
       end
     end
+
+
   end
 
   describe '#add_object' do

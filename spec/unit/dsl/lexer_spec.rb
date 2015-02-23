@@ -97,34 +97,41 @@ RSpec.describe 'Lexer' do
 		expect(dsl.tokenize(content)).to eql([[:IDENTIFIER, 'bertand3timesernie']])
 	end
 
-	it 'recognises a scoped identifier' do
+	it 'recognises a scope' do
 		content = <<-EOD
-		foo::bar::baz
+		foo::bar::
 		EOD
-		expect(dsl.tokenize(content)).to eql([[:SCOPED, 'foo::bar::baz']])
+		expect(dsl.tokenize(content)).to eql([[:SCOPE, 'foo::bar::']])
 	end
 
-	it 'recognises a scoped identifier with array selector' do
-		content = <<-EOD
-		foo::bar::baz[1]
-		EOD
-		expect(dsl.tokenize(content)).to eql([[:SCOPED, 'foo::bar::baz[1]']])
-	end
+	describe ' selectors' do
+
+		it 'recognises an array selector' do
+			content = <<-EOD
+			[10]
+			EOD
+			expect(dsl.tokenize(content)).to eql([[:SELECTOR, '[10]']])
+		end
 
 
-	it 'recognises a scoped identifier with method selector' do
-		content = <<-EOD
-		foo::bar::baz.first
-		EOD
-		expect(dsl.tokenize(content)).to eql([[:SCOPED, 'foo::bar::baz.first']])
+		it 'recognises a method selector' do
+			content = <<-EOD
+			.first
+			EOD
+			expect(dsl.tokenize(content)).to eql([[:SELECTOR, '.first']])
+		end
+
+
+		it 'recognises a complex selector' do
+			content = <<-EOD
+			[10].first[20]
+			EOD
+			expect(dsl.tokenize(content)).to eql([[:SELECTOR, '[10].first[20]']])
+		end
+
+
 	end
 
-	it 'recognises a scoped identifier with method and array selector' do
-		content = <<-EOD
-		foo::bar::baz[10].first
-		EOD
-		expect(dsl.tokenize(content)).to eql([[:SCOPED, 'foo::bar::baz[10].first']])
-	end
 
 	punctuation_marks = [
 		'.', '[', ']', '{', '}', '=', '+', '-', '*', '/', '!', '(', ')'

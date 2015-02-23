@@ -3,8 +3,8 @@ class Dsl
 macro
   SCOPED              
   IDENTIFIER          [a-zA-Z][a-zA-Z0-9]*
-  SCOPED              (?:{IDENTIFIER}::)+{IDENTIFIER}
-  SELECTOR            (?:\[\d+\]|\.{IDENTIFIER})*
+  SCOPE               (?:{IDENTIFIER}::)+
+  SELECTOR            (?:\[\d+\]|\.{IDENTIFIER})+
   WHITESPACE          [\s|\t]+
   DIGIT               [0-9]
   INT                 {DIGIT}+
@@ -27,8 +27,9 @@ rule
   {TRUE}                  { [:BOOLEAN, true]}
   {FALSE}                 { [:BOOLEAN, false]}
   {UNDEF}                 { [:UNDEF, nil]}
-  {SCOPED}{SELECTOR}      { [:SCOPED, text]}
-  {IDENTIFIER}{SELECTOR}  { [:IDENTIFIER, text] }
+  {SCOPE}                 { [:SCOPE, text]}
+  {IDENTIFIER}            { [:IDENTIFIER, text] }
+  {SELECTOR}              { [:SELECTOR, text]}
   \=\>                    { [:HASH_ROCKET, text]}
   {FLOAT}                 { [:FLOAT, text.to_f] }
   {INT}                   { [:INTEGER, text.to_i] }

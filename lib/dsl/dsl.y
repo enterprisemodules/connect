@@ -18,9 +18,18 @@ rule
     | definition
   ;
 
+  scope
+    :
+    | SCOPE
+    ;
+
+  selector
+    :
+    | SELECTOR
+    ;
+
   literal
-    : IDENTIFIER
-    | SCOPED
+    : scope IDENTIFIER                         { result = "#{val[0]}#{val[1]}"}
   ;
 
   scalar
@@ -72,7 +81,7 @@ rule
   ;
 
 	connection
-    : literal '=' literal                           { connect(val[0], val[2])}
+    : literal '=' literal selector                  { connect(val[0], val[2], val[3])}
   ;
 
 	include_file
@@ -80,7 +89,8 @@ rule
   ;
 
   definition
-    : literal '(' STRING ')' iterator block         { result = define(val[0], val[2], val[5], val[4])}
+    : literal '(' STRING ')' selector iterator block 
+                                                    { result = define(val[0], val[2], val[6], val[5], val[4])}
   ;
 
   block
