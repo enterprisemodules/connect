@@ -30,8 +30,7 @@ class ValuesTable
     when :object
       object = entry[:value]
       object_name = object.__name__
-      value = selector ? select(selector, object) : object
-      { object_name => object.to_hash}
+      selector ? select(selector, object) : { object_name => object.to_hash}
     else
       nil
     end
@@ -70,7 +69,7 @@ class ValuesTable
 
   def select(selector, value)
     raise ArgumentError, "using selector #{selector} on empty value" if value.nil?
-    eval("#{value}#{selector}")
+    instance_eval("value#{selector}")
   end
 
 end

@@ -33,20 +33,20 @@ RSpec.describe 'objects' do
     end
   end
 
-  # context 'fetch with selector' do
+  context 'fetch with selector' do
 
-  #   it 'is settable and retrievable' do
-  #     dsl.parse(<<-EOD)
-  #     foo('foo.bar.nl') {
-  #       ip:   '10.0.0.100',
-  #       alias: 'foo'
-  #     }
-  #     b = foo('foo.bar.nl')
-  #     a = b.ip
-  #     EOD
-  #     expect(dsl.lookup_value('a')).to eql('10.0.0.100')
-  #   end
-  # end
+    it 'is settable and retrievable' do
+      dsl.parse(<<-EOD)
+      foo('foo.bar.nl') {
+        ip:   '10.0.0.100',
+        alias: 'foo'
+      }
+      b = foo('foo.bar.nl')
+      a = b.ip
+      EOD
+      expect(dsl.lookup_value('a')).to eql('10.0.0.100')
+    end
+  end
 
 
 end
