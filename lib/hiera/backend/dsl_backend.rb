@@ -13,7 +13,7 @@ class Hiera
 
       def lookup(key, scope, order_override, resolution_type)
         parse_config(scope, order_override) unless parsed
-        @dsl.value_for(key)
+        @dsl.lookup_value(key)
       end
 
       private
