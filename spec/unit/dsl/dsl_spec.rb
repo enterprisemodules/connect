@@ -5,7 +5,9 @@ RSpec.describe Dsl do
 
   fake(:values_table)
   fake(:objects_table)
-  let(:dsl) {Dsl.new( values_table, objects_table, './examples')}
+  fake(:interpolator)
+
+  let(:dsl) {Dsl.new( values_table, objects_table, './examples', interpolator)}
 
   describe '#assign' do
     it 'add\'s a value to the value table' do
@@ -121,6 +123,15 @@ RSpec.describe Dsl do
       expect(values_table).to receive(:lookup).with('name')
       dsl.lookup_value('name')
     end
+  end
+
+  describe '#interpolate' do
+
+    it 'replaces the variable with their values at compile time' do
+      expect(interpolator).to receive(:translate).with('${foo::bar} is ${value}')
+      dsl.interpolate('${foo::bar} is ${value}')
+    end
+
   end
 
 end

@@ -4,15 +4,15 @@ class Selector
 		@selector = selector
 	end
 
-	def execute
+	def run
 	  @value ? instance_eval("@value#{@selector}") : nil
 	end
 
 	#
 	# Convenience  method
 	#
-	def self.execute(value, selector)
+	def self.run(value, selector)
 		instance = self.new(value, selector)
-		instance.execute
+		instance.run
 	end
 end

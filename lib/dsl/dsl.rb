@@ -2,15 +2,23 @@ require 'dsl/parser'
 require 'dsl/values_table'
 require 'dsl/objects_table'
 require 'dsl/selector'
+require 'dsl/interpolator'
 
 class Dsl < Racc::Parser
 
+  attr_reader :interpolator
+
   DEFAULT_PATH = "/etc/puppet/config/"
 
-  def initialize( values_table = ValuesTable.new, objects_table = ObjectsTable.new, default_path = DEFAULT_PATH)
+  def initialize( values_table    = ValuesTable.new, 
+                    objects_table = ObjectsTable.new, 
+                    default_path  = DEFAULT_PATH,
+                    interpolator  = Interpolator.new(self)
+                    )
     @values_table  = values_table 
     @objects_table = objects_table 
     @default_path  = default_path
+    @interpolator  = interpolator
   end
   ##
   #
@@ -43,6 +51,9 @@ class Dsl < Racc::Parser
     scan_str(content)
   end
 
+  def interpolate(string)
+    @interpolator.translate(string)
+  end
 
   ##
   #
@@ -57,7 +68,7 @@ class Dsl < Racc::Parser
     else
       value = lookup_object(type, name)
     end
-    Selector.execute(value, selector)
+    Selector.run(value, selector)
   end
 
   ##

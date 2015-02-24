@@ -30,7 +30,7 @@ class ValuesTable
     when :object
       object = entry[:value]
       object_name = object.__name__
-      selector ? Selector.execute(object, selector) : { object_name => object.to_hash}
+      selector ? Selector.run(object, selector) : { object_name => object.to_hash}
     else
       nil
     end

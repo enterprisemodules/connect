@@ -33,7 +33,7 @@ rule
   ;
 
   scalar
-    : STRING
+    : STRING                                   { result = interpolate(val[0])}
     | number
     | BOOLEAN
     | UNDEF
@@ -107,8 +107,8 @@ rule
 end
 
 ---- header
-  require_relative 'dsl'
-  require_relative 'lexer'
+  require 'dsl/dsl'
+  require 'dsl/lexer'
 
 ---- inner
 

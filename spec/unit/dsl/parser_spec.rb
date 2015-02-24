@@ -163,5 +163,13 @@ RSpec.describe 'Parser' do
     end
   end
 
+  describe 'interpolation' do
+    it 'all strings are passed to the interpolation filter' do
+      expect(dsl).to receive(:interpolate).with("hallo ${foo::bar} and ${hallo}")
+      dsl.parse(<<-EOD)
+      a = "hallo ${foo::bar} and ${hallo}"
+      EOD
+    end
+  end
 
 end
