@@ -2,7 +2,7 @@ class Dsl
 
 macro
   SCOPED              
-  IDENTIFIER          [a-zA-Z][a-zA-Z0-9]*
+  IDENTIFIER          [a-zA-Z][a-zA-Z0-9_]*
   SCOPE               (?:{IDENTIFIER}::)+
   SELECTOR            (?:\[\d+\]|\.{IDENTIFIER})+
   WHITESPACE          [\s|\t]+

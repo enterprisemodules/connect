@@ -1,5 +1,4 @@
 require 'dsl/object_entry'
-require 'byebug'
 
 class ObjectsTable
 
