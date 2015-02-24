@@ -5,6 +5,49 @@ RSpec.describe 'Parser' do
 
   let(:dsl) { Dsl.new }
 
+  describe 'Hash syntax' do
+
+    context 'without trailing comma' do
+      it 'is parsed' do
+        expect(dsl).to receive(:assign).with('a', {:a=>1,:b=>2})
+        dsl.parse(<<-EOD)
+        a = {a:1,b:2}
+        EOD
+      end
+    end
+
+    context 'with trailing comma' do
+      it 'is parsed' do
+        expect(dsl).to receive(:assign).with('a', {:a=>1,:b=>2})
+        dsl.parse(<<-EOD)
+        a = {a:1,b:2,}
+        EOD
+      end
+    end
+  end
+
+  describe 'Array syntax' do
+
+    context 'without trailing comma' do
+      it 'is parsed' do
+        expect(dsl).to receive(:assign).with('a', [1,2,3,4])
+        dsl.parse(<<-EOD)
+        a = [1,2,3,4]
+        EOD
+      end
+    end
+
+    context 'with trailing comma' do
+      it 'is parsed' do
+        expect(dsl).to receive(:assign).with('a', [1,2,3,4])
+        dsl.parse(<<-EOD)
+        a = [1,2,3,4,]
+        EOD
+      end
+    end
+  end
+
+
   describe 'scalar assignments' do
 
     it 'boolean' do

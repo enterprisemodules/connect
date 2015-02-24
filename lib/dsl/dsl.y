@@ -47,14 +47,19 @@ rule
   ;
 
   array
-    : '[' values ']'                                { result = val[1]}
+    : '[' values optional_comma ']'                 { result = val[1]}
     | '[' ']'                                       { result = []}
   ;
 
   hash
-    : '{' hashpairs '}'                             { result = val[1]}
+    : '{' hashpairs optional_comma '}'              { result = val[1]}
     | '{' '}'                                       { result = {}} 
   ;
+
+  optional_comma:
+    :
+    | ','
+    ;
 
   hashpairs
     : hashpair                                      
@@ -95,8 +100,8 @@ rule
 
   block
     : 
-    | '{' hashpairs '}'                             { result = val[1]}
-    | DO hashpairs END                              { result = val[1]}
+    | '{' hashpairs optional_comma '}'              { result = val[1]}
+    | DO hashpairs optional_comma END               { result = val[1]}
   ;
 
   iterator
