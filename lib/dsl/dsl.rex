@@ -9,7 +9,7 @@ macro
   DIGIT               [0-9]
   INT                 {DIGIT}+
   FLOAT               {DIGIT}+\.{DIGIT}+
-  COMMENT             \#.*\n
+  COMMENT             \#.*(?:\n|$)
   STRING              \"(\\.|[^\\"])*\"|\'(\\.|[^\\'])*\'
   TRUE                TRUE|true
   FALSE               FALSE|false

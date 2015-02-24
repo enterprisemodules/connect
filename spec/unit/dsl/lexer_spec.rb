@@ -6,12 +6,20 @@ RSpec.describe 'Lexer' do
 
 	let(:dsl) { Dsl.new}
 
-	it 'skips comments' do
+	context 'comment with a newline at the end'
+	it 'are skipped' do
 		content = <<-EOD
 		# This a comment and should do anything
 		EOD
 		expect(dsl.tokenize(content)).to be_empty
 	end
+
+	context 'comment without a new line at the end'
+		it 'are skipped' do
+			content = "# This a comment and should do anything" 
+			expect(dsl.tokenize(content)).to be_empty
+		end
+
 
 	reserved_words = [
 		'do',
