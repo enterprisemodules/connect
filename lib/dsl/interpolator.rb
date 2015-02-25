@@ -1,6 +1,6 @@
 class Interpolator
 
-  REGEXP = /(\$\{\s*(?:[a-zA-Z][a-zA-Z0-9]*::)*[a-zA-Z][a-zA-Z0-9]*\s*\})/
+  REGEXP = /(\$\{\s*(?:[a-zA-Z][a-zA-Z0-9_]*::)*[a-zA-Z][a-zA-Z0-9_]*\s*\})/
 
 	def initialize( resolver)
 		@resolver = resolver
