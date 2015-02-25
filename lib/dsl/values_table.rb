@@ -22,10 +22,10 @@ class ValuesTable
     name = name.to_s
     # TODO: Check if name is a valid name
     entry = @values_table.fetch(name) { {}}
-    value = case entry[:type]
+    case entry[:type]
     when :value
-      base_value = entry[:value]
-      case base_value
+      base_value = Selector.run(entry[:value], selector)
+      value = case base_value
       when Array 
         base_value.map {|e| e.is_a?(ObjectEntry) ? e.to_value : e}
       when Hash
@@ -35,6 +35,7 @@ class ValuesTable
       end
     when :connection
       value = lookup(entry[:value], entry[:selector])
+      Selector.run(value, selector)
     when :object
       object = entry[:value]
       object_name = object.__name__
@@ -60,7 +61,7 @@ class ValuesTable
   #
   # Create a connection entry for the value table
   #
-  def self.connection_entry(name, connection, selector)
+  def self.connection_entry(name, connection, selector = nil)
     entry_for(name, connection, :connection, selector)
   end
 
