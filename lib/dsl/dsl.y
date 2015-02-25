@@ -32,8 +32,12 @@ rule
     : scope IDENTIFIER                         { result = "#{val[0]}#{val[1]}"}
   ;
 
+  string
+    : DOUBLE_QUOTED                            { result = interpolate(val[0])}
+    | SINGLE_QUOTED
+
   scalar
-    : STRING                                   { result = interpolate(val[0])}
+    : string
     | number
     | BOOLEAN
     | UNDEF
@@ -90,11 +94,11 @@ rule
   ;
 
 	include_file
-    : INCLUDE STRING 													      { include_file(val[1])}
+    : INCLUDE string 													      { include_file(val[1])}
   ;
 
   definition
-    : literal '(' STRING ')' selector iterator block 
+    : literal '(' string ')' selector iterator block 
                                                     { result = define(val[0], val[2], val[6], val[5], val[4])}
   ;
 

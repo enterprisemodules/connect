@@ -117,14 +117,25 @@ RSpec.describe 'Lexer' do
 
     describe 'strings' do
 
-      context 'regular strings' do
+      context 'double quoted strings' do
         it 'is recognised' do
           content = <<-EOD
-          "String '1"  'String 2'
+          "String '1"  "String 2"
           EOD
-          expect(dsl.tokenize(content)).to eql([[:STRING, 'String \'1'], [:STRING, 'String 2']])
+          expect(dsl.tokenize(content)).to eql([[:DOUBLE_QUOTED, 'String \'1'], [:DOUBLE_QUOTED, 'String 2']])
         end
       end
+
+      context 'single quoted strings' do
+        it 'is recognised' do
+          content = <<-EOD
+          'String 1'  'String 2'
+          EOD
+          expect(dsl.tokenize(content)).to eql([[:SINGLE_QUOTED, 'String 1'], [:SINGLE_QUOTED, 'String 2']])
+        end
+      end
+
+
     end
 
     describe 'identifiers'

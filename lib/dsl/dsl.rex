@@ -10,7 +10,8 @@ macro
   INT                 {DIGIT}+
   FLOAT               {DIGIT}+\.{DIGIT}+
   COMMENT             \#.*(?:\n|$)
-  STRING              \"(\\.|[^\\"])*\"|\'(\\.|[^\\'])*\'
+  DOUBLE_QUOTED       \"(\\.|[^\\"])*\"
+  SINGLE_QUOTED       \'(\\.|[^\\'])*\'
   TRUE                TRUE|true
   FALSE               FALSE|false
   UNDEF               undefined|undef|nil
@@ -38,7 +39,8 @@ rule
   \=\>                    { [:HASH_ROCKET, text]}
   {FLOAT}                 { [:FLOAT, text.to_f] }
   {INT}                   { [:INTEGER, text.to_i] }
-  {STRING}                { [:STRING, dequote(text)]}
+  {DOUBLE_QUOTED}        { [:DOUBLE_QUOTED, dequote(text)]}
+  {SINGLE_QUOTED}        { [:SINGLE_QUOTED, dequote(text)]}
   {WHITESPACE}
   {NEWLINE}
   .                       { [text, text] }
