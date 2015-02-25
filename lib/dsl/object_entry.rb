@@ -2,13 +2,14 @@ require 'hash_extensions'
 
 class ObjectEntry < Hash
 
-  def initialize(data)
-    data.extend(HashExtensions)
-    data = data.stringify_keys
+  def initialize(type,name, data)
+    identify(type,name)
     #
     # To make sure there are no lookup problems mixing
     # symbols and strins, we force all keys to strings
     #
+    data.extend(HashExtensions)
+    data = data.stringify_keys
     self.merge!(data)
   end
 
@@ -30,6 +31,7 @@ class ObjectEntry < Hash
     if self.has_key?(key)
       self[key]
     else
+      raise ArgumentError, "requested unassigned attribute #{key} from #{__type__} object #{__name__}"
       super
     end
   end
@@ -52,5 +54,10 @@ class ObjectEntry < Hash
     hash.delete_if {|k,v| k=~/__.*__/ }
     hash
   end
+
+  def identify(type,name)
+    self['__name__'] = name
+    self['__type__'] = type
+  end 
 
 end

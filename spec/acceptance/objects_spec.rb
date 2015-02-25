@@ -19,22 +19,19 @@ RSpec.describe 'objects' do
   end
 
 
-  #
-  # This doen't work. Don;t know yet if this is a required function
-  #
-  # context 'indirect assignment before definition' do
+  context 'indirect assignment before definition' do
 
-  #   it 'is setable and retrievable' do
-  #     dsl.parse(<<-EOD)
-  #     a = foo('foo.bar.nl')
-  #     foo('foo.bar.nl') {
-  #       ip:   '10.0.0.100',
-  #       alias: 'foo'
-  #     }
-  #     EOD
-  #     expect(dsl.lookup_value('a')).to eql({ 'foo.bar.nl' => {'ip' => '10.0.0.100', 'alias' =>'foo'}})
-  #   end
-  # end
+    it 'is setable and retrievable' do
+      dsl.parse(<<-EOD)
+      a = foo('foo.bar.nl')
+      foo('foo.bar.nl') {
+        ip:   '10.0.0.100',
+        alias: 'foo'
+      }
+      EOD
+      expect(dsl.lookup_value('a')).to eql({ 'foo.bar.nl' => {'ip' => '10.0.0.100', 'alias' =>'foo'}})
+    end
+  end
 
 
   context 'indirect assignment' do

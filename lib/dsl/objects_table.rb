@@ -1,5 +1,4 @@
 require 'dsl/object_entry'
-require 'dsl/null_object_entry'
 
 class ObjectsTable
 
@@ -8,8 +7,8 @@ class ObjectsTable
   end
 
   def add(type, name, values)
-    object = from_table(name, type)
-    unless object.nil?
+    object = from_table(type, name)
+    if object
       add_values_to_existing!(object, values)
     else
       add_new_object(type, name, values)
@@ -21,13 +20,9 @@ class ObjectsTable
   end
 
   def self.entry(type, name, values)
-    values.merge!({
-      '__name__' => name,
-      '__type__' => type
-    })
     case type
-    when 'node'       then Node.new(values)
-    else  ObjectEntry.new(values)
+    when 'node'       then Node.new(type, name, values)
+    else  ObjectEntry.new(type, name, values)
     end
   end
 
@@ -43,7 +38,7 @@ class ObjectsTable
   end
 
   def from_table(type, name)
-    @objects_table.fetch(key(type,name)) { NullObjectEntry.new}
+    @objects_table.fetch(key(type,name)) { to_table(ObjectEntry.new(type,name, {}))}
   end
 
   def to_table(object)
