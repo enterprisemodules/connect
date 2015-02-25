@@ -3,22 +3,21 @@ require 'dsl/values_table'
 require 'dsl/objects_table'
 require 'dsl/selector'
 require 'dsl/interpolator'
+require 'dsl/includer'
 
 class Dsl < Racc::Parser
 
   attr_reader :interpolator
 
-  DEFAULT_PATH = "/etc/puppet/config/"
-
   def initialize( values_table    = ValuesTable.new, 
                     objects_table = ObjectsTable.new, 
-                    default_path  = DEFAULT_PATH,
-                    interpolator  = Interpolator.new(self)
+                    interpolator  = Interpolator.new(self),
+                    includer      = Includer.new
                     )
     @values_table  = values_table 
     @objects_table = objects_table 
-    @default_path  = default_path
     @interpolator  = interpolator
+    @includer      = includer
   end
   ##
   #
@@ -44,11 +43,10 @@ class Dsl < Racc::Parser
   #
   # include the specfied file in the parse process.
   #
-  def include_file(name)
-    full_name = full_name_for_file(name)
-    fail ArgumentError, "config file #{name} not found" unless full_name
-    content = IO.read(full_name)
-    scan_str(content)
+  def include_file(names)
+    @includer.include(names) do | content|
+       scan_str(content)
+    end
   end
 
   def interpolate(string)
@@ -116,14 +114,6 @@ private
     raise ArgumentError, 'from value missing from iterator' if iterator[:from].nil?
     raise ArgumentError, 'to value missing from iterator' if iterator[:to].nil?
     raise ArgumentError, "iterator contains unknown key(s): #{invalid_keys}" if invalid_keys
-  end
-
-  def full_name_for_file(name)
-    name = Pathname(name)
-    return name.to_s if name.absolute?
-    name = Pathname.new(name.to_s + '.config') unless name.extname == '.config'
-    path = Pathname.new(@default_path) + name 
-    path.exist? ? path : nil
   end
 
 end

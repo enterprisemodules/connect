@@ -6,8 +6,9 @@ RSpec.describe Dsl do
   fake(:values_table)
   fake(:objects_table)
   fake(:interpolator)
+  fake(:includer)
 
-  let(:dsl) {Dsl.new( values_table, objects_table, './examples', interpolator)}
+  let(:dsl) {Dsl.new( values_table, objects_table, interpolator, includer)}
 
   describe '#assign' do
     it 'add\'s a value to the value table' do
@@ -27,19 +28,9 @@ RSpec.describe Dsl do
 
   describe '#include_file' do
 
-    context 'with a non existing file' do
-      it 'raises an error' do
-        expect {
-          dsl.include_file('no_existing_config')
-          }.to raise_error(ArgumentError)
-      end
-    end
-
-    context ' with an existing file' do
-      it 'include\'s a file' do
-        expect(dsl).to receive(:scan_str)
-        dsl.include_file('test')
-      end
+    it 'include\'s a file' do
+      expect(includer).to receive(:include)
+      dsl.include_file('test')
     end
   end
 
