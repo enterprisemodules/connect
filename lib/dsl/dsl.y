@@ -48,7 +48,17 @@ rule
     | array
     | hash
     | definition
-  ;
+
+  expression
+    : value '^' value                         { result = power(val[0],val[2])} 
+    | value '*' value                         { result = multiply(val[0],val[2])}
+    | value '/' value                         { result = divide(val[0],val[2])}
+    | value '+' value                         { result = add(val[0],val[2])}
+    | value '-' value                         { result = subtract(val[0],val[2])}
+    | value OR value                          { result = do_or(val[0],val[2])}
+    | value AND value                         { result = do_and(val[0],val[2])}
+    | value
+    ;
 
   array
     : '[' values optional_comma ']'                 { result = val[1]}
@@ -86,7 +96,7 @@ rule
   ;
 
 	assignment
-    : literal '=' value                             { assign(val[0], val[2])}
+    : literal '=' expression                        { assign(val[0], val[2])}
   ;
 
 	connection
@@ -121,6 +131,35 @@ end
 
 ---- inner
 
-def parse(input)
-  scan_str(input)
-end
+  def parse(input)
+    scan_str(input)
+  end
+
+  def power(v1,v2)
+    v1 ^ v2
+  end
+
+  def multiply(v1,v2)
+    v1 * v2
+  end
+
+  def divide(v1,v2)
+    v1 / v2
+  end
+
+  def add(v1,v2)
+    v1 + v2
+  end
+
+  def subtract(v1,v2)
+    v1 - v2
+  end
+
+  def do_or(v1,v2)
+    v1 || v2
+  end
+
+  def do_and(v1,v2)
+    v1 && v2
+  end
+

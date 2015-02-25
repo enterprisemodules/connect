@@ -22,9 +22,13 @@ macro
   FROM                from\s
   TO                  to\s
   INCLUDE             include\s
+  AND                 and\s|\&\&
+  OR                  or\s|(\|\|)
 
 rule
   {COMMENT} 
+  {OR}                    { [:OR, text]}
+  {AND}                   { [:AND, text]}
   {DO}                    { [:DO, text]}
   {END}                   { [:END, text]}
   {FROM}                  { [:FROM, text]}

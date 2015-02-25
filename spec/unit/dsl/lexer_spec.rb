@@ -28,6 +28,8 @@ RSpec.describe 'Lexer' do
     'end',
     'from',
     'to',
+    'and',
+    'or',
     'include',
   ]
 
@@ -52,6 +54,24 @@ RSpec.describe 'Lexer' do
         end
       end
 
+    end
+  end
+
+  # describe 'or sign' do
+  #   it 'is recognised' do
+  #     content = <<-EOD
+  #       ||
+  #     EOD
+  #     expect(dsl.tokenize(content)).to eql([[:OR, "||" ]])
+  #   end
+  # end
+
+  describe 'and sign' do
+    it 'is recognised' do
+      content = <<-EOD
+      &&
+      EOD
+      expect(dsl.tokenize(content)).to eql([[:AND, "&&" ]])
     end
   end
 

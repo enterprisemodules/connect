@@ -207,12 +207,93 @@ RSpec.describe 'Parser' do
   end
 
   describe 'interpolation' do
-    it 'all strings are passed to the interpolation filter' do
-      expect(dsl).to receive(:interpolate).with("hallo ${foo::bar} and ${hallo}")
-      dsl.parse(<<-EOD)
-      a = "hallo ${foo::bar} and ${hallo}"
-      EOD
+    context 'double quoted strings' do
+
+      it 'are passed to the interpolation filter' do
+        expect(dsl).to receive(:interpolate).with("hallo ${foo::bar} and ${hallo}")
+        dsl.parse(<<-EOD)
+        a = "hallo ${foo::bar} and ${hallo}"
+        EOD
+      end
     end
+
+    context 'single quoted strings' do
+
+      it 'are passed without interpolation' do
+        expect(dsl).not_to receive(:interpolate).with("hallo ${foo::bar} and ${hallo}")
+        dsl.parse(<<-EOD)
+        a = 'hallo ${foo::bar} and ${hallo}'
+        EOD
+      end
+    end
+
   end
+
+  describe 'simple calculations' do
+
+    describe 'power' do
+
+      it 'powers two arguments' do
+        expect(dsl).to receive(:power).with(1,2)
+        dsl.parse(<<-EOD)
+        a = 1 ^ 2
+        EOD
+      end
+    end
+
+    describe 'multiplying' do
+
+      it 'multiplies two arguments' do
+        expect(dsl).to receive(:multiply).with(1,2)
+        dsl.parse(<<-EOD)
+        a = 1 * 2
+        EOD
+      end
+    end
+
+    describe 'adding' do
+
+      it 'adds two arguments' do
+        expect(dsl).to receive(:add).with(1,2)
+        dsl.parse(<<-EOD)
+        a = 1 + 2
+        EOD
+      end
+    end
+
+    describe 'subtracting' do
+
+      it 'subtracts two arguments' do
+        expect(dsl).to receive(:subtract).with(1,2)
+        dsl.parse(<<-EOD)
+        a = 1 - 2
+        EOD
+      end
+    end
+
+    describe 'or-ing' do
+
+      it 'or \'s two arguments' do
+        expect(dsl).to receive(:do_or).with(1,2)
+        dsl.parse(<<-EOD)
+        a = 1 or 2
+        EOD
+      end
+    end
+
+   describe 'and-ing' do
+
+      it 'and \'s two arguments' do
+        expect(dsl).to receive(:do_and).with(1,2)
+        dsl.parse(<<-EOD)
+        a = 1 && 2
+        EOD
+      end
+    end
+
+
+
+  end
+
 
 end
