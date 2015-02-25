@@ -39,9 +39,19 @@ RSpec.describe 'Lexer' do
           content = <<-EOD
           #{reserved_word}
           EOD
-          expect(dsl.tokenize(content)).to eql([[tag, reserved_word]])
+          expect(dsl.tokenize(content)).to eql([[tag, "#{reserved_word}\n"]])
         end
       end
+
+      context "identifier looking like reserved word" do
+        it 'is recognised' do
+          content = <<-EOD
+          #{reserved_word}andmore
+          EOD
+          expect(dsl.tokenize(content)).to eql([[:IDENTIFIER, "#{reserved_word}andmore" ]])
+        end
+      end
+
     end
   end
 

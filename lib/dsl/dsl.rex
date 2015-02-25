@@ -1,7 +1,7 @@
 class Dsl
 
 macro
-  SCOPED              
+  NEWLINE              \n
   IDENTIFIER          [a-zA-Z][a-zA-Z0-9_]*
   SCOPE               (?:{IDENTIFIER}::)+
   SELECTOR            (?:\[\d+\]|\.{IDENTIFIER})+
@@ -16,14 +16,19 @@ macro
   UNDEF               undefined|undef|nil
   HASH_ROCKET         \=\>
   DOUBLE_COLON        ::
+  DO                  do\s
+  END                 end\s
+  FROM                from\s
+  TO                  to\s
+  INCLUDE             include\s
 
 rule
   {COMMENT} 
-  do                      { [:DO, text]}
-  end                     { [:END, text]}
-  from                    { [:FROM, text]}
-  to                      { [:TO, text]}
-  include                 { [:INCLUDE, text] }
+  {DO}                    { [:DO, text]}
+  {END}                   { [:END, text]}
+  {FROM}                  { [:FROM, text]}
+  {TO}                    { [:TO, text]}
+  {INCLUDE}               { [:INCLUDE, text] }
   {TRUE}                  { [:BOOLEAN, true]}
   {FALSE}                 { [:BOOLEAN, false]}
   {UNDEF}                 { [:UNDEF, nil]}
@@ -35,6 +40,7 @@ rule
   {INT}                   { [:INTEGER, text.to_i] }
   {STRING}                { [:STRING, dequote(text)]}
   {WHITESPACE}
+  {NEWLINE}
   .                       { [text, text] }
 
 inner
