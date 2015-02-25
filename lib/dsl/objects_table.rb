@@ -1,4 +1,5 @@
 require 'dsl/object_entry'
+require 'dsl/null_object_entry'
 
 class ObjectsTable
 
@@ -8,7 +9,7 @@ class ObjectsTable
 
   def add(type, name, values)
     object = from_table(name, type)
-    if object
+    unless object.nil?
       add_values_to_existing!(object, values)
     else
       add_new_object(type, name, values)
@@ -42,7 +43,7 @@ class ObjectsTable
   end
 
   def from_table(type, name)
-    @objects_table[key(type,name)]
+    @objects_table.fetch(key(type,name)) { NullObjectEntry.new}
   end
 
   def to_table(object)

@@ -39,6 +39,10 @@ class ObjectEntry < Hash
     super
   end
 
+  def to_value
+    { __name__ => to_hash}
+  end
+
   def to_hash
     without_private_entries  
   end

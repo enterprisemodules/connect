@@ -24,7 +24,15 @@ class ValuesTable
     entry = @values_table.fetch(name) { {}}
     value = case entry[:type]
     when :value
-      entry[:value]
+      base_value = entry[:value]
+      case base_value
+      when Array 
+        base_value.map {|e| e.is_a?(ObjectEntry) ? e.to_value : e}
+      when Hash
+        Hash[base_value.map {|k,v| v.is_a?(ObjectEntry) ? [k, v.to_value] : [k, v]}]
+      else
+        base_value        
+      end
     when :connection
       value = lookup(entry[:value], entry[:selector])
     when :object

@@ -63,11 +63,8 @@ class Dsl < Racc::Parser
   def define(type, name, values = nil, iterator = nil, selector = nil)
     raise ArgumentError, 'no iterator allowed if no block defined' if values.nil? && ! iterator.nil?
     validate_iterator( iterator) unless iterator.nil?
-    if values
-      value = add_object(type, name, values)
-    else
-      value = lookup_object(type, name)
-    end
+    add_object(type, name, values) if values
+    value = lookup_object(type, name)
     Selector.run(value, selector)
   end
 

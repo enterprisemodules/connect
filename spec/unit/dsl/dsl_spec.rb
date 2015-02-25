@@ -86,7 +86,7 @@ RSpec.describe Dsl do
 
     context 'without a definition' do
       it 'returns an object from the object table' do
-        expect(objects_table).to receive(:lookup).with('person','bert')
+        expect(objects_table).to receive(:lookup).with('person','bert').and_call_original
         dsl.define('person','bert')
       end
     end
