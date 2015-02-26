@@ -31,7 +31,7 @@ RSpec.describe Includer do
 			it ' yields the content' do
 				expect { |yielder|
 					includer.include(file_path, &yielder) 
-				}.to yield_with_args("# This is an include file for testing. Don't remove this.")
+				}.to yield_with_args("# This is an include file for testing. Don't remove this.", "./examples/test1.config")
 			end
 
 		end

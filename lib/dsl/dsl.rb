@@ -7,7 +7,7 @@ require 'dsl/includer'
 
 class Dsl < Racc::Parser
 
-  attr_reader :interpolator
+  attr_reader :interpolator, :current_file
 
   def initialize( values_table    = ValuesTable.new, 
                     objects_table = ObjectsTable.new, 
@@ -44,8 +44,9 @@ class Dsl < Racc::Parser
   # include the specfied file in the parse process.
   #
   def include_file(names)
-    @includer.include(names) do | content|
-       scan_str(content)
+    @includer.include(names) do |  content, file_name|
+      @current_file = file_name
+      scan_str(content)
     end
   end
 

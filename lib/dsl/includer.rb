@@ -9,7 +9,7 @@ class Includer
 	end
 
 	def include(name, &proc)
-		full_name = @config_path + name
+		full_name = Pathname.new(name).absolute? ? name : @config_path + name
 		full_name += DEFAULT_TYPE if Pathname.new(full_name).extname == ''
 		files = Dir.glob(full_name).each do |file| 
 			include_file(file, &proc)
@@ -27,7 +27,7 @@ class Includer
 	def include_file(name, &proc)
 		unless included?(name)
 			register_file(name)
-			yield IO.read(name)
+			yield IO.read(name), name
 		end
 	end
 

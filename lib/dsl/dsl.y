@@ -163,3 +163,17 @@ end
     v1 && v2
   end
 
+  def on_error(token, value, vstack )
+    position =  "Syntax error on line #{lineno} of config file '#{current_file}'"
+    text = @ss.peek(20)
+    unless value.nil?
+      msg = "#{position} at value '#{value}' : #{text}"
+    else
+      msg = "#{position} at token '#{token}' : #{text}"
+    end
+    if @ss.eos?
+      msg = "#{position}: Unexpected end of file"
+    end
+    raise ParseError, msg
+  end
+

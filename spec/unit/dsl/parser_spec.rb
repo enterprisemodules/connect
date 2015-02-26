@@ -291,9 +291,28 @@ RSpec.describe 'Parser' do
       end
     end
 
+  end
 
+
+  describe 'error handling' do
+
+    let(:error_config)     { Pathname.new('./examples/error.config').expand_path.to_s}
+
+    it ' reports errors with line numbers' do
+      expect{
+        dsl.include_file(error_config)
+      }.to raise_error(ParseError, /Syntax error on line 1/)
+    end
+
+
+    it ' reports errors with file names' do
+      expect{
+        dsl.include_file(error_config)
+      }.to raise_error(ParseError, /config file '#{error_config}'/)
+    end
 
   end
+
 
 
 end
