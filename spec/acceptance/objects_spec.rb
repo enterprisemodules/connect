@@ -33,6 +33,20 @@ RSpec.describe 'objects' do
     end
   end
 
+  context 'indirect assignment with selector before definition' do
+
+    it 'is setable and retrievable' do
+      dsl.parse(<<-EOD)
+      a = foo('foo.bar.nl').alias
+      foo('foo.bar.nl') {
+        ip:   '10.0.0.100',
+        alias: 'foo'
+      }
+      EOD
+      expect(dsl.lookup_value('a')).to eql('foo')
+    end
+  end
+
 
   context 'indirect assignment' do
 
@@ -109,7 +123,7 @@ RSpec.describe 'objects' do
   end
 
 
-  context 'fetch with selector' do
+  context 'fetch with single selector' do
 
     it 'is setable and retrievable' do
       dsl.parse(<<-EOD)
@@ -121,6 +135,22 @@ RSpec.describe 'objects' do
       a = b.ip
       EOD
       expect(dsl.lookup_value('a')).to eql('10.0.0.100')
+    end
+  end
+
+
+  context 'fetch with multiple selector' do
+
+    it 'is setable and retrievable' do
+      dsl.parse(<<-EOD)
+      foo('foo.bar.nl') {
+        ip:   '10.0.0.100',
+        alias: 'foo'
+      }
+      b = foo('foo.bar.nl').ip
+      a = b[0]
+      EOD
+      expect(dsl.lookup_value('a')).to eql('1')
     end
   end
 

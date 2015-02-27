@@ -27,11 +27,11 @@ RSpec.describe Interpolator do
 		end
 	end
 
-		context 'a string with invalid interpolation' do
-			it 'returns an interpolated string' do
-				expect(interpolator.translate('Hello ${name, see you in ${scope::number   } days')).to eql('Hello ${name, see you in 10 days')
-			end
+	context 'a string with invalid interpolation' do
+		it 'returns an interpolated string' do
+			expect(interpolator.translate('Hello ${name, see you in ${scope::number   } days')).to eql('Hello ${name, see you in 10 days')
 		end
+	end
 
 
 end

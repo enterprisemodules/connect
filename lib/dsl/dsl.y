@@ -96,7 +96,7 @@ rule
   ;
 
 	assignment
-    : literal '=' expression                        { assign(val[0], val[2])}
+    : literal '=' expression selector               { assign(val[0], val[2], val[3])}
   ;
 
 	connection
@@ -108,8 +108,8 @@ rule
   ;
 
   definition
-    : literal '(' string ')' selector iterator block 
-                                                    { result = define(val[0], val[2], val[6], val[5], val[4])}
+    : literal '(' string ')' iterator block 
+                                                    { result = define(val[0], val[2], val[5], val[4])}
   ;
 
   block

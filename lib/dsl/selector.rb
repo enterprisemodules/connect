@@ -1,6 +1,10 @@
 class Selector
 	def initialize(value, selector)
-		@value 		= value
+		if value.class == ObjectEntry && selector
+			@value 		= value.to_hash	
+		else
+			@value 		= value
+		end
 		@selector = selector
 	end
 

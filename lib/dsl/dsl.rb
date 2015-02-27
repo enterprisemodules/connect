@@ -23,10 +23,10 @@ class Dsl < Racc::Parser
   #
   # Assign the value to the name
   #
-  def assign(name, value)
+  def assign(name, value, selector = nil)
     entry = value.is_a?(ObjectEntry) ?
-      ValuesTable.object_entry(name, value) :
-      ValuesTable.value_entry(name, value)
+      ValuesTable.object_entry(name, value, selector) :
+      ValuesTable.value_entry(name, value, selector)
     add_value(entry)
   end
 
@@ -59,12 +59,11 @@ class Dsl < Racc::Parser
   # Define or lookup an object. If the values is empty, this method returns just the values.
   # It the values parameter is set, a new entry will be added to the objects table
   #
-  def define(type, name, values = nil, iterator = nil, selector = nil)
+  def define(type, name, values = nil, iterator = nil)
     raise ArgumentError, 'no iterator allowed if no block defined' if values.nil? && ! iterator.nil?
     validate_iterator( iterator) unless iterator.nil?
     add_object(type, name, values) if values
     value = lookup_object(type, name)
-    Selector.run(value, selector)
   end
 
   ##

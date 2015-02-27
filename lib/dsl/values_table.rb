@@ -14,17 +14,30 @@ class ValuesTable
     @values_table.merge!(entry)
   end
 
+  def lookup(name)
+    value = internal_lookup(name)
+    if value.class == ObjectEntry
+      object_name = value.__name__
+      { object_name => value.to_hash}
+    else
+      value
+    end
+  end
+
   ##
   #
   # Lookup an entry in the values table
   #
-  def lookup(name, selector = nil)
+  def internal_lookup(name)
     name = name.to_s
     # TODO: Check if name is a valid name
     entry = @values_table.fetch(name) { {}}
-    case entry[:type]
+    selector = entry[:selector]
+    type     = entry[:type]
+    value    = entry[:value]
+    case type
     when :value
-      base_value = Selector.run(entry[:value], selector)
+      base_value = Selector.run(value, selector)
       value = case base_value
       when Array 
         base_value.map {|e| e.is_a?(ObjectEntry) ? e.to_value : e}
@@ -34,12 +47,10 @@ class ValuesTable
         base_value        
       end
     when :connection
-      value = lookup(entry[:value], entry[:selector])
+      value = internal_lookup(value)
       Selector.run(value, selector)
     when :object
-      object = entry[:value]
-      object_name = object.__name__
-      selector ? Selector.run(object, selector) : { object_name => object.to_hash}
+      Selector.run(value, selector)
     else
       nil
     end
@@ -49,7 +60,7 @@ class ValuesTable
   #
   # Create an entry for the value table. 
   #
-  def self.entry_for(name, value, type = :value, selector = nil)
+  def self.entry_for(name, value, selector = nil, type = :value )
     name = name.to_s
     entry = { name => { :value => value, :type  => type , :selector => selector}}
     entry
@@ -62,15 +73,15 @@ class ValuesTable
   # Create a connection entry for the value table
   #
   def self.connection_entry(name, connection, selector = nil)
-    entry_for(name, connection, :connection, selector)
+    entry_for(name, connection, selector , :connection )
   end
 
   ##
   #
   # Create a connection entry for the value table
   #
-  def self.object_entry(name, connection)
-    entry_for(name, connection, :object)
+  def self.object_entry(name, connection, selector = nil)
+    entry_for(name, connection, selector, :object)
   end
 
 

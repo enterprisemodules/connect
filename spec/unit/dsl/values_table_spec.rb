@@ -73,11 +73,6 @@ RSpec.describe ValuesTable  do
 					expect(table.lookup('connection')).to eql 'exists'
 				end
 
-				context 'with a specfied selector' do
-					it 'returns the specified part of the value' do
-						expect(table.lookup('connection','[0]')).to eql 'e'
-					end
-				end
 			end
 
 			context 'linking value, doesn\'t exists' do
@@ -85,7 +80,9 @@ RSpec.describe ValuesTable  do
 				it 'returns the value' do
 					expect(table.lookup('connection')).to be_nil
 				end
+
 			end
+
 		end
 
 
@@ -101,11 +98,11 @@ RSpec.describe ValuesTable  do
 					expect(table.lookup('object')).to eql({'object_name' => { 'text' => 'exists'}})
 				end
 
-				context 'with a specfied selector' do
-					it 'returns the specified part of the value' do
-						expect(table.lookup('object','.text')).to eql 'exists'
-					end
-				end
+				# context 'with a specfied selector' do
+				# 	it 'returns the specified part of the value' do
+				# 		expect(table.lookup('object','.text')).to eql 'exists'
+				# 	end
+				# end
 			end
 
 			context 'object doesn\'t exists' do

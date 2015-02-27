@@ -12,7 +12,7 @@ RSpec.describe Dsl do
 
   describe '#assign' do
     it 'add\'s a value to the value table' do
-      expect(ValuesTable).to receive(:value_entry).with('a',10).and_call_original
+      expect(ValuesTable).to receive(:value_entry).with('a',10, nil).and_call_original
       expect(dsl).to receive(:add_value)
       dsl.assign('a', 10)
     end
