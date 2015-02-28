@@ -12,7 +12,7 @@ module ::Guard
       dir = input_file.dirname
       output_file = dir + 'parser.rb'
       UI.info "Running Racc on #{input_file}"
-      `racc #{input_file} -o #{output_file}`
+      `racc #{input_file} -E -o #{output_file}`
     end
   end
 end
@@ -44,7 +44,7 @@ guard :racc do
 end
 
 
-guard :rspec do
+guard :rspec, cmd: "rspec" do
   watch(%r{^spec/(.+)/.+_spec\.rb$})
   watch(%r{^lib\/(.*)\/(.+)\.rb$})     { |m| "spec/unit/#{m[1]}/#{m[2]}_spec.rb" }
   watch('spec/spec_helper.rb')  { "spec" }
