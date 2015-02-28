@@ -1,4 +1,5 @@
 require 'dsl/dsl'
+        require 'ruby-debug'
 
 class Hiera
   module Backend
@@ -7,7 +8,8 @@ class Hiera
 
       def initialize
         Hiera.debug("DSL Backend initialized")
-        @dsl    = Dsl.new # Initialize the DSL
+        configs_dir = Config[:dsl].fetch(:datadir) { '/etc/puppet/config'}
+        @dsl    = Dsl.instance(configs_dir)
         @parsed = false
       end
 
@@ -19,11 +21,20 @@ class Hiera
       private
 
       def parse_config(scope, order_override)
-        Backend.datasources(scope, order_override) do |source|
+        reversed_hierarchy(scope, order_override).each do |source|
           file = Backend.datafile(:dsl, scope, source, "config")
           parse_file(file) if file
         end
       end
+
+      def reversed_hierarchy(scope, order_override)
+        hierarchy = []
+        Backend.datasources(scope, order_override) do |source|
+          hierarchy.unshift(source)
+        end
+        hierarchy
+      end
+
 
       def parse_file(file)
         Hiera.debug "parsing config file #{file}."

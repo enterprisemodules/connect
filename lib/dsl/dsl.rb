@@ -9,15 +9,24 @@ class Dsl < Racc::Parser
 
   attr_reader :interpolator, :current_file
 
-  def initialize( values_table    = ValuesTable.new, 
-                    objects_table = ObjectsTable.new, 
-                    interpolator  = Interpolator.new(self),
-                    includer      = Includer.new
+  #
+  # Coveneance function to create a dsl object for a specfic include directory
+  #
+  def self.instance(include_dir)
+    includer = Includer.new(include_dir)
+    self.new(nil,nil,nil, includer)
+  end
+
+  def initialize( values_table    = nil, 
+                    objects_table = nil, 
+                    interpolator  = nil,
+                    includer      = nil
                     )
-    @values_table  = values_table 
-    @objects_table = objects_table 
-    @interpolator  = interpolator
-    @includer      = includer
+    @values_table  = values_table || ValuesTable.new
+    @objects_table = objects_table || ObjectsTable.new
+    @interpolator  = interpolator || Interpolator.new(self)
+    @includer      = includer || Includer.new
+    @include_stack = []
   end
   ##
   #
@@ -46,7 +55,9 @@ class Dsl < Racc::Parser
   def include_file(names)
     @includer.include(names) do |  content, file_name|
       @current_file = file_name
+      push_current_parse_state
       scan_str(content)
+      pop_current_parse_state
     end
   end
 
@@ -108,6 +119,24 @@ class Dsl < Racc::Parser
   end
 
 private
+
+  def push_current_parse_state
+    state = {
+      :ss       => @ss,
+      :lineno   => @lineno,
+      :state    => @state
+    }
+    @include_stack << state
+  end
+
+  def pop_current_parse_state
+    raise Error, "include stack poped beyond end" if @include_stack.empty?
+    state = @include_stack.pop
+    @ss     = state[:ss]
+    @lineno = state[:lineno]
+    @state  = state[:state]
+  end
+
   
   def validate_iterator(iterator)
     invalid_keys = iterator.keys - [:from, :to]
