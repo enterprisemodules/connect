@@ -126,7 +126,7 @@ class Dsl < Racc::Parser
 
 
   def push_scope(scope)
-    @current_scope << scope
+    @current_scope << scope unless scope.nil?
   end
 
   def pop_scope

@@ -1,6 +1,8 @@
 require 'hash_extensions'
+require 'method_hash'
 
 class ObjectEntry < Hash
+  include MethodHashMethods
 
   def initialize(type,name, data)
     identify(type,name)
@@ -24,21 +26,6 @@ class ObjectEntry < Hash
     data.extend(HashExtensions)
     data = data.stringify_keys
     super(data)
-  end
-
-  def method_missing(method_sym, *arguments, &block)
-    key = method_sym.to_s
-    if self.has_key?(key)
-      self[key]
-    else
-      raise ArgumentError, "requested unassigned attribute #{key} from #{__type__} object #{__name__}"
-      super
-    end
-  end
-
-  def [](index)
-    raise "#{index} not found" unless self.has_key?(index)
-    super
   end
 
   def to_value

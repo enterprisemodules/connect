@@ -1,4 +1,5 @@
 require 'dsl/selector'
+require 'method_hash'
 
 class ValuesTable
 
@@ -42,7 +43,7 @@ class ValuesTable
       when Array 
         base_value.map {|e| e.is_a?(ObjectEntry) ? e.to_value : e}
       when Hash
-        Hash[base_value.map {|k,v| v.is_a?(ObjectEntry) ? [k, v.to_value] : [k, v]}]
+        MethodHash[base_value.map {|k,v| v.is_a?(ObjectEntry) ? [k, v.to_value] : [k, v]}]
       else
         base_value        
       end
