@@ -3,7 +3,7 @@ class Dsl
 macro
   NEWLINE              \n
   IDENTIFIER          [a-zA-Z][a-zA-Z0-9_]*
-  SCOPE               (?:{IDENTIFIER}::)+
+  SCOPE               (?:(?:{IDENTIFIER})?::)+
   SELECTOR            (?:\[\d+\]|\.{IDENTIFIER})+
   WHITESPACE          [\s|\t]+
   DIGIT               [0-9]
@@ -21,6 +21,8 @@ macro
   END                 end\s
   FROM                from\s
   TO                  to\s
+  WITH                with\s
+  INTO                into\s
   INCLUDE             include\s
   AND                 and\s|\&\&
   OR                  or\s|(\|\|)
@@ -33,6 +35,8 @@ rule
   {END}                   { [:END, text]}
   {FROM}                  { [:FROM, text]}
   {TO}                    { [:TO, text]}
+  {INTO}                  { [:INTO, text]}
+  {WITH}                    { [:WITH, text]}
   {INCLUDE}               { [:INCLUDE, text] }
   {TRUE}                  { [:BOOLEAN, true]}
   {FALSE}                 { [:BOOLEAN, false]}

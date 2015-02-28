@@ -24,6 +24,8 @@ RSpec.describe 'Lexer' do
   end
 
   reserved_words = [
+    'into',
+    'with',
     'do',
     'end',
     'from',
@@ -188,6 +190,16 @@ RSpec.describe 'Lexer' do
         expect(dsl.tokenize(content)).to eql([[:SCOPE, 'foo::bar::']])
       end
     end
+
+    context 'top level scope' do
+      it 'is recognised' do
+        content = <<-EOD
+        ::
+          EOD
+        expect(dsl.tokenize(content)).to eql([[:SCOPE, '::']])
+      end
+    end
+
 
     context 'with underscores' do
       it 'is recognised' do

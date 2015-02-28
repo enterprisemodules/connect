@@ -27,12 +27,14 @@ class Dsl < Racc::Parser
     @interpolator  = interpolator || Interpolator.new(self)
     @includer      = includer || Includer.new
     @include_stack = []
+    @current_scope = []
   end
   ##
   #
   # Assign the value to the name
   #
   def assign(name, value, selector = nil)
+    name = scoped_name_for(name)
     entry = value.is_a?(ObjectEntry) ?
       ValuesTable.object_entry(name, value, selector) :
       ValuesTable.value_entry(name, value, selector)
@@ -44,6 +46,8 @@ class Dsl < Racc::Parser
   # Connect the variable to an other variable in the value table
   #
   def connect(from, to, selector = nil)
+    from = scoped_name_for(from)
+    to   = scoped_name_for(to)
     entry = ValuesTable.connection_entry(from, to, selector)
     add_value(entry)
   end
@@ -52,13 +56,15 @@ class Dsl < Racc::Parser
   #
   # include the specfied file in the parse process.
   #
-  def include_file(names)
+  def include_file(names, scope = nil)
+    push_scope(scope)
     @includer.include(names) do |  content, file_name|
       @current_file = file_name
       push_current_parse_state
       scan_str(content)
       pop_current_parse_state
     end
+    pop_scope
   end
 
   def interpolate(string)
@@ -118,6 +124,15 @@ class Dsl < Racc::Parser
     @values_table.lookup(name)
   end
 
+
+  def push_scope(scope)
+    @current_scope << scope
+  end
+
+  def pop_scope
+    @current_scope.pop
+  end
+
 private
 
   def push_current_parse_state
@@ -137,6 +152,17 @@ private
     @state  = state[:state]
   end
 
+  #
+  # Returns a full scoped name if the name is not scoped. Scoped names will be returned
+  # as is.
+  #
+  def scoped_name_for(name)
+    scoped_name?(name) ? name : @current_scope.join + name
+  end
+
+  def scoped_name?(name)
+    name.scan(/\:\:/).length > 0
+  end
   
   def validate_iterator(iterator)
     invalid_keys = iterator.keys - [:from, :to]

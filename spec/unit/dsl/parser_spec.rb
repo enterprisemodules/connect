@@ -154,13 +154,95 @@ RSpec.describe 'Parser' do
 
   describe 'include' do
 
-    it 'includes a config' do
-      expect(dsl).to receive(:include_file).with('a.a')
-      dsl.parse(<<-EOD)
-      include 'a.a'
-      EOD
+    context 'without a specfied scope' do
+
+      it 'includes a config' do
+        expect(dsl).to receive(:include_file).with('a.a')
+        dsl.parse(<<-EOD)
+        include 'a.a'
+        EOD
+      end
+
     end
+
+    context 'with a specfied scope' do
+
+      it 'includes a config in a pecified scope' do
+        expect(dsl).to receive(:include_file).with('a.a', 'test::')
+        dsl.parse(<<-EOD)
+        include 'a.a' into test::
+        EOD
+      end
+
+    end
+
+
   end
+
+  describe 'with' do
+
+    context 'a single default scope' do
+      context 'using begin and end' do
+        it 'set\'s the default scope' do
+          expect(dsl).to receive(:push_scope).with('my_scope::')
+          expect(dsl).to receive(:pop_scope)
+          dsl.parse(<<-EOD)
+          with my_scope:: do
+            a = 10
+          end
+          EOD
+        end
+      end
+
+      context 'using \{ and \}' do
+        it 'set\'s the default scope' do
+          expect(dsl).to receive(:push_scope).with('my_scope::')
+          expect(dsl).to receive(:pop_scope)
+          dsl.parse(<<-EOD)
+          with my_scope:: {
+            a = 10
+          }
+          EOD
+        end
+      end
+    end
+
+
+    context 'stacked default scopes' do
+      context 'using begin and end' do
+        it 'includes set\'s the default scope' do
+          expect(dsl).to receive(:push_scope).with('my_first_scope::')
+          expect(dsl).to receive(:push_scope).with('my_second_scope::')
+          expect(dsl).to receive(:pop_scope).twice
+          dsl.parse(<<-EOD)
+          with my_first_scope:: do
+            with my_second_scope:: do
+              a = 10
+            end
+          end
+          EOD
+        end
+      end
+
+      context 'using \{ and \}' do
+        it 'includes set\'s the default scope' do
+          expect(dsl).to receive(:push_scope).with('my_first_scope::')
+          expect(dsl).to receive(:push_scope).with('my_second_scope::')
+          expect(dsl).to receive(:pop_scope).twice
+          dsl.parse(<<-EOD)
+          with my_first_scope:: {
+            with my_second_scope:: {
+              a = 10
+            }
+          }
+          EOD
+        end
+      end
+    end
+
+  end
+
+
 
   describe 'object definitions' do
 

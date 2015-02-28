@@ -16,17 +16,33 @@ rule
     | connection
     | include_file
     | definition
+    | default_scope
   ;
 
   scope
     :
     | SCOPE
-    ;
+  ;
 
   selector
     :
     | SELECTOR
+  ;
+
+  with_scope_do
+    : WITH SCOPE DO                 { push_scope(val[1])}
     ;
+
+  with_scope_bracket                
+    : WITH SCOPE '{'                { push_scope(val[1])}
+    ;
+
+
+  default_scope
+    : with_scope_do dsl END           { pop_scope }
+    | with_scope_bracket dsl '}'      { pop_scope }
+  ;
+
 
   literal
     : scope IDENTIFIER                         { result = "#{val[0]}#{val[1]}"}
@@ -35,6 +51,7 @@ rule
   string
     : DOUBLE_QUOTED                            { result = interpolate(val[0])}
     | SINGLE_QUOTED
+  ;
 
   scalar
     : string
@@ -48,6 +65,7 @@ rule
     | array
     | hash
     | definition
+  ;
 
   expression
     : value '^' value                         { result = power(val[0],val[2])} 
@@ -58,7 +76,7 @@ rule
     | value OR value                          { result = do_or(val[0],val[2])}
     | value AND value                         { result = do_and(val[0],val[2])}
     | value
-    ;
+  ;
 
   array
     : '[' values optional_comma ']'                 { result = val[1]}
@@ -73,7 +91,7 @@ rule
   optional_comma:
     :
     | ','
-    ;
+  ;
 
   hashpairs
     : hashpair                                      
@@ -105,6 +123,7 @@ rule
 
 	include_file
     : INCLUDE string 													      { include_file(val[1])}
+    | INCLUDE string INTO SCOPE                     { include_file(val[1], val[3])}
   ;
 
   definition

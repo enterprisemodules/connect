@@ -7,7 +7,7 @@ RSpec.describe 'setting and retrieving values' do
 
   scopes = ['', 'foo::', 'foo::bar::'].each do |scope|
 
-    context "an integer value width scope '#{scope}'"  do
+    context "an integer value with a specified scope '#{scope}'"  do
       it 'is settable and retrievable' do
         dsl.parse(<<-EOD)
         #{scope}a = 10 
@@ -62,8 +62,21 @@ RSpec.describe 'setting and retrieving values' do
       end
     end
 
-
   end
+
+  context 'using a single default scope' do
+    it 'is settable and retrievable' do
+      # dsl.parse(<<-EOD)
+      dsl.parse(<<-EOD)
+      with my_scope:: do
+        a = 10
+      end
+      EOD
+      expect(dsl.lookup_value("my_scope::a")).to eql(10)
+    end
+  end
+
+
 
 end
 
