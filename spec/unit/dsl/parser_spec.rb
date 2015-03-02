@@ -135,6 +135,14 @@ RSpec.describe 'Parser' do
       a = {}
       EOD
     end
+
+    it 'using a reference' do
+      expect(dsl).to receive(:assign).with('a', {:a=>ConnectionEntry}, nil)
+      dsl.parse(<<-EOD)
+      a = { a:b}
+      EOD
+    end
+
   end
 
   describe 'connections' do

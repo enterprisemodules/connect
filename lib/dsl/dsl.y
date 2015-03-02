@@ -110,6 +110,8 @@ rule
   hashpair
     : hashkey ':' value                             { result = MethodHash[val[0], val[2]] }
     | hashkey HASH_ROCKET value                     { result = MethodHash[val[0], val[2]] }
+    | hashkey ':' reference                         { result = MethodHash[val[0], val[2]] }
+    | hashkey HASH_ROCKET reference                 { result = MethodHash[val[0], val[2]] }
   ;
 
   values
