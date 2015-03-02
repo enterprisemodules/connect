@@ -34,27 +34,6 @@ class ValuesTable
     # TODO: Check if name is a valid name
     entry = @values_table.fetch(name) { NullEntry.new}
     entry.to_final
-
-    # entry.to_value
-    # case type
-    # when :value
-    #   base_value = Selector.run(value, selector)
-    #   value = case base_value
-    #   when Array 
-    #     base_value.map {|e| e.is_a?(ObjectDefinition) ? e.to_value : e}
-    #   when Hash
-    #     MethodHash[base_value.map {|k,v| v.is_a?(ObjectDefinition) ? [k, v.to_value] : [k, v]}]
-    #   else
-    #     base_value        
-    #   end
-    # when :connection
-    #   value = internal_lookup(value)
-    #   Selector.run(value, selector)
-    # when :object
-    #   Selector.run(value, selector)
-    # else
-    #   nil
-    # end
   end
 
 
@@ -71,7 +50,7 @@ class ValuesTable
   #
   # Create a connection entry for the value table. 
   #
-  def self.connection_entry(name, value, selector = nil, value_table )
+  def self.connection_entry(name, value, selector = nil, value_table = nil )
     ConnectionEntry.new(name, value, selector, value_table).to_entry
   end
 

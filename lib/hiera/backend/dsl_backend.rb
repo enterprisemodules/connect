@@ -1,5 +1,5 @@
 require 'dsl/dsl'
-        require 'ruby-debug'
+require 'ruby-debug'
 
 class Hiera
   module Backend
