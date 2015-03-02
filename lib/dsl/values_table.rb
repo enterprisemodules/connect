@@ -50,7 +50,9 @@ class ValuesTable
   #
   # Create a connection entry for the value table. 
   #
-  def self.connection_entry(name, value, selector = nil, value_table = nil )
+  def self.connection_entry(name, value, selector = nil, value_table = nil)
+    debugger if value_table.nil?
+    raise ArgumentError, 'invalid value_table' if value_table.nil?
     ConnectionEntry.new(name, value, selector, value_table).to_entry
   end
 

@@ -4,11 +4,11 @@ require 'dsl/object_definition'
 
 RSpec.describe ValuesTable  do
 
-	let(:table) 					{ ValuesTable.new()}
+	let!(:table) 					{ ValuesTable.new()}
 	let(:object_value)		{ ObjectDefinition.new('foo','object_name', {:text => 'exists'})}
 	let(:value_entry) 		{ ValuesTable.value_entry('existing_entry', 'exists') }
 	let(:other_entry) 		{ ValuesTable.value_entry('existing_entry', 'other') }
-	let(:connection_entry){ ValuesTable.connection_entry('connection', 'existing_entry', table)}
+	let(:connection_entry){ ValuesTable.connection_entry('connection', 'existing_entry', nil, table)}
 	let(:object_entry)		{ ValuesTable.object_entry('object', object_value)}
 
 	describe '#add' do
