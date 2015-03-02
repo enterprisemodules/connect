@@ -12,4 +12,9 @@ class ConnectionEntry < Entry
     Selector.run(value, selector)
   end
 
+  def to_ext
+    to_final.to_ext
+  end
+
+
 end

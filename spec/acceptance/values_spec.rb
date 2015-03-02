@@ -45,12 +45,30 @@ RSpec.describe 'setting and retrieving values' do
     end
 
     context 'an array value' do
-      it 'is settable and retrievable' do
-        dsl.parse(<<-EOD)
-        #{scope}a = ['foo','bar']
-        EOD
-        expect(dsl.lookup_value("#{scope}a")).to eql(['foo','bar'])
+
+      context 'with just literals' do
+
+        it 'is settable and retrievable' do
+          dsl.parse(<<-EOD)
+          #{scope}a = ['foo','bar']
+          EOD
+          expect(dsl.lookup_value("#{scope}a")).to eql(['foo','bar'])
+        end
+
       end
+
+      context 'with a reference' do
+
+        it 'is settable and retrievable' do
+          dsl.parse(<<-EOD)
+          #{scope}a = 'bar'
+          #{scope}b = ['foo',#{scope}a]
+          EOD
+          expect(dsl.lookup_value("#{scope}b")).to eql(['foo','bar'])
+        end
+
+      end
+
     end
 
     context 'a hash value' do
