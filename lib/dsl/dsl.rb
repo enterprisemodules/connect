@@ -57,6 +57,16 @@ class Dsl < Racc::Parser
     add_value(entry)
   end
 
+
+  ##
+  #
+  # Connect the variable to an other variable in the value table
+  #
+  def reference(to)
+    ConnectionEntry.new('', to, nil, @values_table)
+  end
+
+
   ##
   #
   # include the specfied file in the parse process.
@@ -85,7 +95,7 @@ class Dsl < Racc::Parser
     raise ArgumentError, 'no iterator allowed if no block defined' if values.nil? && ! iterator.nil?
     validate_iterator( iterator) unless iterator.nil?
     add_object(type, name, values) if values
-    value = lookup_object(type, name)
+    lookup_object(type, name)
   end
 
   ##

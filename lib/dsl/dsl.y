@@ -67,6 +67,10 @@ rule
     | definition
   ;
 
+  reference
+    : literal                                 {result = reference(val[0])}
+    ;
+
   expression
     : value '^' value                         { result = power(val[0],val[2])} 
     | value '*' value                         { result = multiply(val[0],val[2])}
@@ -110,6 +114,7 @@ rule
 
   values
     : values ',' value                              { result = val[0] << val[2]}
+    | values ',' reference                          { result = val[0] << val[2]}
     | value                                         { result = [val[0]]}
   ;
 

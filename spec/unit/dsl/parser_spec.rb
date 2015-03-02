@@ -95,6 +95,14 @@ RSpec.describe 'Parser' do
       EOD
     end
 
+    it 'with reference' do
+      expect(dsl).to receive(:assign).with('a', [1,ConnectionEntry,3], nil)
+      dsl.parse(<<-EOD)
+      a = [1,b,3]
+      EOD
+    end
+
+
     it 'empty array' do
       expect(dsl).to receive(:assign).with('a', [], nil)
       dsl.parse(<<-EOD)
