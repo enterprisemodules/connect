@@ -84,6 +84,8 @@ rule
 
   array
     : '[' values optional_comma ']'                 { result = val[1]}
+    | '[' reference ',' values optional_comma ']'   { result = val[3].unshift(val[1])}
+    | '[' reference optional_comma ']'              { result = [val[1]] }
     | '[' ']'                                       { result = []}
   ;
 

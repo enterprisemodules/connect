@@ -8,8 +8,6 @@ require 'dsl/entries/value_entry'
 require 'dsl/entries/connection_entry'
 require 'dsl/entries/object_entry'
 
-require 'byebug'
-
 class Dsl < Racc::Parser
 
   attr_reader :interpolator, :current_file

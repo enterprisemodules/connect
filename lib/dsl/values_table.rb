@@ -5,8 +5,6 @@ require 'dsl/entries/value_entry'
 require 'dsl/entries/connection_entry'
 require 'dsl/entries/object_entry'
 
-require 'byebug'
-
 class ValuesTable
 
   def initialize

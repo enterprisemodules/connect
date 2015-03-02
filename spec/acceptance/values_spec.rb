@@ -67,6 +67,23 @@ RSpec.describe 'setting and retrieving values' do
           expect(dsl.lookup_value("#{scope}b")).to eql(['foo','bar'])
         end
 
+        it 'is settable and retrievable' do
+          dsl.parse(<<-EOD)
+          #{scope}a = 'bar'
+          #{scope}b = [#{scope}a, 'foo']
+          EOD
+          expect(dsl.lookup_value("#{scope}b")).to eql(['bar','foo'])
+        end
+
+        it 'is settable and retrievable' do
+          dsl.parse(<<-EOD)
+          #{scope}a = 'bar'
+          #{scope}b = [#{scope}a]
+          EOD
+          expect(dsl.lookup_value("#{scope}b")).to eql(['bar'])
+        end
+
+
       end
 
     end
