@@ -1,4 +1,4 @@
-require 'dsl/object_entry'
+require 'dsl/object_definition'
 
 class ObjectsTable
 
@@ -22,7 +22,7 @@ class ObjectsTable
   def self.entry(type, name, values)
     case type
     when 'node'       then Node.new(type, name, values)
-    else  ObjectEntry.new(type, name, values)
+    else  ObjectDefinition.new(type, name, values)
     end
   end
 
@@ -38,7 +38,7 @@ class ObjectsTable
   end
 
   def from_table(type, name)
-    @objects_table.fetch(key(type,name)) { to_table(ObjectEntry.new(type,name, {}))}
+    @objects_table.fetch(key(type,name)) { to_table(ObjectDefinition.new(type,name, {}))}
   end
 
   def to_table(object)

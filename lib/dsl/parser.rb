@@ -1163,7 +1163,7 @@ module_eval(<<'.,.,', 'dsl.y', 86)
 
 module_eval(<<'.,.,', 'dsl.y', 87)
   def _reduce_40(val, _values, result)
-     result = {}
+     result = MethodHash.new
     result
   end
 .,.,
@@ -1192,14 +1192,14 @@ module_eval(<<'.,.,', 'dsl.y', 101)
 
 module_eval(<<'.,.,', 'dsl.y', 106)
   def _reduce_47(val, _values, result)
-     result = {val[0] => val[2]} 
+     result = MethodHash[val[0], val[2]] 
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'dsl.y', 107)
   def _reduce_48(val, _values, result)
-     result = {val[0] => val[2]} 
+     result = MethodHash[val[0], val[2]] 
     result
   end
 .,.,

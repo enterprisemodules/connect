@@ -9,5 +9,5 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.provision :shell, :inline => "rm -rf /etc/puppet/modules/hiera-dsl; ln -s /vagrant /etc/puppet/modules/hiera-dsl"
   config.vm.provision :shell, :inline => "ln -sf /vagrant/hiera.yaml /etc/puppet/hiera.yaml"
-  config.vm.provision :shell, :inline => "ln -sf /vagrant/examples/ /etc/puppet/config/"
+  config.vm.provision :shell, :inline => "ln -sf /vagrant/examples /etc/puppet/config"
 end

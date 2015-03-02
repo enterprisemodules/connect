@@ -4,7 +4,7 @@ module MethodHashMethods
     if self.has_key?(key)
       self[key]
     else
-      raise ArgumentError, "requested unassigned attribute #{key} from #{__type__} object #{__name__}"
+      raise ArgumentError, "requested unassigned attribute #{key} from #{self}"
       super
     end
   end

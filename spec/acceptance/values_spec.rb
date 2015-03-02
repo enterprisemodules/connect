@@ -5,7 +5,7 @@ RSpec.describe 'setting and retrieving values' do
 
   let(:dsl) { Dsl.new}
 
-  scopes = ['', 'foo::', 'foo::bar::'].each do |scope|
+  ['', 'foo::', 'foo::bar::'].each do |scope|
 
     context "an integer value with a specified scope '#{scope}'"  do
       it 'is settable and retrievable' do

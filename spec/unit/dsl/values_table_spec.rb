@@ -1,15 +1,15 @@
 require 'spec_helper'
 require 'dsl/values_table'
-require 'dsl/object_entry'
+require 'dsl/object_definition'
 
 RSpec.describe ValuesTable  do
 
-	let(:table) 					{ ValuesTable.new}
+	let(:table) 					{ ValuesTable.new()}
+	let(:object_value)		{ ObjectDefinition.new('foo','object_name', {:text => 'exists'})}
 	let(:value_entry) 		{ ValuesTable.value_entry('existing_entry', 'exists') }
 	let(:other_entry) 		{ ValuesTable.value_entry('existing_entry', 'other') }
-	let(:connection_entry){ ValuesTable.connection_entry('connection', 'existing_entry')}
+	let(:connection_entry){ ValuesTable.connection_entry('connection', 'existing_entry', table)}
 	let(:object_entry)		{ ValuesTable.object_entry('object', object_value)}
-	let(:object_value)		{ ObjectEntry.new('foo','object_name', {:text => 'exists'})}
 
 	describe '#add' do
 
@@ -107,7 +107,7 @@ RSpec.describe ValuesTable  do
 
 			context 'object doesn\'t exists' do
 
-				it 'returns the value' do
+				it 'returns a nill' do
 					expect(table.lookup('object')).to be_nil
 				end
 			end

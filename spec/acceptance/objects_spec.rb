@@ -138,7 +138,6 @@ RSpec.describe 'objects' do
     end
   end
 
-
   context 'fetch with multiple selector' do
 
     it 'is setable and retrievable' do

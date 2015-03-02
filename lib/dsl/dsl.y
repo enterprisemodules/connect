@@ -85,7 +85,7 @@ rule
 
   hash
     : '{' hashpairs optional_comma '}'              { result = val[1]}
-    | '{' '}'                                       { result = {}} 
+    | '{' '}'                                       { result = MethodHash.new} 
   ;
 
   optional_comma:
@@ -104,8 +104,8 @@ rule
   ;
 
   hashpair
-    : hashkey ':' value                             { result = {val[0] => val[2]} }
-    | hashkey HASH_ROCKET value                     { result = {val[0] => val[2]} }
+    : hashkey ':' value                             { result = MethodHash[val[0], val[2]] }
+    | hashkey HASH_ROCKET value                     { result = MethodHash[val[0], val[2]] }
   ;
 
   values

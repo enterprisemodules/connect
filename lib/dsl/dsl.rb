@@ -4,6 +4,11 @@ require 'dsl/objects_table'
 require 'dsl/selector'
 require 'dsl/interpolator'
 require 'dsl/includer'
+require 'dsl/entries/value_entry'
+require 'dsl/entries/connection_entry'
+require 'dsl/entries/object_entry'
+
+require 'byebug'
 
 class Dsl < Racc::Parser
 
@@ -35,7 +40,7 @@ class Dsl < Racc::Parser
   #
   def assign(name, value, selector = nil)
     name = scoped_name_for(name)
-    entry = value.is_a?(ObjectEntry) ?
+    entry = value.is_a?(ObjectDefinition) ?
       ValuesTable.object_entry(name, value, selector) :
       ValuesTable.value_entry(name, value, selector)
     add_value(entry)
@@ -48,7 +53,7 @@ class Dsl < Racc::Parser
   def connect(from, to, selector = nil)
     from = scoped_name_for(from)
     to   = scoped_name_for(to)
-    entry = ValuesTable.connection_entry(from, to, selector)
+    entry = ValuesTable.connection_entry(from, to, selector, @values_table)
     add_value(entry)
   end
 

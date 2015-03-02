@@ -1,6 +1,6 @@
 require 'dsl/object_entry'
 
-class Node < ObjectEntry
+class Node < ObjectDefinition
   def initialize(data)
     super(data)
     if data

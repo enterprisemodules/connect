@@ -1,15 +1,16 @@
 class Selector
 	def initialize(value, selector)
-		if value.class == ObjectEntry && selector
-			@value 		= value.to_hash	
-		else
-			@value 		= value
-		end
+		@value = value
+		@selection_value = value.respond_to?(:for_selection) ? value.for_selection : value
 		@selector = selector
 	end
 
 	def run
-	  @value ? instance_eval("@value#{@selector}") : nil
+		if @selector && @selection_value
+			instance_eval("@selection_value#{@selector}")
+		else
+			@value
+		end
 	end
 
 	#
@@ -19,4 +20,6 @@ class Selector
 		instance = self.new(value, selector)
 		instance.run
 	end
+
+
 end

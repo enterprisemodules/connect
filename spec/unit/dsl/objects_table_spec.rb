@@ -1,6 +1,6 @@
 require 'spec_helper'
 require 'dsl/objects_table'
-require 'dsl/object_entry'
+require 'dsl/object_definition'
 
 RSpec.describe ObjectsTable do
 
@@ -34,7 +34,7 @@ RSpec.describe ObjectsTable do
 
 		context 'object doesn\'t exist' do
 			it 'return\' an object reference' do
-				expect(table.lookup('non-existing', 'dummy')).to eq(ObjectEntry.new('non-existing','dummy', {} ))
+				expect(table.lookup('non-existing', 'dummy')).to eq(ObjectDefinition.new('non-existing','dummy', {} ))
 			end
 		end
 

@@ -1,7 +1,7 @@
 require 'hash_extensions'
 require 'method_hash'
 
-class ObjectEntry < Hash
+class ObjectDefinition < Hash
   include MethodHashMethods
 
   def initialize(type,name, data)
@@ -28,8 +28,12 @@ class ObjectEntry < Hash
     super(data)
   end
 
-  def to_value
-    { __name__ => to_hash}
+  def to_final
+    self
+  end
+
+  def to_ext
+    { __name__ => without_private_entries }
   end
 
   def to_hash
@@ -41,6 +45,11 @@ class ObjectEntry < Hash
     hash.delete_if {|k,v| k=~/__.*__/ }
     hash
   end
+
+  def for_selection
+    without_private_entries
+  end
+
 
   def identify(type,name)
     self['__name__'] = name
