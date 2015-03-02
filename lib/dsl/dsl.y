@@ -1,4 +1,5 @@
 class Dsl
+
 rule
 
 	dsl
@@ -160,7 +161,7 @@ end
 ---- inner
 
   def parse(input)
-    scan_str(input)
+    scan_str(input) unless empty_definition?(input)
   end
 
   def power(v1,v2)

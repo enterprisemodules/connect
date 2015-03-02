@@ -651,10 +651,10 @@ end
 
 class Dsl < Racc::Parser
 
-module_eval(<<'...end dsl.y/module_eval...', 'dsl.y', 161)
+module_eval(<<'...end dsl.y/module_eval...', 'dsl.y', 162)
 
   def parse(input)
-    scan_str(input)
+    scan_str(input) unless empty_definition?(input)
   end
 
   def power(v1,v2)
@@ -1046,42 +1046,42 @@ Racc_debug_parser = false
 
 # reduce 13 omitted
 
-module_eval(<<'.,.,', 'dsl.y', 32)
+module_eval(<<'.,.,', 'dsl.y', 33)
   def _reduce_14(val, _values, result)
      push_scope(val[1])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'dsl.y', 36)
+module_eval(<<'.,.,', 'dsl.y', 37)
   def _reduce_15(val, _values, result)
      push_scope(val[1])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'dsl.y', 41)
+module_eval(<<'.,.,', 'dsl.y', 42)
   def _reduce_16(val, _values, result)
      pop_scope 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'dsl.y', 42)
+module_eval(<<'.,.,', 'dsl.y', 43)
   def _reduce_17(val, _values, result)
      pop_scope 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'dsl.y', 47)
+module_eval(<<'.,.,', 'dsl.y', 48)
   def _reduce_18(val, _values, result)
      result = "#{val[0]}#{val[1]}"
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'dsl.y', 51)
+module_eval(<<'.,.,', 'dsl.y', 52)
   def _reduce_19(val, _values, result)
      result = interpolate(val[0])
     result
@@ -1106,56 +1106,56 @@ module_eval(<<'.,.,', 'dsl.y', 51)
 
 # reduce 28 omitted
 
-module_eval(<<'.,.,', 'dsl.y', 70)
+module_eval(<<'.,.,', 'dsl.y', 71)
   def _reduce_29(val, _values, result)
     result = reference(val[0])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'dsl.y', 74)
+module_eval(<<'.,.,', 'dsl.y', 75)
   def _reduce_30(val, _values, result)
      result = power(val[0],val[2])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'dsl.y', 75)
+module_eval(<<'.,.,', 'dsl.y', 76)
   def _reduce_31(val, _values, result)
      result = multiply(val[0],val[2])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'dsl.y', 76)
+module_eval(<<'.,.,', 'dsl.y', 77)
   def _reduce_32(val, _values, result)
      result = divide(val[0],val[2])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'dsl.y', 77)
+module_eval(<<'.,.,', 'dsl.y', 78)
   def _reduce_33(val, _values, result)
      result = add(val[0],val[2])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'dsl.y', 78)
+module_eval(<<'.,.,', 'dsl.y', 79)
   def _reduce_34(val, _values, result)
      result = subtract(val[0],val[2])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'dsl.y', 79)
+module_eval(<<'.,.,', 'dsl.y', 80)
   def _reduce_35(val, _values, result)
      result = do_or(val[0],val[2])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'dsl.y', 80)
+module_eval(<<'.,.,', 'dsl.y', 81)
   def _reduce_36(val, _values, result)
      result = do_and(val[0],val[2])
     result
@@ -1164,42 +1164,42 @@ module_eval(<<'.,.,', 'dsl.y', 80)
 
 # reduce 37 omitted
 
-module_eval(<<'.,.,', 'dsl.y', 85)
+module_eval(<<'.,.,', 'dsl.y', 86)
   def _reduce_38(val, _values, result)
      result = val[1]
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'dsl.y', 86)
+module_eval(<<'.,.,', 'dsl.y', 87)
   def _reduce_39(val, _values, result)
      result = val[3].unshift(val[1])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'dsl.y', 87)
+module_eval(<<'.,.,', 'dsl.y', 88)
   def _reduce_40(val, _values, result)
      result = [val[1]] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'dsl.y', 88)
+module_eval(<<'.,.,', 'dsl.y', 89)
   def _reduce_41(val, _values, result)
      result = []
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'dsl.y', 92)
+module_eval(<<'.,.,', 'dsl.y', 93)
   def _reduce_42(val, _values, result)
      result = val[1]
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'dsl.y', 93)
+module_eval(<<'.,.,', 'dsl.y', 94)
   def _reduce_43(val, _values, result)
      result = MethodHash.new
     result
@@ -1212,14 +1212,14 @@ module_eval(<<'.,.,', 'dsl.y', 93)
 
 # reduce 46 omitted
 
-module_eval(<<'.,.,', 'dsl.y', 103)
+module_eval(<<'.,.,', 'dsl.y', 104)
   def _reduce_47(val, _values, result)
      result.merge!(val[2])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'dsl.y', 107)
+module_eval(<<'.,.,', 'dsl.y', 108)
   def _reduce_48(val, _values, result)
      result = val[0].to_sym
     result
@@ -1228,84 +1228,84 @@ module_eval(<<'.,.,', 'dsl.y', 107)
 
 # reduce 49 omitted
 
-module_eval(<<'.,.,', 'dsl.y', 112)
+module_eval(<<'.,.,', 'dsl.y', 113)
   def _reduce_50(val, _values, result)
      result = MethodHash[val[0], val[2]] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'dsl.y', 113)
+module_eval(<<'.,.,', 'dsl.y', 114)
   def _reduce_51(val, _values, result)
      result = MethodHash[val[0], val[2]] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'dsl.y', 114)
+module_eval(<<'.,.,', 'dsl.y', 115)
   def _reduce_52(val, _values, result)
      result = MethodHash[val[0], val[2]] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'dsl.y', 115)
+module_eval(<<'.,.,', 'dsl.y', 116)
   def _reduce_53(val, _values, result)
      result = MethodHash[val[0], val[2]] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'dsl.y', 119)
+module_eval(<<'.,.,', 'dsl.y', 120)
   def _reduce_54(val, _values, result)
      result = val[0] << val[2]
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'dsl.y', 120)
+module_eval(<<'.,.,', 'dsl.y', 121)
   def _reduce_55(val, _values, result)
      result = val[0] << val[2]
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'dsl.y', 121)
+module_eval(<<'.,.,', 'dsl.y', 122)
   def _reduce_56(val, _values, result)
      result = [val[0]]
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'dsl.y', 125)
+module_eval(<<'.,.,', 'dsl.y', 126)
   def _reduce_57(val, _values, result)
      assign(val[0], val[2], val[3])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'dsl.y', 129)
+module_eval(<<'.,.,', 'dsl.y', 130)
   def _reduce_58(val, _values, result)
      connect(val[0], val[2], val[3])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'dsl.y', 133)
+module_eval(<<'.,.,', 'dsl.y', 134)
   def _reduce_59(val, _values, result)
      include_file(val[1])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'dsl.y', 134)
+module_eval(<<'.,.,', 'dsl.y', 135)
   def _reduce_60(val, _values, result)
      include_file(val[1], val[3])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'dsl.y', 139)
+module_eval(<<'.,.,', 'dsl.y', 140)
   def _reduce_61(val, _values, result)
      result = define(val[0], val[2], val[5], val[4])
     result
@@ -1314,14 +1314,14 @@ module_eval(<<'.,.,', 'dsl.y', 139)
 
 # reduce 62 omitted
 
-module_eval(<<'.,.,', 'dsl.y', 144)
+module_eval(<<'.,.,', 'dsl.y', 145)
   def _reduce_63(val, _values, result)
      result = val[1]
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'dsl.y', 145)
+module_eval(<<'.,.,', 'dsl.y', 146)
   def _reduce_64(val, _values, result)
      result = val[1]
     result
@@ -1330,7 +1330,7 @@ module_eval(<<'.,.,', 'dsl.y', 145)
 
 # reduce 65 omitted
 
-module_eval(<<'.,.,', 'dsl.y', 150)
+module_eval(<<'.,.,', 'dsl.y', 151)
   def _reduce_66(val, _values, result)
      result = {:from => val[1], :to => val[3]}
     result

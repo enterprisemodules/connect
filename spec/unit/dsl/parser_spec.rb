@@ -5,6 +5,21 @@ RSpec.describe 'Parser' do
 
   let(:dsl) { Dsl.new }
 
+
+  describe 'empty file' do
+
+    it 'is parsed' do
+      expect {
+        dsl.parse(<<-EOD)
+                     
+
+        EOD
+        }.not_to raise_error
+    end
+
+  end
+
+
   describe 'Hash syntax' do
 
     context 'without trailing comma' do

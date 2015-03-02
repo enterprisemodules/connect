@@ -74,7 +74,7 @@ class Dsl < Racc::Parser
     @includer.include(names) do |  content, file_name|
       @current_file = file_name
       push_current_parse_state
-      scan_str(content)
+      scan_str(content) unless empty_definition?(content)
       pop_current_parse_state
     end
     pop_scope
@@ -102,7 +102,7 @@ class Dsl < Racc::Parser
   #
   def self.parse(content)
     @instance   = self.new
-    @instance.parse(content)
+    @instance.parse(content) unless empty_definition?(content)
   end  
 
   ##
@@ -182,6 +182,10 @@ private
     raise ArgumentError, 'from value missing from iterator' if iterator[:from].nil?
     raise ArgumentError, 'to value missing from iterator' if iterator[:to].nil?
     raise ArgumentError, "iterator contains unknown key(s): #{invalid_keys}" if invalid_keys
+  end
+
+  def empty_definition?(string)
+    string.scan(/^(\s|\n)*$/) != []
   end
 
 end
