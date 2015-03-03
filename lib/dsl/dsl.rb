@@ -185,7 +185,7 @@ private
   end
 
   def empty_definition?(string)
-    string.scan(/^(\s|\n)*$/) != []
+    (string =~ /^(\s|\n)*$/) == 0 
   end
 
 end

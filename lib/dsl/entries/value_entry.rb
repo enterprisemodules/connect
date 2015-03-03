@@ -21,7 +21,7 @@ class ValueEntry < Entry
   private
 
   def convert_hash_entry(k,v)
-    if v.is_a?(ObjectDefinition) # Special case
+    if v.is_a?(ObjectDefinition) and v.object_id == k # Special case
       key, value = v.to_ext.to_a[0]
       [key,value]
     else
