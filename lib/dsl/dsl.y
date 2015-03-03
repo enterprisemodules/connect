@@ -1,5 +1,10 @@
 class Dsl
 
+prechigh
+  nonassoc SCOPE
+  nonassoc IDENTIFIER
+preclow
+
 rule
 
 	dsl
@@ -18,11 +23,6 @@ rule
     | include_file
     | definition
     | default_scope
-  ;
-
-  scope
-    :
-    | SCOPE
   ;
 
   selector
@@ -46,7 +46,8 @@ rule
 
 
   literal
-    : scope IDENTIFIER                         { result = "#{val[0]}#{val[1]}"}
+    : SCOPE IDENTIFIER                         { result = "#{val[0]}#{val[1]}"}
+    | IDENTIFIER                               { result = "#{val[0]}"}
   ;
 
   string
@@ -115,6 +116,7 @@ rule
     | hashkey HASH_ROCKET value                     { result = MethodHash[val[0], val[2]] }
     | hashkey ':' reference                         { result = MethodHash[val[0], val[2]] }
     | hashkey HASH_ROCKET reference                 { result = MethodHash[val[0], val[2]] }
+    | definition                                    { result = MethodHash[val[0].object_id, val[0]]}
   ;
 
   values
@@ -137,9 +139,9 @@ rule
   ;
 
   definition
-    : literal '(' string ')' iterator block 
+    : IDENTIFIER '(' string ')' iterator block 
                                                     { result = define(val[0], val[2], val[5], val[4])}
-    | literal '(' literal ')' iterator block 
+    | IDENTIFIER '(' literal ')' iterator block 
                                                     { result = define(val[0], val[2], val[5], val[4])}
   ;
 

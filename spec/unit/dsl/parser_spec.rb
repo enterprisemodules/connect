@@ -158,6 +158,28 @@ RSpec.describe 'Parser' do
       EOD
     end
 
+    it 'using a single object' do
+      expect(dsl).to receive(:assign).with('a', Hash, nil)
+      dsl.parse(<<-EOD)
+      a = { x: 10,
+            obj('test')
+          }
+      EOD
+    end
+
+    it 'using a multiple objects' do
+      expect(dsl).to receive(:assign).with('a', Hash, nil)
+      dsl.parse(<<-EOD)
+      a = { 
+            something('else'),
+            x: 10,
+            obj('test')
+          }
+      EOD
+    end
+
+
+
   end
 
   describe 'connections' do

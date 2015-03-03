@@ -2,7 +2,6 @@ require 'dsl/entries/entry'
 
 class ObjectEntry < Entry
 
-
   def for_selection
     @value.to_hash
   end

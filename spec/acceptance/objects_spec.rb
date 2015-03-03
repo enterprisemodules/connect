@@ -120,6 +120,24 @@ RSpec.describe 'objects' do
       EOD
       expect(dsl.lookup_value('a')).to eql({ 'name' => { 'foo.bar.nl' => {'ip' => '10.0.0.100', 'alias' =>'foo'}}})
     end
+
+  end
+
+  context 'as a Hash entry' do
+
+    it 'is retrievable' do
+      dsl.parse(<<-EOD)
+      foo('foo') {
+        alias: 'foo'
+      }
+      bar('bar') {
+        alias: 'bar'
+      }
+      a = {foo('foo'), bar('bar'),}
+      EOD
+      expect(dsl.lookup_value('a')).to eq( { 'foo' => {'alias' =>'foo'}, 'bar' => {'alias' => 'bar'}})
+    end
+
   end
 
 
