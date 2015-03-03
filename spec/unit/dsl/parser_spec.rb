@@ -296,6 +296,16 @@ RSpec.describe 'Parser' do
     end
   end
 
+  context 'using unquoted strings' do
+    it 'defines an object' do
+      expect(dsl).to receive(:define).with('host','dns', { :ip => '10.0.0.1', :fqdn => 'dns.a.b'}, nil)
+      dsl.parse(<<-EOD)
+      host(dns) do ip: '10.0.0.1', fqdn: 'dns.a.b'end
+      EOD
+    end
+  end
+
+
   context 'using an iterator' do
     it 'defines an object with an iterator' do
       expect(dsl).to receive(:define).with('host','dns', { :ip => '10.0.0.1', :fqdn => 'dns.a.b'},  {:from => 10, :to => 20})

@@ -139,6 +139,8 @@ rule
   definition
     : literal '(' string ')' iterator block 
                                                     { result = define(val[0], val[2], val[5], val[4])}
+    | literal '(' literal ')' iterator block 
+                                                    { result = define(val[0], val[2], val[5], val[4])}
   ;
 
   block
