@@ -57,7 +57,7 @@ class Dsl < Racc::Parser
     token = case @state
     when nil
       case
-      when (text = @ss.scan(/\#.*(?:\n|$)/))
+      when (text = @ss.scan(/\#.*$/))
         ;
 
       when (text = @ss.scan(/or\s|(\|\|)/))

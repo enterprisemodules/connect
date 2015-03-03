@@ -9,7 +9,7 @@ macro
   DIGIT               [0-9]
   INT                 {DIGIT}+
   FLOAT               {DIGIT}+\.{DIGIT}+
-  COMMENT             \#.*(?:\n|$)
+  COMMENT             \#.*$
   DOUBLE_QUOTED       \"(\\.|[^\\"])*\"
   SINGLE_QUOTED       \'(\\.|[^\\'])*\'
   TRUE                TRUE|true
