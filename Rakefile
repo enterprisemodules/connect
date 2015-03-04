@@ -10,10 +10,10 @@ task :default => [:lexer, :parser]
 
 desc "Generate Lexer"
 task :lexer do
-  `rex lib/dsl/dsl.rex -o lib/dsl/lexer.rb`
+  `rex lib/connect/dsl.rex -o lib/connect/lexer.rb`
 end
 
 desc "Generate Parser"
 task :parser do
-  `racc lib/dsl/dsl.y -v -E -o lib/dsl/parser.rb`
+  `racc lib/connect/dsl.y -v -E -o lib/connect/parser.rb`
 end

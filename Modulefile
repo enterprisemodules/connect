@@ -1,4 +1,4 @@
-name    'hajee-hiera'
+name    'hajee-connect'
 version '0.1.0'
 source 'UNKNOWN'
 author 'hajee'

@@ -1,7 +1,7 @@
 ---
 :backends:
 #  - yaml
-   - dsl
+   - connect
 :hierarchy:
   - defaults
   - %{clientcert}
@@ -14,5 +14,5 @@
 # - %CommonAppData%\PuppetLabs\hiera\var on Windows
 # When specifying a datadir, make sure the directory exists.
   :datadir:
-:dsl:
-  :datadir: /etc/puppet/config
+:connect:
+  :datadir: /etc/puppet/connect
