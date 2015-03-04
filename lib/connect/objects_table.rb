@@ -1,4 +1,6 @@
 require 'connect/object_definition'
+require 'puppet'
+require 'puppet/pops'
 
 module Connect
   class ObjectsTable
@@ -9,22 +11,23 @@ module Connect
 
     def add(type, name, values)
       object = from_table(type, name)
-      if object
-        add_values_to_existing!(object, values)
-      else
-        add_new_object(type, name, values)
-      end
+      add_values_to_existing!(object, values)
     end
 
     def lookup(type, name)
       from_table(type, name)
     end
 
+    #
+    # Autoload a ruby class based on the type of the object. If it doesn't exists, just
+    # instantiate a ObjectDefinition. This mechanism allows extension of the connect classes
+    # with user written classes.
+    #
     def self.entry(type, name, values)
-      case type
-      when 'node'       then Node.new(type, name, values)
-      else  ObjectDefinition.new(type, name, values)
-      end
+      type_name = type.to_s.capitalize
+      klass_name = "Connect::Objects::#{type_name}"
+      klass = Puppet::Pops::Types::ClassLoader.provide_from_string(klass_name)
+      klass ? klass.new(type, name, values) : ObjectDefinition.new(type, name, values)
     end
 
     private
@@ -39,7 +42,7 @@ module Connect
     end
 
     def from_table(type, name)
-      @objects_table.fetch(key(type,name)) { to_table(ObjectDefinition.new(type,name, {}))}
+      @objects_table.fetch(key(type,name)) { add_new_object(type,name, {})}
     end
 
     def to_table(object)

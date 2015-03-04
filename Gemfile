@@ -11,5 +11,6 @@ group :development, :test do
 	gem 'ruby_gntp'
 	gem 'wannabe_bool'
 	gem 'bogus'
+	gem 'puppet'
 	gem 'hiera'
 end

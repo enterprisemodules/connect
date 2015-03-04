@@ -171,6 +171,22 @@ RSpec.describe 'objects' do
     end
   end
 
+  describe 'autloading an object' do    
+    it 'exposes the methods' do
+      dsl.parse(<<-EOD)
+      host('foo.bar.nl') {
+        ip:   '10.0.0.100',
+        alias: 'foo'
+      }
+      hostname = host('foo.bar.nl').hostname
+      domain   = host('foo.bar.nl').domain
+      fqdn     = host('foo.bar.nl').fqdn
+      EOD
+      expect(dsl.lookup_value('hostname')).to eql('foo')
+      expect(dsl.lookup_value('domain')).to eql('bar.nl')
+      expect(dsl.lookup_value('fqdn')).to eql('foo.bar.nl')
+    end
+  end
 
 end
 
