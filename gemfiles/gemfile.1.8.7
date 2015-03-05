@@ -2,11 +2,8 @@ source 'https://rubygems.org'
 
 group :development, :test do
   gem 'rake'
-  gem 'rspec' 
-  gem 'wannabe_bool'
-  gem 'bogus'
+  gem 'rspec'
 end
-
 
 gem 'hiera'
 if puppetversion = ENV['PUPPET_GEM_VERSION']

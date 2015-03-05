@@ -167,7 +167,11 @@ RSpec.describe 'objects' do
       b = foo('foo.bar.nl').ip
       a = b[0]
       EOD
-      expect(dsl.lookup_value('a')).to eql('1')
+      if RUBY_VERSION == '1.8.7'
+        expect(dsl.lookup_value('a')).to eq(49)
+      else
+        expect(dsl.lookup_value('a')).to eq('1')
+      end
     end
   end
 

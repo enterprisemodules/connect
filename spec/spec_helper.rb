@@ -1,5 +1,17 @@
+require 'puppet'
+if RUBY_VERSION[0,3] != '1.8'
+  require 'bogus/rspec'
+else
+  #
+  # Fix a problem introduced by monky patching in Puppet
+  # See https://github.com/rspec/rspec-core/issues/1864 for more information
+  #
+  class Symbol
+    alias to_proc __original_to_proc
+  end
+end
+
 require 'rspec'
-require 'bogus/rspec'
 
 
 RSpec.configure do |config|

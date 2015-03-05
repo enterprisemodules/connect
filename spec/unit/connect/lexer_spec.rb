@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'wannabe_bool'
 require 'connect/parser'
 require 'connect/lexer'
 
@@ -78,24 +77,41 @@ RSpec.describe 'Lexer' do
     end
   end
 
+
   describe 'booleans' do
-    booleans = [
+    true_values = [
       'TRUE',
       'true',
-      'FALSE',
-      'false'
     ]
 
-    booleans.each do | boolean|
+
+    true_values.each do | boolean|
       context boolean do
         it 'is recognised' do
           content = <<-EOD
           #{boolean}
           EOD
-          expect(dsl.tokenize(content)).to eql([[:BOOLEAN, boolean.to_b]])
+          expect(dsl.tokenize(content)).to eql([[:BOOLEAN, true]])
         end
       end
     end
+
+    false_values = [
+      'FALSE',
+      'false'
+    ]
+
+    false_values.each do | boolean|
+      context boolean do
+        it 'is recognised' do
+          content = <<-EOD
+          #{boolean}
+          EOD
+          expect(dsl.tokenize(content)).to eql([[:BOOLEAN, false]])
+        end
+      end
+    end
+
 
     describe 'undefs' do
       undefs = [

@@ -3,10 +3,17 @@ require 'connect/dsl'
 
 RSpec.describe Connect::Dsl do
 
-  fake(:values_table) {Connect::ValuesTable}
-  fake(:objects_table){Connect::ObjectsTable}
-  fake(:interpolator) {Connect::Interpolator}
-  fake(:includer)     {Connect::Includer}
+  if defined?(Bogus)
+    fake(:values_table) {Connect::ValuesTable}
+    fake(:objects_table){Connect::ObjectsTable}
+    fake(:interpolator) {Connect::Interpolator}
+    fake(:includer)     {Connect::Includer}
+  else
+    let(:values_table) {Connect::ValuesTable.new}
+    let(:objects_table){Connect::ObjectsTable.new}
+    let(:interpolator) {Connect::Interpolator.new(values_table)}
+    let(:includer)     {Connect::Includer.new}
+  end
 
   let(:dsl) {Connect::Dsl.new( values_table, objects_table, interpolator, includer)}
 

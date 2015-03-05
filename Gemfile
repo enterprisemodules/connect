@@ -8,7 +8,6 @@ group :development, :test do
 	gem 'guard-rspec'	  ,:require => false
 	gem 'guard-bundler'	,:require => false
 	gem 'ruby_gntp'
-	gem 'wannabe_bool'
 	gem 'bogus'
 end
 
