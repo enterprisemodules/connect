@@ -1,11 +1,8 @@
-class a(
+class test(
   $parameter,
 ){
   notice $parameter
 }
 
-require a
+require test
 
-# class {a:
-#   parameter => 'en nog een'
-# }

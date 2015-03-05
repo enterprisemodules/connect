@@ -1,0 +1,10 @@
+---
+:backends:
+  - connect
+
+:hierarchy:
+  - hosts/%{fqdn}
+  - common
+
+:connect:
+  :datadir: /etc/puppet/config

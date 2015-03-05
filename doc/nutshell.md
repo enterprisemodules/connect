@@ -4,7 +4,7 @@ This file contains an overview of the connect language. It contains short snippe
 
 ## Commenting
 
-Just like in ruby and Puppet, you can comment your code using `#`. The `#` can start at the beginning of a line, to make the whole line a comment, or you can append the `#` to some statements to comment this line of code.
+Just like in Ruby and Puppet, you can comment your code using `#`. The `#` can start at the beginning of a line, to make the whole line a comment, or you can append the `#` to some statements to comment this line of code.
 
 ```
 #
@@ -21,7 +21,7 @@ The variable naming system is based on the [puppet namespace syntax](https://doc
 unqualified_name = 10
 ```
 
-Variable names can also contain a scope. Scopes are specfied by using double colon's (`::`)
+Variable names can also contain a scope. Scopes are specified by using double colon's (`::`)
 
 ```
 scope1::scope2::name = 10
@@ -29,7 +29,7 @@ scope1::scope2::name = 10
 
 A qualified name including two scopes, namely `scope1::` and `scope2::`
 
-Puppet automatic parameter binding, maps directly to this use of scope. If you are using `hiera(...)` calls to lookup values, you have to make sure, you use the samen colon system. This wil cause problems:
+Puppet automatic parameter binding, maps directly to this use of scope. If you are using `hiera(...)` calls to lookup values, you have to make sure, you use the same colon system. This will cause problems:
 
 ```
 scope:faulty_variable_name = 10 # Using a single colon
@@ -174,19 +174,19 @@ include 'my_settings/*'       # include all config files in the settings
 
 ```
 
-If you would like to include all values into a specfied scope, you can use the `include into` statement.
+If you would like to include all values into a specified scope, you can use the `include into` statement.
 
 ```
 include `settings` into settings::
 ```
 
-This statement means the file `settings.config` is included and all non-scoped variables are put into the scope `settings::`. Check (`with`) for more information.
+This statement means the file `settings.config` is included, and all non-scoped variables are put into the scope `settings::`. Check (`with`) for more information.
 
 ## with
 
-One of the mechanisms to ensure variables are not overwritten by accident, is coping. In Connect, scopes are specfied using double colons (`::`). When you are providing a set of variables in a specfied scope, you can use the scope features of Connect. the `include` and `with` keywords manage scope. 
+One of the mechanisms to ensure variables are not overwritten by accident is scoping. In Connect, scopes are specified using double colons (`::`). When you are providing a set of variables in a specified scope, you can use the scope features of Connect. The `include` and `with` keywords manage scope. 
 
-Using these keywords, you can make sure any unscoped variables are put into the specfied scope. When a scope is specified, it will be prefered over the specfied default scope. 
+Using these keywords, you can make sure any unscoped variables are put into the specified scope. When a scope is specified, it will be preferred over the specified default scope. 
 
 ```
 with my_scope:: do
@@ -208,7 +208,7 @@ end
 
 ## Objects
 
-Using `create_resource` and `ensure_resource` , Puppet has the means to create resources based on a hash.  These hashes need to be structured in a certain way. Connect makes it easy to build thoses hashes.
+Using `create_resource` and `ensure_resource` , Puppet has the means to create resources based on a hash.  These hashes need to be structured in a certain way. Connect makes it easy to build those hashes.
 
 ### defining objects
 
@@ -218,7 +218,7 @@ an_object(my_object_name) {
   property_2: 20,
 }
 ```
-This defines an object of type `an_object` and name `my_object_name`. If the name contains only characters, and numbers and underscores, there is no need to put quote's arround the name. If your name contains other characters, you must use quotes:
+This defines an object of type `an_object` and name `my_object_name`. If the name contains only characters, and numbers and underscores, there is no need to put quote's around the name. If your name contains other characters, you must use quotes:
 
 ```
 an_object('my.host.name.com') {
@@ -227,7 +227,7 @@ an_object('my.host.name.com') {
 }
 ```
 
-The type can be anything you want, as long as it only includes characters, numbers and underscores.
+The type can be anything you want, as long as it only includes characters, numbers, and underscores.
 
 ```
 an_rediculous_type_of_object('my.host.name.com') {
@@ -258,7 +258,7 @@ object = my_object('foo') {
 #
 ```
 
-This behaviour can be useful when you want to override standard settings included in a defauls file.
+This behavior can be useful when you want to override standard settings included in a default file.
 
 ### Using objects
 
@@ -282,7 +282,7 @@ hashes = [
 
 ```
 
-If you want to merge a set of object hashes, use :
+If you want to merge a set of object hashes, use:
 
 ```
 big_hash = {
