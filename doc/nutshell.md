@@ -1,8 +1,8 @@
-# The connect language in a nutshell
+#The connect language in a nutshell
 
 This file contains an overview of the connect language. It contains short snippets and is mainly intended to get you up to speed quickly.
 
-## Commenting
+##Commenting
 
 Just like in Ruby and Puppet, you can comment your code using `#`. The `#` can start at the beginning of a line, to make the whole line a comment, or you can append the `#` to some statements to comment this line of code.
 
@@ -13,7 +13,7 @@ Just like in Ruby and Puppet, you can comment your code using `#`. The `#` can s
 a = 10  # This is some comment at the end of a statement
 ```
 
-## Variable names
+##Variable names
 
 The variable naming system is based on the [puppet namespace syntax](https://docs.puppetlabs.com/puppet/latest/reference/lang_namespaces.html#syntax). A variable has can have an unqualified name:
 
@@ -35,7 +35,7 @@ Puppet automatic parameter binding, maps directly to this use of scope. If you a
 scope:faulty_variable_name = 10 # Using a single colon
 ```
 
-## Assigning scalar values
+##Assigning scalar values
 
 To assign a scalar value to a variable, use the `=`
 
@@ -53,7 +53,7 @@ my_value = 10   # Now my_value is 10
 my_value = 20   # And now it is 20. Any connections to my_value, will also be 20 
 ```
 
-## Connecting variables
+##Connecting variables
 
 The concept of connecting variables is easy. In fact so easy, in any programming language we just talk about assigning. In Connect it is the same. To connect two variables, we just use assignments.
 
@@ -70,7 +70,7 @@ my_connection = my_variable
 my_variable   = 20          # This means my_connection will also be 20
 ```
 
-## Array's
+##Array's
 
 To construct an array in Connect, use the `[` and `]`.
 
@@ -104,7 +104,7 @@ array_with_connections = [
 ] # will result in [10,20]
 ```
 
-## Hashes
+##Hashes
 
 To construct a Hash in Connect, you can use either `{` and `}`, or `do` and `end`. Hash entries must be separated with a `,`.
 
@@ -154,7 +154,7 @@ my_hash_with_reference = {
 
 
 
-## include
+##include
 
 Sometimes you would like to split your configuration files into multiple files and include them. 
 
@@ -182,7 +182,7 @@ include `settings` into settings::
 
 This statement means the file `settings.config` is included, and all non-scoped variables are put into the scope `settings::`. Check (`with`) for more information.
 
-## with
+##with
 
 One of the mechanisms to ensure variables are not overwritten by accident is scoping. In Connect, scopes are specified using double colons (`::`). When you are providing a set of variables in a specified scope, you can use the scope features of Connect. The `include` and `with` keywords manage scope. 
 
@@ -206,11 +206,11 @@ with my_first_scope:: do
 end
 ```
 
-## Objects
+##Objects
 
 Using `create_resource` and `ensure_resource` , Puppet has the means to create resources based on a hash.  These hashes need to be structured in a certain way. Connect makes it easy to build those hashes.
 
-### defining objects
+###Defining objects
 
 ```
 an_object(my_object_name) {
@@ -260,7 +260,7 @@ object = my_object('foo') {
 
 This behavior can be useful when you want to override standard settings included in a default file.
 
-### Using objects
+###Using objects
 
 You can use these objects in regular assignments:
 
