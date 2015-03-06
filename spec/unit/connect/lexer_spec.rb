@@ -29,6 +29,7 @@ RSpec.describe 'Lexer' do
     'do',
     'end',
     'from',
+    'import',
     'to',
     'and',
     'or',

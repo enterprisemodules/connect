@@ -9,6 +9,7 @@ group :development, :test do
 	gem 'guard-bundler'	,:require => false
 	gem 'ruby_gntp'
 	gem 'bogus'
+	gem 'byebug'
 end
 
 gem 'hiera'

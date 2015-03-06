@@ -80,6 +80,9 @@ class Dsl < Racc::Parser
       when (text = @ss.scan(/to\s/))
          action { [:TO, text]}
 
+      when (text = @ss.scan(/import\s/))
+         action { [:IMPORT, text]}
+
       when (text = @ss.scan(/into\s/))
          action { [:INTO, text]}
 

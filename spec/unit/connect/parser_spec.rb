@@ -232,6 +232,76 @@ RSpec.describe 'Parser' do
 
   end
 
+  describe 'import' do
+
+    context 'datasource contains no parameters' do
+      it 'imports data' do
+        expect(dsl).to receive(:import).with('data', nil, 'puppetdb', [])
+        dsl.parse(<<-EOD)
+        import data from puppetdb
+        EOD
+      end
+    end
+
+    context 'source contains a single parameter' do
+      it 'imports data' do
+        expect(dsl).to receive(:import).with('data', nil, 'puppetdb', [10])
+        dsl.parse(<<-EOD)
+        import data from puppetdb(10)
+        EOD
+      end
+    end
+
+    context 'source contains multiple parameters' do
+      it 'imports data' do
+        expect(dsl).to receive(:import).with('data', nil, 'puppetdb', [10,'hallo',1.2])
+        dsl.parse(<<-EOD)
+        import data from puppetdb(10,'hallo', 1.2)
+        EOD
+      end
+    end
+
+    context 'source contains multiple parameters into scope' do
+      it 'imports data' do
+        expect(dsl).to receive(:import).with('data', 'world::' , 'puppetdb', [10,'hallo',1.2])
+        dsl.parse(<<-EOD)
+        import data from puppetdb(10,'hallo', 1.2) into world::
+        EOD
+      end
+    end
+
+    context 'imported name contains a scope' do
+      it 'imports data' do
+        expect(dsl).to receive(:import).with('scope::data', 'world::' , 'puppetdb', [10,'hallo',1.2])
+        dsl.parse(<<-EOD)
+        import scope::data from puppetdb(10,'hallo', 1.2) into world::
+        EOD
+      end
+    end
+
+    context 'imported name contains a scope and a wildcard' do
+      it 'imports data' do
+        expect(dsl).to receive(:import).with('scope::data::*', 'world::' , 'puppetdb', [10,'hallo',1.2])
+        dsl.parse(<<-EOD)
+        import scope::data::* from puppetdb(10,'hallo', 1.2) into world::
+        EOD
+      end
+    end
+
+    context 'imported name contains only a wildcard' do
+      it 'imports data' do
+        expect(dsl).to receive(:import).with('*', 'world::' , 'puppetdb', [10,'hallo',1.2])
+        dsl.parse(<<-EOD)
+        import * from puppetdb(10,'hallo', 1.2) into world::
+        EOD
+      end
+    end
+
+
+  end
+
+
+
   describe 'with' do
 
     context 'a single default scope' do

@@ -21,6 +21,7 @@ rule
     : assignment
     | connection
     | include_file
+    | import_data
     | definition
     | default_scope
   ;
@@ -137,6 +138,32 @@ rule
     : INCLUDE string 													      { include_file(val[1])}
     | INCLUDE string INTO SCOPE                     { include_file(val[1], val[3])}
   ;
+
+  parameter
+    : scalar
+  ;
+
+  parameters
+    : parameters ',' parameter                      { result = val[0] << val[2]}
+    | parameter                                     { result = [val[0]]}
+  ;
+
+  datasource
+    : literal '(' parameters ')'                     { result = [val[0], val[2]]} 
+    | literal                                        { result = [val[0], []]}
+    ;
+
+  imported_name
+    : '*'
+    | literal
+    | SCOPE '*'                                       {result = "#{val[0]}*"}
+    ;
+
+  import_data
+    : IMPORT imported_name FROM datasource INTO SCOPE       { import(val[1], val[5], val[3][0], val[3][1])}
+    | IMPORT imported_name FROM datasource                  { import(val[1], nil, val[3][0], val[3][1])}
+  ;
+
 
   definition
     : IDENTIFIER '(' string ')' iterator block 

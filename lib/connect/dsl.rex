@@ -20,6 +20,7 @@ macro
   HASH_ROCKET         \=\>
   DOUBLE_COLON        ::
   DO                  do\s
+  IMPORT              import\s
   END                 end\s
   FROM                from\s
   TO                  to\s
@@ -37,8 +38,9 @@ rule
   {END}                   { [:END, text]}
   {FROM}                  { [:FROM, text]}
   {TO}                    { [:TO, text]}
+  {IMPORT}                { [:IMPORT, text]}
   {INTO}                  { [:INTO, text]}
-  {WITH}                    { [:WITH, text]}
+  {WITH}                  { [:WITH, text]}
   {INCLUDE}               { [:INCLUDE, text] }
   {TRUE}                  { [:BOOLEAN, true]}
   {FALSE}                 { [:BOOLEAN, false]}

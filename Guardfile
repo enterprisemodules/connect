@@ -12,7 +12,7 @@ module ::Guard
       dir = input_file.dirname
       output_file = dir + 'parser.rb'
       UI.info "Running Racc on #{input_file}"
-      `racc #{input_file} -E -o #{output_file}`
+      `racc #{input_file} -v -o #{output_file}`
     end
   end
 end

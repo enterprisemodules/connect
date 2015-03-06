@@ -81,6 +81,16 @@ module Connect
       pop_scope
     end
 
+
+    ##
+    #
+    # Import the specified data into the values list
+    #
+    def import(name, scope = nil, source, parameters)
+      push_scope(scope)
+      pop_scope
+    end
+
     def interpolate(string)
       @interpolator.translate(string)
     end
