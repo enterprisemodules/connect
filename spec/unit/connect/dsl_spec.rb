@@ -1,5 +1,6 @@
 require 'spec_helper'
 require 'connect/dsl'
+require 'connect/importers/yaml'
 
 RSpec.describe Connect::Dsl do
 
@@ -34,12 +35,30 @@ RSpec.describe Connect::Dsl do
   end
 
   describe '#include_file' do
-
     it 'include\'s a file' do
       expect(includer).to receive(:include)
       dsl.include_file('test')
     end
   end
+
+  describe '#import' do
+    context "importer exists" do
+      it 'passes controlto the importer' do
+        expect(Connect::Importers::Yaml).to receive(:import).with('variable', 'a.yaml')
+         dsl.import('variable', 'scope::', 'yaml', 'a.yaml')
+      end
+    end
+
+    context "importer does not exists" do
+      it 'passes control to the importer' do
+        expect {
+         dsl.import('variable', 'scope::', 'nonexisting', 'a.yaml')
+        }.to raise_exception(ArgumentError, 'specfied importer \'nonexisting\' doesn\'t exist' )
+      end
+    end
+
+  end
+
 
   describe '#define' do
 

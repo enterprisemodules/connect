@@ -7,6 +7,7 @@ require 'connect/includer'
 require 'connect/entries/value'
 require 'connect/entries/connection'
 require 'connect/entries/object'
+require 'connect/importers/base'
 
 module Connect
   class Dsl < Racc::Parser
@@ -71,14 +72,14 @@ module Connect
     # include the specfied file in the parse process.
     #
     def include_file(names, scope = nil)
-      push_scope(scope)
-      @includer.include(names) do |  content, file_name|
-        @current_file = file_name
-        push_current_parse_state
-        scan_str(content) unless empty_definition?(content)
-        pop_current_parse_state
+      in_scope(scope) do
+        @includer.include(names) do |  content, file_name|
+          @current_file = file_name
+          push_current_parse_state
+          scan_str(content) unless empty_definition?(content)
+          pop_current_parse_state
+        end
       end
-      pop_scope
     end
 
 
@@ -87,8 +88,18 @@ module Connect
     # Import the specified data into the values list
     #
     def import(name, scope = nil, source, parameters)
-      push_scope(scope)
-      pop_scope
+      require 'byebug'
+      in_scope(scope) do
+        source_name = source.to_s.capitalize
+        debugger
+        klass_name = "Connect::Importers::#{source_name}"
+        klass = Puppet::Pops::Types::ClassLoader.provide_from_string(klass_name)
+        if klass
+          klass.import(name, parameters) 
+        else
+          raise ArgumentError, "specfied importer '#{source}' doesn't exist" 
+        end
+      end
     end
 
     def interpolate(string)
@@ -159,6 +170,12 @@ module Connect
 
   private
 
+    def in_scope(scope)
+      push_scope(scope)
+      yield
+      pop_scope
+    end
+
     def push_current_parse_state
       state = {
         :ss       => @ss,
@@ -183,6 +200,7 @@ module Connect
     def scoped_name_for(name)
       scoped_name?(name) ? name : @current_scope.join + name
     end
+
 
     def scoped_name?(name)
       name.scan(/\:\:/).length > 0

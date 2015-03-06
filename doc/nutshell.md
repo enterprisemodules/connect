@@ -301,3 +301,30 @@ big_hash = {
   an_object('object_4'),
 }
 ```
+
+###importing data
+
+There ara a lot more posible sources of data for Puppet run's. For example:
+- [PuppetDb](https://docs.puppetlabs.com/puppetdb/)
+- ldapserver
+- [racktables](http://racktables.org/)
+
+Connect allows you to import data from any other datasource. The syntax is:
+
+```
+import into dmz::firewalls puppetdb('http://localhost','/resources/Host','tag=firewall') 
+```
+
+where `dmz::firewalls`  is the variable that will contain the result of a query to the PuppetDb on ` http://localhost/`. The query endpoint is `/resources/Host` and the query string is `tag=firewall`
+
+or using the ` yaml`  importer: 
+
+```
+import into a_yaml_var yaml('/aaa/a.yaml', 'key') 
+```
+
+This imports the file `/aaa/a,yaml` finds the key `key`  and returns the value into the variable `a_yaml_var`
+**WARNING** No importers are available yet. This is only to show the syntax.
+
+
+

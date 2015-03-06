@@ -157,6 +157,7 @@ rule
     : '*'
     | literal
     | SCOPE '*'                                       {result = "#{val[0]}*"}
+    | string
     ;
 
   import_data

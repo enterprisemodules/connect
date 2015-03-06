@@ -298,6 +298,16 @@ RSpec.describe 'Parser' do
     end
 
 
+    context 'imported name contains a string' do
+      it 'imports data' do
+        expect(dsl).to receive(:import).with('%$@##&*^^', 'world::' , 'puppetdb', [10,'hallo',1.2])
+        dsl.parse(<<-EOD)
+        import '%$@##&*^^' from puppetdb(10,'hallo', 1.2) into world::
+        EOD
+      end
+    end
+
+
   end
 
 
