@@ -4,7 +4,7 @@ This file contains an overview of the connect language. It contains short snippe
 
 ##Commenting
 
-Just like in Ruby and Puppet, you can comment your code using `#`. The `#` can start at the beginning of a line, to make the whole line a comment, or you can append the `#` to some statements to comment this line of code.
+Just like in Ruby and Puppet, you can comment your code using `#`. The `#` can start at the beginning of a line, to make the whole line a comment. You can also append the `#` to some statements to comment this line of code.
 
 ```
 #
@@ -29,7 +29,9 @@ scope1::scope2::name = 10
 
 A qualified name including two scopes, namely `scope1::` and `scope2::`
 
-Puppet automatic parameter binding, maps directly to this use of scope. If you are using `hiera(...)` calls to lookup values, you have to make sure, you use the same colon system. This will cause problems:
+Puppet automatic parameter binding, maps directly to this use of scope. If you are using `hiera(...)` calls to lookup values, you have to make sure, you use the same double colon system. 
+
+If you use something else, you might run into trouble. This, for example, will cause problems:
 
 ```
 scope:faulty_variable_name = 10 # Using a single colon
@@ -79,13 +81,13 @@ my_integer_array = [1,2,3,4,5]
 my_string_array  = ['a','b','c']
 ```
 
-Because the underlying Ruby type system, you can mix data types in an array.
+Because underlying type system is based on Ruby, you can mix data types in an array.
 
 ```
 my_mixed_array = [1, 'a', 2, 'b']
 ```
 
-To make it easy to extend ranges, you can use a trailing `,` in arrays. You can  also spread the assignment over multiple lines.
+You can use a trailing `,` in arrays. You can  also write the assignment over multiple lines.
 
 ```
 array_with_trailing_comma = [
@@ -134,7 +136,7 @@ my_hash = {
 
 ```
 
-To make it easy to extend Hashes, you can use trailing `,`.
+You can use trailing `,` if you like.
 
 ```
 my_hash_with_trailing_comma = {
@@ -265,7 +267,14 @@ This behavior can be useful when you want to override standard settings included
 You can use these objects in regular assignments:
 
 ```
-value = an_object('my_object_name') # value will be {'my_object_name' => {'property_1' => 10, 'property_2' => 20}}
+value = an_object('my_object_name') 
+# value will be:
+# {'my_object_name' => 
+#    {
+#    'property_1' => 10, 
+#    'property_2' => 20
+#     }
+#  }
 ```
 
 And in arrays or hashes:
