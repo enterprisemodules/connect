@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/hajee/connect.png?branch=master)](https://travis-ci.org/hajee/connect)
+[![Build Status](https://travis-ci.org/hajee/connect.png?branch=master)](https://travis-ci.org/hajee/connect) [![Coverage Status](https://coveralls.io/repos/hajee/connect/badge.svg)](https://coveralls.io/r/hajee/connect)
 
 ####Table of Contents
 

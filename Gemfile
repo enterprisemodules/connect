@@ -12,6 +12,7 @@ group :development, :test do
   gem 'byebug'
   gem 'rubocop'       , :require => false
   gem 'yard'          , :require => false
+  gem 'coveralls'     , :require => false
 end
 
 gem 'hiera'

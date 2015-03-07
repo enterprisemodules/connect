@@ -1,6 +1,8 @@
 require 'puppet'
 if RUBY_VERSION[0,3] != '1.8'
   require 'bogus/rspec'
+  require 'coveralls'
+  Coveralls.wear!
 else
   #
   # Fix a problem introduced by monky patching in Puppet
