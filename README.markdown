@@ -98,6 +98,8 @@ If you have configured connect, like specified in the `hiera.yaml` **ALL** hiera
 
 Because connect is based on hiera and puppet, you need to have both the hiera and puppet gem installed.
 
+When you want to use the forthcoming Puppetdb datasource, you need to have the [Puppetdb query tool](https://forge.puppetlabs.com/dalen/puppetdbquery installed). The forthcoming LDAP datasource, you need the [ruby ldap gem](https://rubygems.org/gems/net-ldap) installed.
+
 ###Beginning with connect module
 
 To test if everything works, ue the next steps:
