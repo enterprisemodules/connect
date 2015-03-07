@@ -2,3 +2,4 @@
 .DS_Store
 lib/dsl/parser.output
 lib/connect/parser.output
+.yardoc

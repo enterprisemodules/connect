@@ -1,0 +1,31 @@
+# inherit_from: rubocop-todo.yml
+
+AllCops:
+  Exclude:
+    - 'spec/**/*'
+    - 'bin/**/*'
+    - 'lib/connect/parser.rb'
+    - 'lib/connect/lexer.rb'
+    - 'lib/racc/**/*'
+    - 'Gemfile'
+    - 'Guardfile'
+    - 'Rakefile'
+    - 'Vagrantfile'
+
+Eval:
+  Enabled: false
+
+HashSyntax:
+  EnforcedStyle: hash_rockets
+
+Lambda:
+  Enabled: false
+
+LineLength:
+  Max: 132
+
+AccessorMethodName:
+  Enabled: false
+
+MethodLength:
+  Max: 20
