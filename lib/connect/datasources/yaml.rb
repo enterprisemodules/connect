@@ -14,20 +14,21 @@ module Connect
       # can easily access it
       #
       # @param _name [String] the name of the datasource. In this case it will always be `yaml`
-      # @param _file_name [String] The absolute file name to open.
+      # @param file_name [String] The absolute file name to open.
       # @return [Datasource::Base] An initialized datasource
       #
-      def initialize(_name, _file_name)
+      def initialize(_name, file_name)
         super
-        # TODO: implement this
+        @yaml_data ||= YAML.load_file(file_name)
       end
       ##
       #
       # Lookup a key in a parsed yaml file en return it.
       #
-      # @param _key [String] the lookup key of the data to lookup in the current yaml
+      # @param key [String] the lookup key of the data to lookup in the current yaml
       # @return The value at the key.
-      def lookup(_key)
+      def lookup(key)
+        @yaml_data[key]
       end
     end
   end

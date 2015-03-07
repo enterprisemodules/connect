@@ -189,8 +189,8 @@ rule
     : block_begin import_statements block_end
 
   datasource
-    : literal '(' parameters ')'                     { datasource( val[0], val[2])} 
-    | literal                                        { datasource( val[0], [])}
+    : literal '(' parameters ')'                     { datasource( val[0], *val[2])} 
+    | literal                                        { datasource( val[0], *[])}
     ;
 
   import_statements

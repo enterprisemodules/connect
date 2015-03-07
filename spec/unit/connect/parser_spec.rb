@@ -265,7 +265,7 @@ RSpec.describe 'Parser' do
     context 'datasource without parameters' do
       it 'call\'s the datasource initialize without parameters'  do
         allow(dsl).to receive(:import) 
-        expect(dsl).to receive(:datasource).with('puppetdb', [])
+        expect(dsl).to receive(:datasource).with('puppetdb')
         dsl.parse(<<-EOD)
         import from puppetdb { 
           a = 'hallo'
@@ -277,7 +277,7 @@ RSpec.describe 'Parser' do
     context 'datasource with parameters' do
       it 'call\'s the datasource initialize with parameters'  do
         allow(dsl).to receive(:import) 
-        expect(dsl).to receive(:datasource).with('puppetdb', [10,'hello'])
+        expect(dsl).to receive(:datasource).with('puppetdb',10, 'hello')
         dsl.parse(<<-EOD)
         import from puppetdb(10,'hello') { 
           a = 'hallo'

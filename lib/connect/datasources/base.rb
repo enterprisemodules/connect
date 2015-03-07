@@ -25,7 +25,7 @@ module Connect
       # @param _arguments [Array] The arguments passed by the parser.
       # @return [Datasource::Base] An initalized datasource, ready for doing a lookup
       #
-      def initialize(_name, _arguments)
+      def initialize(_name, *_arguments)
       end
 
       ##

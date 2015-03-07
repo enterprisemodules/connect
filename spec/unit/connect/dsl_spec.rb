@@ -62,8 +62,10 @@ RSpec.describe Connect::Dsl do
 
   describe '#import' do
 
+    let(:yaml_file) {Pathname.new('./examples/test1.yaml').expand_path.to_s}
+
     before do
-      dsl.datasource('yaml', [])
+      dsl.datasource('yaml', yaml_file)
     end
 
     it 'call\'s the importer' do

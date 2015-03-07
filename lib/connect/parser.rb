@@ -755,14 +755,14 @@ module_eval(<<'.,.,', 'dsl.y', 184)
 
 module_eval(<<'.,.,', 'dsl.y', 191)
   def _reduce_72(val, _values, result)
-     datasource( val[0], val[2])
+     datasource( val[0], *val[2])
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'dsl.y', 192)
   def _reduce_73(val, _values, result)
-     datasource( val[0], [])
+     datasource( val[0], *[])
     result
   end
 .,.,
