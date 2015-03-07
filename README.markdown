@@ -101,7 +101,7 @@ Because connect is based on hiera and puppet, you need to have both the hiera an
 ###Beginning with connect module
 
 To test if everything works, ue the next steps:
-- add connect to the `hiera.yaml`. You can find an example (here)[https://github.com/hajee/connect/blob/master/setup/hiera.yaml]
+- add connect to the `hiera.yaml`. You can find an example [here](https://github.com/hajee/connect/blob/master/setup/hiera.yaml)
 - Create a `common.config` in the folder `/etc/puppet/config`. You can find [an example here](https://github.com/hajee/connect/blob/master/setup/common.config).
 - Create a `test.pp` with [this content](https://github.com/hajee/connect/blob/master/tests/test.pp)
 - Run the small test manifest and check the output
