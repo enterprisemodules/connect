@@ -17,7 +17,7 @@
 
 ##Overview
 
-When you start with Puppet, using hiera with YAML is an excellent way to split code and configuration data. But when your configuration grows, you start to notice some troubles with this combination:
+Connect is a replacement for YAML in hiera. When you start with Puppet, using hiera with YAML is an excellent way to split code and configuration data. But when your configuration grows, you start to notice some troubles with this combination:
 - Your YAML files start to become bigger and bigger and bigger and slowly but surely become incomprehensible.
 - You would like to reference other values. YAML supports this..... but not between different files. Besides the `&` and `*` anchor syntax becomes a hassle, when you use it much.
 - You have found the yaml interpolation using `"%{hiera('lookup_value')"` to lookup values over you whole YAML structure..... but noticed, you can only use this for strings, and not for other data types.
@@ -34,11 +34,18 @@ Connect is a `hiera` backend. Using the Connect language, you can describe your 
 
 ```
 domain_name = 'example.com'
-dns_node    = "dns.${domain_name}"
+import from puppetdb into datacenter:: {
+  ntp_servers = 'Class[Ntp::Server]'  # Fetches all NTP nodes from puppetdb 
+                                      # into the array datacenter::ntp_servers
+
+  dns_servers = 'Class[Dns::Server]'  # Fetches all DNS nodes from puppetdb 
+                                      # into the array datacenter::dns_servers
+}
 ftp_node    = "ftp.${domain_name}"
 all_nodes   = [
+  ntp_servers,
+  dns_servers,
   ftp_node,
-  all_node,
 ]
 
 include 'generic_settings/*'        # include all settings

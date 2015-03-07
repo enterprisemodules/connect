@@ -20,12 +20,15 @@ rule
   config
     : assignment
     | connection
-    | include_file
-    | import_data
+    | include
+    | import
     | definition
-    | default_scope
+    | with
   ;
 
+  #
+  # Basic building blocks
+  #
   selector
     :
     | SELECTOR
@@ -40,17 +43,6 @@ rule
     : END
     | '}'
     ;
-
-
-  with_scope_do
-    : WITH SCOPE block_begin          { push_scope(val[1])}
-    ;
-
-
-  default_scope
-    : with_scope_do dsl block_end     { pop_scope }
-  ;
-
 
   literal
     : SCOPE IDENTIFIER                         { result = "#{val[0]}#{val[1]}"}
@@ -76,6 +68,21 @@ rule
     | definition
   ;
 
+  values
+    : values ',' value                              { result = val[0] << val[2]}
+    | values ',' reference                          { result = val[0] << val[2]}
+    | value                                         { result = [val[0]]}
+  ;
+
+  parameters
+    : parameters ',' parameter                      { result = val[0] << val[2]}
+    | parameter                                     { result = [val[0]]}
+  ;
+
+  parameter
+    : scalar
+  ;
+
   reference
     : literal                                 {result = reference(val[0])}
     ;
@@ -91,6 +98,20 @@ rule
     | value
   ;
 
+  #
+  # with statement
+  #
+  with_scope_do
+    : WITH SCOPE block_begin          { push_scope(val[1])}
+    ;
+
+  with
+    : with_scope_do dsl block_end     { pop_scope }
+  ;
+
+  #
+  # Define the Array syntax
+  #
   array
     : '[' values optional_comma ']'                 { result = val[1]}
     | '[' reference ',' values optional_comma ']'   { result = val[3].unshift(val[1])}
@@ -98,6 +119,9 @@ rule
     | '[' ']'                                       { result = []}
   ;
 
+  #
+  # Define the Hash syntax
+  #
   hash
     : '{' hashpairs optional_comma '}'              { result = val[1]}
     | '{' '}'                                       { result = MethodHash.new} 
@@ -126,12 +150,9 @@ rule
     | definition                                    { result = MethodHash[val[0].object_id, val[0]]}
   ;
 
-  values
-    : values ',' value                              { result = val[0] << val[2]}
-    | values ',' reference                          { result = val[0] << val[2]}
-    | value                                         { result = [val[0]]}
-  ;
-
+  #
+  # Assignments and connections
+  #
 	assignment
     : literal '=' expression selector               { assign(val[0], val[2], val[3])}
   ;
@@ -140,39 +161,50 @@ rule
     : literal '=' literal selector                  { connect(val[0], val[2], val[3])}
   ;
 
-	include_file
+  #
+  # Define the inport syntax
+  #
+	include
     : INCLUDE string 													      { include_file(val[1])}
     | INCLUDE string INTO SCOPE                     { include_file(val[1], val[3])}
   ;
 
-  parameter
-    : scalar
-  ;
+  #
+  # Define the import syntax
+  #
+  import
+    : import_with_scope_begin import_with_scope_end 
+    | IMPORT FROM datasource import_block
+    ;
 
-  parameters
-    : parameters ',' parameter                      { result = val[0] << val[2]}
-    | parameter                                     { result = [val[0]]}
-  ;
+  import_with_scope_begin
+    : IMPORT FROM datasource INTO SCOPE block_begin { push_scope(val[4])} 
+    ;
+
+  import_with_scope_end
+    :  import_statements block_end                  { pop_scope} 
+    ;
+
+  import_block
+    : block_begin import_statements block_end
 
   datasource
-    : literal '(' parameters ')'                     { result = [val[0], val[2]]} 
-    | literal                                        { result = [val[0], []]}
+    : literal '(' parameters ')'                     { datasource( val[0], val[2])} 
+    | literal                                        { datasource( val[0], [])}
     ;
 
-  imported_name
-    : '*'
-    | literal
-    | SCOPE '*'                                       {result = "#{val[0]}*"}
-    | string
+  import_statements
+    : import_statements import_statement
+    | import_statement
     ;
 
+  import_statement
+    : literal '=' string                             { import(val[0], val[2])}
+    ;
 
-  import_data
-    : IMPORT imported_name FROM datasource INTO SCOPE       { import(val[1], val[5], val[3][0], val[3][1])}
-    | IMPORT imported_name FROM datasource                  { import(val[1], nil, val[3][0], val[3][1])}
-  ;
-
-
+  #
+  # Define object definitions syntax
+  #
   definition
     : IDENTIFIER '(' string ')' iterator definition_block 
                                                     { result = define(val[0], val[2], val[5], val[4])}

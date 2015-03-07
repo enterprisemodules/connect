@@ -1,6 +1,6 @@
 require 'spec_helper'
 require 'connect/dsl'
-require 'connect/importers/yaml'
+require 'connect/datasources/yaml'
 
 RSpec.describe Connect::Dsl do
 
@@ -41,21 +41,36 @@ RSpec.describe Connect::Dsl do
     end
   end
 
-  describe '#import' do
+
+  describe '#datasource' do
     context "importer exists" do
-      it 'passes controlto the importer' do
-        expect(Connect::Importers::Yaml).to receive(:import).with('variable', 'a.yaml')
-         dsl.import('variable', 'scope::', 'yaml', 'a.yaml')
+      it 'instantiate\'s the importer' do
+        expect(Connect::Datasources::Yaml).to receive(:new).with('yaml', 'a.yaml')
+         dsl.datasource('yaml', 'a.yaml')
       end
     end
 
     context "importer does not exists" do
       it 'passes control to the importer' do
         expect {
-         dsl.import('variable', 'scope::', 'nonexisting', 'a.yaml')
+         dsl.datasource('nonexisting', 'a.yaml')
         }.to raise_exception(ArgumentError, 'specfied importer \'nonexisting\' doesn\'t exist' )
       end
     end
+
+  end
+
+  describe '#import' do
+
+    before do
+      dsl.datasource('yaml', [])
+    end
+
+    it 'call\'s the importer' do
+      expect_any_instance_of(Connect::Datasources::Yaml).to receive(:lookup).with('lookup')
+       dsl.import('value', 'lookup')
+    end
+
 
   end
 

@@ -234,83 +234,87 @@ RSpec.describe 'Parser' do
 
   describe 'import' do
 
-    context 'datasource contains no parameters' do
-      it 'imports data' do
-        expect(dsl).to receive(:import).with('data', nil, 'puppetdb', [])
+    context 'a scope specified' do
+      it 'pushes and pos the scope' do
+        allow(dsl).to receive(:datasource)
+        allow(dsl).to receive(:import)
+        expect(dsl).to receive(:push_scope).with('scope::').ordered
+        expect(dsl).to receive(:pop_scope).ordered
         dsl.parse(<<-EOD)
-        import data from puppetdb
+        import from puppetdb into scope:: {
+          a = 'hallo'
+        }
         EOD
       end
     end
 
-    context 'source contains a single parameter' do
-      it 'imports data' do
-        expect(dsl).to receive(:import).with('data', nil, 'puppetdb', [10])
+    context 'without a scope' do
+      it 'doesn\'t manage the scope' do
+        allow(dsl).to receive(:datasource) 
+        allow(dsl).to receive(:import) 
+        expect(dsl).not_to receive(:push_scope).with('scope::')
+        expect(dsl).not_to receive(:pop_scope)
         dsl.parse(<<-EOD)
-        import data from puppetdb(10)
+        import from puppetdb { 
+          a = 'hallo'
+        }
         EOD
       end
     end
 
-    context 'source contains multiple parameters' do
-      it 'imports data' do
-        expect(dsl).to receive(:import).with('data', nil, 'puppetdb', [10,'hallo',1.2])
+    context 'datasource without parameters' do
+      it 'call\'s the datasource initialize without parameters'  do
+        allow(dsl).to receive(:import) 
+        expect(dsl).to receive(:datasource).with('puppetdb', [])
         dsl.parse(<<-EOD)
-        import data from puppetdb(10,'hallo', 1.2)
+        import from puppetdb { 
+          a = 'hallo'
+        }
         EOD
       end
     end
 
-    context 'source contains multiple parameters into scope' do
-      it 'imports data' do
-        expect(dsl).to receive(:import).with('data', 'world::' , 'puppetdb', [10,'hallo',1.2])
+    context 'datasource with parameters' do
+      it 'call\'s the datasource initialize with parameters'  do
+        allow(dsl).to receive(:import) 
+        expect(dsl).to receive(:datasource).with('puppetdb', [10,'hello'])
         dsl.parse(<<-EOD)
-        import data from puppetdb(10,'hallo', 1.2) into world::
+        import from puppetdb(10,'hello') { 
+          a = 'hallo'
+        }
         EOD
       end
     end
 
-    context 'imported name contains a scope' do
-      it 'imports data' do
-        expect(dsl).to receive(:import).with('scope::data', 'world::' , 'puppetdb', [10,'hallo',1.2])
+    context 'single import statement' do
+      it 'call\'s the datasource initialize with parameters'  do
+        allow(dsl).to receive(:datasource) 
+        expect(dsl).to receive(:import).with('a', 'hallo')
         dsl.parse(<<-EOD)
-        import scope::data from puppetdb(10,'hallo', 1.2) into world::
+        import from puppetdb(10,'hello') {
+          a = 'hallo'
+        }
         EOD
       end
     end
 
-    context 'imported name contains a scope and a wildcard' do
-      it 'imports data' do
-        expect(dsl).to receive(:import).with('scope::data::*', 'world::' , 'puppetdb', [10,'hallo',1.2])
+    context 'multiple import statement' do
+      it 'call\'s the datasource initialize with parameters'  do
+        allow(dsl).to receive(:datasource) 
+        allow(dsl).to receive(:import) 
+        expect(dsl).to receive(:import).with('a', 'hallo').ordered
+        expect(dsl).to receive(:import).with('b', 'anything').ordered
         dsl.parse(<<-EOD)
-        import scope::data::* from puppetdb(10,'hallo', 1.2) into world::
-        EOD
-      end
-    end
-
-    context 'imported name contains only a wildcard' do
-      it 'imports data' do
-        expect(dsl).to receive(:import).with('*', 'world::' , 'puppetdb', [10,'hallo',1.2])
-        dsl.parse(<<-EOD)
-        import * from puppetdb(10,'hallo', 1.2) into world::
-        EOD
-      end
-    end
-
-
-    context 'imported name contains a string' do
-      it 'imports data' do
-        expect(dsl).to receive(:import).with('%$@##&*^^', 'world::' , 'puppetdb', [10,'hallo',1.2])
-        dsl.parse(<<-EOD)
-        import '%$@##&*^^' from puppetdb(10,'hallo', 1.2) into world::
+        import from puppetdb(10,'hello') {
+          a = 'hallo'
+          b = 'anything'
+        }
         EOD
       end
     end
 
 
   end
-
-
 
   describe 'with' do
 

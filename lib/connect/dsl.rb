@@ -7,7 +7,7 @@ require 'connect/includer'
 require 'connect/entries/value'
 require 'connect/entries/connection'
 require 'connect/entries/object'
-require 'connect/importers/base'
+require 'connect/datasources/base'
 
 module Connect
   class Dsl < Racc::Parser
@@ -82,23 +82,25 @@ module Connect
       end
     end
 
+    def datasource(name, parameters = [])
+      source_name = name.to_s.capitalize
+      klass_name = "Connect::Datasources::#{source_name}"
+      klass = Puppet::Pops::Types::ClassLoader.provide_from_string(klass_name)
+      if klass
+        @current_importer = klass.new(name, parameters) 
+      else
+        raise ArgumentError, "specfied importer '#{name}' doesn't exist" 
+      end
+    end
 
     ##
     #
     # Import the specified data into the values list
     #
-    def import(name, scope = nil, source, parameters)
-      require 'byebug'
-      in_scope(scope) do
-        source_name = source.to_s.capitalize
-        klass_name = "Connect::Importers::#{source_name}"
-        klass = Puppet::Pops::Types::ClassLoader.provide_from_string(klass_name)
-        if klass
-          klass.import(name, parameters) 
-        else
-          raise ArgumentError, "specfied importer '#{source}' doesn't exist" 
-        end
-      end
+    def import(variable_name, lookup)
+      raise RuntimeError, 'no current importer' unless @current_importer
+      value = @current_importer.lookup(lookup)
+      assign( variable_name, value)
     end
 
     def interpolate(string)
@@ -185,7 +187,7 @@ module Connect
     end
 
     def pop_current_parse_state
-      raise Error, "include stack poped beyond end" if @include_stack.empty?
+      raise RuntimeError, "include stack poped beyond end" if @include_stack.empty?
       state = @include_stack.pop
       @ss     = state[:ss]
       @lineno = state[:lineno]

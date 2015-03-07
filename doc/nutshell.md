@@ -309,13 +309,39 @@ There ara a lot more posible sources of data for Puppet run's. For example:
 - ldapserver
 - [racktables](http://racktables.org/)
 
-Connect allows you to import data from any other datasource. The syntax is:
+Connect allows you to import data from any other datasource. The generic syntax is:
 
 ```
-import into dmz::firewalls puppetdb('http://localhost','/resources/Host','tag=firewall') 
+import from datasource(param1, param2) into scope:: {
+  value1 = 'lookup 1'
+  value2 = 'lookup 2'
+}
 ```
 
-where `dmz::firewalls`  is the variable that will contain the result of a query to the PuppetDb on ` http://localhost/`. The query endpoint is `/resources/Host` and the query string is `tag=firewall`
+Check [the list of available datasources](datasources.md) to see if the datasource you need, exists. Check [how to make your own datasource](building-a-datasource.md) if you need to access other data. 
+
+
+```
+import from puppetdb into datacenter:: {
+  ntp_servers = 'Class[Ntp::Server]'  # Fetches all NTP nodes from puppetdb 
+                                      # into the array datacenter::ntp_servers
+
+  dns_servers = 'Class[Dns::Server]'  # Fetches all DNS nodes from puppetdb 
+                                      # into the array datacenter::dns_servers
+}
+```
+
+Check [the puppetdb api](https://github.com/dalen/puppet-puppetdbquery/blob/master/README.md) for a specification of the supported query language.
+
+Like other blocks, you can also use `begin` and `end`. If you don't specify a scope, the variables will go ito the default scope:
+
+```
+import from puppetdb begin
+  ntp_servers = 'Class[Ntp::Server]'
+  dns_servers = 'Class[Dns::Server]'
+end
+```
+
 
 or using the ` yaml`  importer: 
 
@@ -323,7 +349,8 @@ or using the ` yaml`  importer:
 import into a_yaml_var yaml('/aaa/a.yaml', 'key') 
 ```
 
-This imports the file `/aaa/a,yaml` finds the key `key`  and returns the value into the variable `a_yaml_var`
+This imports the file `/aaa/a,yaml` finds the key `key`  and returns the value into the variable `a_yaml_var`.
+
 **WARNING** No importers are available yet. This is only to show the syntax.
 
 
