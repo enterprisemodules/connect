@@ -1,0 +1,23 @@
+# inherit_from: rubocop-todo.yml
+
+AllCops:
+  Exclude:
+    - 'spec/**'
+
+Eval:
+  Enabled: false
+
+HashSyntax:
+  EnforcedStyle: hash_rockets
+
+Lambda:
+  Enabled: false
+
+LineLength:
+  Max: 132
+
+AccessorMethodName:
+  Enabled: false
+
+MethodLength:
+  Max: 20
