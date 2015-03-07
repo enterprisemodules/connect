@@ -91,7 +91,6 @@ module Connect
       require 'byebug'
       in_scope(scope) do
         source_name = source.to_s.capitalize
-        debugger
         klass_name = "Connect::Importers::#{source_name}"
         klass = Puppet::Pops::Types::ClassLoader.provide_from_string(klass_name)
         if klass

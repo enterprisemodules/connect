@@ -31,18 +31,24 @@ rule
     | SELECTOR
   ;
 
-  with_scope_do
-    : WITH SCOPE DO                 { push_scope(val[1])}
+  block_begin
+    : DO
+    | '{'
     ;
 
-  with_scope_bracket                
-    : WITH SCOPE '{'                { push_scope(val[1])}
+  block_end
+    : END
+    | '}'
+    ;
+
+
+  with_scope_do
+    : WITH SCOPE block_begin          { push_scope(val[1])}
     ;
 
 
   default_scope
-    : with_scope_do dsl END           { pop_scope }
-    | with_scope_bracket dsl '}'      { pop_scope }
+    : with_scope_do dsl block_end     { pop_scope }
   ;
 
 
@@ -160,6 +166,7 @@ rule
     | string
     ;
 
+
   import_data
     : IMPORT imported_name FROM datasource INTO SCOPE       { import(val[1], val[5], val[3][0], val[3][1])}
     | IMPORT imported_name FROM datasource                  { import(val[1], nil, val[3][0], val[3][1])}
@@ -167,16 +174,16 @@ rule
 
 
   definition
-    : IDENTIFIER '(' string ')' iterator block 
+    : IDENTIFIER '(' string ')' iterator definition_block 
                                                     { result = define(val[0], val[2], val[5], val[4])}
-    | IDENTIFIER '(' literal ')' iterator block 
+    | IDENTIFIER '(' literal ')' iterator definition_block 
                                                     { result = define(val[0], val[2], val[5], val[4])}
   ;
 
-  block
+  definition_block
     : 
-    | '{' hashpairs optional_comma '}'              { result = val[1]}
-    | DO hashpairs optional_comma END               { result = val[1]}
+    | block_begin hashpairs optional_comma block_end
+                                                    { result = val[1]}
   ;
 
   iterator
