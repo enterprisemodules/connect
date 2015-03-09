@@ -30,6 +30,7 @@ module Connect
                       interpolator  = nil,
                       includer      = nil
                       )
+      # @yydebug = true
       @values_table  = values_table || ValuesTable.new
       @objects_table = objects_table || ObjectsTable.new
       @interpolator  = interpolator || Interpolator.new(self)
@@ -202,6 +203,10 @@ module Connect
     #
     def pop_scope
       @current_scope.pop
+    end
+
+    def to_param(parameters)
+      parameters.collect {| p| p.is_a?(String) ? "'#{p}'" : p}.join(',')
     end
 
     private

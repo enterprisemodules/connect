@@ -19,7 +19,6 @@ RSpec.describe 'Parser' do
 
   end
 
-
   describe 'Hash syntax' do
 
     context 'without trailing comma' do
@@ -507,6 +506,96 @@ RSpec.describe 'Parser' do
         EOD
       end
     end
+
+  end
+
+  describe 'extended selectors' do
+    context 'using single selector function syntax without parameters' do
+      it "passes to selector" do
+        expect(dsl).to receive(:connect).with('a', 'b', '.single')
+        dsl.parse(<<-EOD)   
+        b = 10
+        a = b.single
+        EOD
+      end
+    end
+
+    context 'using multiple selector function syntax' do
+      it "passes to selector" do
+        expect(dsl).to receive(:connect).with('a', 'b', '.first.second')
+        dsl.parse(<<-EOD)   
+        b = 10
+        a = b.first.second
+        EOD
+      end
+    end
+
+    context 'using single selector function syntax with parameters' do
+      it "passes to selector" do
+        expect(dsl).to receive(:connect).with('a', 'b', '.first(10,\'foo\')')
+        dsl.parse(<<-EOD)   
+        b = 10
+        a = b.first(10,'foo')
+        EOD
+      end
+    end
+
+    context 'using multiple selector function syntax with parameters' do
+      it "passes to selector" do
+        expect(dsl).to receive(:connect).with('a', 'b', ".first(10,'foo').second(1,2,3.4,'hello')")
+        dsl.parse(<<-EOD)   
+        b = 10
+        a = b.first(10,'foo').second(1,2,3.4,'hello')
+        EOD
+      end
+    end
+
+    context 'using single selector Array syntax' do
+      it "passes to selector" do
+        expect(dsl).to receive(:connect).with('a', 'b', "[10]")
+        dsl.parse(<<-EOD)   
+        b = 10
+        a = b[10]
+        EOD
+      end
+
+    end
+
+    context 'using single selector Array syntax with more indexes' do
+      it "passes to selector" do
+        expect(dsl).to receive(:connect).with('a', 'b', "[10,11,12,'hallo']")
+        dsl.parse(<<-EOD)   
+        b = 10
+        a = b[10,11,12,'hallo']
+        EOD
+      end
+
+    end
+
+
+    context 'using multiple selector Array syntax with more indexes' do
+      it "passes to selector" do
+        expect(dsl).to receive(:connect).with('a', 'b', "[10,11,12,'hallo'][1,2,3.5,'hallo']")
+        dsl.parse(<<-EOD)   
+        b = 10
+        a = b[10,11,12,'hallo'][1,2,3.5,'hallo']
+        EOD
+      end
+
+    end
+
+
+    context 'using multiple mixed selectors' do
+      it "passes to selector" do
+        expect(dsl).to receive(:connect).with('a', 'b', ".first[10,11,12,'hallo'][1,2,3.5,'hallo'].last(1,2,3)")
+        dsl.parse(<<-EOD)   
+        b = 10
+        a = b.first[10,11,12,'hallo'][1,2,3.5,'hallo'].last(1,2,3)
+        EOD
+      end
+
+    end
+
 
   end
 

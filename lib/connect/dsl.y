@@ -29,11 +29,6 @@ rule
   #
   # Basic building blocks
   #
-  selector
-    :
-    | SELECTOR
-  ;
-
   block_begin
     : DO
     | '{'
@@ -99,6 +94,28 @@ rule
   ;
 
   #
+  # Selectors
+  #
+  selectors
+    : selectors selector                      { result =val.join}
+    | selector
+    ;
+
+  selector
+    : array_selector
+    | function_selector
+  ;
+
+  array_selector
+    : '[' parameters ']'                      { result = val[0] + to_param(val[1]) +  val[2]}
+    ;
+
+  function_selector
+    : '.' IDENTIFIER                          { result = val.join}
+    | '.' IDENTIFIER '(' parameters ')'       { result = val[0] + val[1] + val[2] + to_param(val[3]) +  val[4]}
+    ;
+
+  #
   # with statement
   #
   with_scope_do
@@ -154,11 +171,13 @@ rule
   # Assignments and connections
   #
 	assignment
-    : literal '=' expression selector               { assign(val[0], val[2], val[3])}
+    : literal '=' expression                        { assign(val[0], val[2], nil)}
+    | literal '=' expression selectors              { assign(val[0], val[2], val[3])}
   ;
 
 	connection
-    : literal '=' literal selector                  { connect(val[0], val[2], val[3])}
+    : literal '=' literal                           { connect(val[0], val[2], nil)}
+    | literal '=' literal selectors                 { connect(val[0], val[2], val[3])}
   ;
 
   #

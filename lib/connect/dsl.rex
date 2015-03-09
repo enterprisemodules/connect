@@ -6,7 +6,6 @@ macro
   NEWLINE              \n
   IDENTIFIER          [a-zA-Z][a-zA-Z0-9_]*
   SCOPE               (?:(?:{IDENTIFIER})?::)+
-  SELECTOR            (?:\[\d+\]|\.{IDENTIFIER})+
   WHITESPACE          [\s|\t]+
   DIGIT               [0-9]
   INT                 {DIGIT}+
@@ -47,7 +46,6 @@ rule
   {UNDEF}                 { [:UNDEF, nil]}
   {SCOPE}                 { [:SCOPE, text]}
   {IDENTIFIER}            { [:IDENTIFIER, text] }
-  {SELECTOR}              { [:SELECTOR, text]}
   \=\>                    { [:HASH_ROCKET, text]}
   {FLOAT}                 { [:FLOAT, text.to_f] }
   {INT}                   { [:INTEGER, text.to_i] }

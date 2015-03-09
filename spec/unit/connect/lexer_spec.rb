@@ -230,38 +230,6 @@ RSpec.describe 'Lexer' do
 
   end
 
-  describe ' selectors' do
-
-    context 'array selector' do
-      it 'is recognised' do
-        content = <<-EOD
-        [10]
-        EOD
-        expect(dsl.tokenize(content)).to eql([[:SELECTOR, '[10]']])
-      end
-    end
-
-    context 'method selector' do
-      it 'is recognised' do
-        content = <<-EOD
-        .first
-        EOD
-        expect(dsl.tokenize(content)).to eql([[:SELECTOR, '.first']])
-      end
-    end
-
-    context 'complex selector' do
-      it 'is recognised' do
-        content = <<-EOD
-        [10].first[20]
-        EOD
-        expect(dsl.tokenize(content)).to eql([[:SELECTOR, '[10].first[20]']])
-      end
-    end
-
-
-  end
-
   describe 'punctuation marks' do
     punctuation_marks = [
       '.', '[', ']', '{', '}', '=', '+', '-', '*', '/', '!', '(', ')'

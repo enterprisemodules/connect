@@ -107,9 +107,6 @@ class Dsl < Racc::Parser
       when (text = @ss.scan(/[a-zA-Z][a-zA-Z0-9_]*/))
          action { [:IDENTIFIER, text] }
 
-      when (text = @ss.scan(/(?:\[\d+\]|\.[a-zA-Z][a-zA-Z0-9_]*)+/))
-         action { [:SELECTOR, text]}
-
       when (text = @ss.scan(/\=\>/))
          action { [:HASH_ROCKET, text]}
 
