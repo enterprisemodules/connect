@@ -8,7 +8,8 @@ module Connect
     #
     # The format of a value that needs to be interpolated
     #
-    REGEXP = /(\$\{\s*(?:[a-zA-Z][a-zA-Z0-9_]*::)*[a-zA-Z][a-zA-Z0-9_]*\s*\})/
+    CONNECT_REGEXP = /(\$\{\s*(?:[a-zA-Z][a-zA-Z0-9_]*::)*[a-zA-Z][a-zA-Z0-9_]*\s*\})/
+    PUPPET_REGEXP = /(\%\{\s*(?:::)?(?:[a-zA-Z][a-zA-Z0-9_]::)*[a-zA-Z][a-zA-Z0-9_]*\s*\})/
 
     def initialize(resolver)
       @resolver = resolver
@@ -21,7 +22,14 @@ module Connect
     # @param string [String] the string to be interpolated
     #
     def translate(string)
-      variable_strings = string.scan(REGEXP).flatten
+      string = interpolate_connect_variables(string)
+      interpolate_puppet_variables(string)
+    end
+
+    private
+
+    def interpolate_connect_variables(string)
+      variable_strings = string.scan(CONNECT_REGEXP).flatten
       variable_names   = variable_strings.map { |n| n.split(/\{|\}/).last.gsub(/\s+/, '') }
       variable_values  = variable_names.map { |n| @resolver.lookup_value(n).to_s }
       variable_strings.each_index do |index|
@@ -29,5 +37,26 @@ module Connect
       end
       string
     end
+
+    def interpolate_puppet_variables(string)
+      variable_strings = string.scan(PUPPET_REGEXP).flatten
+      variable_names   = variable_strings.map { |n| n.split(/\{|\}/).last.gsub(/\s+/, '') }
+      variable_values  = variable_names.map { |n| puppet_interpolate(n) }
+      variable_strings.each_index do |index|
+        string.gsub!(variable_strings[index], variable_values[index])
+      end
+      string
+    end
+
+    private
+
+    def puppet_interpolate(string)
+      if Connect::Dsl.config.scope.nil?
+        ''
+      else
+        Connect::Dsl.config.scope[n].to_s
+      end
+    end
+
   end
 end

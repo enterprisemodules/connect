@@ -32,6 +32,7 @@ class Hiera
       # @return [Any] the value of the specfied key.
       #
       def lookup(key, scope, order_override, _resolution_type)
+        Connect::Dsl.config.scope = scope  # Pass the scope to connect
         parse_config(scope, order_override) unless parsed
         @connect.lookup_value(key)
       end

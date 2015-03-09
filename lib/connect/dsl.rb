@@ -1,3 +1,4 @@
+require 'ostruct'
 require 'connect/parser'
 require 'connect/values_table'
 require 'connect/objects_table'
@@ -12,11 +13,22 @@ require 'connect/datasources/base'
 module Connect
   ##
   #
+  # This is a placeholder for configuration
+  #
+  class Config < OpenStruct
+  end
+  ##
+  #
   # This class contains all methods called by the DSL parser
   #
   # rubocop:disable ClassLength
   class Dsl < Racc::Parser
-    attr_reader :interpolator, :current_file
+    attr_reader :interpolator, :current_file, :config
+    class << self
+      def config
+        @config ||= Config.new
+      end
+    end
     #
     # Coveneance function to create a dsl object for a specfic include directory
     #
@@ -153,6 +165,7 @@ module Connect
     # @param name [String] the name of the object
     # @param type [String] the type of object
     # @param values [Hash] a [Hash] of object values
+    #
     def add_object(name, type, values)
       @objects_table.add(name, type, values)
     end
@@ -165,6 +178,7 @@ module Connect
     # @param name [String] the name of the object
     #
     # @return [ObjectDefinition] the object
+    #
     def lookup_object(type, name)
       @objects_table.lookup(type, name)
     end
@@ -184,6 +198,7 @@ module Connect
     # Lookup the values specified by the name from the value table.
     #
     # @param name [String] the name/ket to lookup in the value_table
+    #
     def lookup_value(name)
       @values_table.lookup(name)
     end
@@ -205,6 +220,12 @@ module Connect
       @current_scope.pop
     end
 
+    ##
+    #
+    # Translate strings in a set of parameters to quoted strings
+    #
+    # @param parameters [Array] the set of parameters to recieve from the parser
+    #
     def to_param(parameters)
       parameters.collect {| p| p.is_a?(String) ? "'#{p}'" : p}.join(',')
     end
