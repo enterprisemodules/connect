@@ -11,7 +11,7 @@ module Connect
     class Encrypted < Base
       ##
       #
-      # Creates a Cypher with the specfied code and saves it. The lookup will use the cypher to decrypt 
+      # Creates a Cypher with the specfied code and saves it. The lookup will use the cypher to decrypt
       # data
       #
       # @param _name [String] the name of the datasource. In this case it will always be `yaml`

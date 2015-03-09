@@ -116,7 +116,7 @@ module Connect
     # @param name [String] the name of the datasource
     # @param parameters [Array] an arry of parameters to pass to the datasource
     #
-    def datasource(name, *parameters )
+    def datasource(name, *parameters)
       source_name = name.to_s.capitalize
       klass_name = "Connect::Datasources::#{source_name}"
       klass = Puppet::Pops::Types::ClassLoader.provide_from_string(klass_name)
@@ -227,7 +227,7 @@ module Connect
     # @param parameters [Array] the set of parameters to recieve from the parser
     #
     def to_param(parameters)
-      parameters.collect {| p| p.is_a?(String) ? "'#{p}'" : p}.join(',')
+      parameters.collect { |p| p.is_a?(String) ? "'#{p}'" : p }.join(',')
     end
 
     private

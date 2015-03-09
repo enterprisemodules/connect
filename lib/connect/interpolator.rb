@@ -50,13 +50,12 @@ module Connect
 
     private
 
-    def puppet_interpolate(string)
+    def puppet_interpolate(variable)
       if Connect::Dsl.config.scope.nil?
         ''
       else
-        Connect::Dsl.config.scope[n].to_s
+        Connect::Dsl.config.scope[variable].to_s
       end
     end
-
   end
 end
