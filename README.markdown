@@ -114,13 +114,40 @@ Notice: Compiled catalog for 10.0.2.15 in environment production in 0.20 seconds
 Notice: Finished catalog run in 0.03 seconds
 ```
 
+###Using the accompanying Vagrant box
+
+You can also get started with a Vagrant box that is preconfigured.
+
+```
+$ vagrant up
+Bringing machine 'default' up with 'virtualbox' provider...
+==> default: Importing base box 'hajee/centos-5.10-x86_64'...
+==> default: Matching MAC address for NAT networking...
+...
+    default: Running: inline script
+==> default: Running provisioner: shell...
+    default: Running: inline script
+==> default: Running provisioner: shell...
+    default: Running: inline script
+$ vagrant ssh
+Last login: Sun Dec 14 17:08:18 2014 from 10.0.2.2
+$ sudo su -               # Make yourself root
+$ cd /vagrant/tests/      # Goto the folder containing the test manifest
+$ puppet apply test.pp    # Apply it.
+Notice: Scope(Class[Test]): it works localhost
+Notice: Compiled catalog for localhost.localdomain in environment production in 0.39 seconds
+Notice: Finished catalog run in 0.03 seconds
+$ 
+```
+On your host os, you can edit the `examples/default.config' file to experiment with the Connect language.
+
 ##detailed description
 
 Check [the Connect Language, in a Nutshell](https://github.com/hajee/connect/blob/master/doc/nutshell.md), for more intro into the language.
 
 ##Troubleshooting
 
-If you make mistakes in the config files, Connect will show you a parse error. The parse error shows the file and the  line number of the parse error. This should help you pinpoint any errors. The parsing of the connect files will be done once before the real puppet run starts. This ensures's Puppet can only start after it hs made certain the Connect configs are syntactically correct
+If you make mistakes in the config files, Connect will show you a parse error. The parse error shows the file and the  line number of the parse error. This should help you pinpoint any errors. The parsing of the connect files will be done once before the real puppet run starts. This ensures's Puppet can only start after it has made certain the Connect configs are syntactically correct
 
 ##Limitations
 

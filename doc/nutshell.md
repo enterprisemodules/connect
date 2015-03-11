@@ -72,7 +72,24 @@ my_connection = my_variable
 my_variable   = 20          # This means my_connection will also be 20
 ```
 
-##Array's
+##Interpolation
+
+Strings in double quotes are interpolated. Strings using single quotes are not interpellated.The Connect interpolator knows about its own variables, and it knows about Puppet variables. Let's first interpolate some Connect variables.
+
+```
+my_name   = 'Bert'
+greetings = "Hello #{bert}"   # Will be "Hello Bert"
+strange   = 'Hello #{bert}'   # Will be "Hello #{bert}"
+```
+Connect also knows how to interpolate Puppet variables:
+
+```
+welcome_text = "Welcome on host %{::hostname}"
+                              # Will be: "Welcome on host host1"
+```
+To allow Connect, to interpolate a Puppet variable, it must be defined in Puppet first. Because most of the times the Connect configuration is parsed before running the big parts of Puppet, you can safely reference fact's. If you want to reference other Puppet variables, you must ensure, they are defined early in the Puppet parsing process (e.g. at the beginning of the `site.pp` for example) 
+
+##Array
 
 To construct an array in Connect, use the `[` and `]`.
 
@@ -161,7 +178,7 @@ my_hash_with_reference = {
 Sometimes you would like to split your configuration files into multiple files and include them. 
 
 ```
-include 'settings'            # Include's a single file in the default
+include 'settings'            # Includes a single file in the default
                               # directory, with extension .config
 
 include 'my_domain/settings'  # include a single file in the subdirectory of
@@ -302,14 +319,42 @@ big_hash = {
 }
 ```
 
+###Selectors
+
+All these big data structures are easy to define, but sometimes you want just 1 entry in the Array or one piece of the Hash. Selectors help you do this.
+
+Selectors can be specified using array syntax
+
+```
+an_array       = [1,2,3,4,5]
+just_one_entry = an_array[2] # = 3
+```
+
+You can also use the method syntax:
+
+```
+an_array    = [1,2,3,4,5]
+first_entry = an_array.first # = 1
+last_entry  = an_array.last # = 1
+```
+
+Selectors are passed to the underlying ruby system. So you can use any method the host language supports on the specified type. The connect syntax allows you to write selectors like this:
+
+```
+array  = [1,2,3,4,5]
+string = array.join(',')   # "1,2,3,4,5" 
+hostname = 'DMACHINE1'     # Development machine 1
+type     = hostname[0,1]   # type is 'O'
+```
+
 ###importing data
 
-There ara a lot more posible sources of data for Puppet run's. For example:
+There ara a lot more possible sources of data for Puppet runs. For example:
 - [PuppetDb](https://docs.puppetlabs.com/puppetdb/)
-- ldapserver
+- LDAP server
 - [racktables](http://racktables.org/)
 
-Connect allows you to import data from any other datasource. The generic syntax is:
+Connect allows you to import data from any other data source. The generic syntax is:
 
 ```
 import from datasource(param1, param2) into scope:: {
@@ -333,7 +378,7 @@ import from puppetdb into datacenter:: {
 
 Check [the puppetdb api](https://github.com/dalen/puppet-puppetdbquery/blob/master/README.md) for a specification of the supported query language.
 
-Like other blocks, you can also use `begin` and `end`. If you don't specify a scope, the variables will go ito the default scope:
+Like other blocks, you can also use `begin` and `end`. If you do not specify a scope, the variables will go ito the default scope:
 
 ```
 import from puppetdb begin
@@ -343,7 +388,7 @@ end
 ```
 
 
-or using the ` yaml`  importer: 
+Alternatively, using the ` yaml`  importer: 
 
 ```
 import into a_yaml_var yaml('/aaa/a.yaml', 'key') 
