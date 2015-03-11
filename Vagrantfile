@@ -5,7 +5,7 @@
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.box = "centos-5.8-x86_64"
+  config.vm.box = "hajee/centos-5.10-x86_64"
 
   config.vm.provision :shell, :inline => "rm -rf /etc/puppet/modules/connect; ln -s /vagrant /etc/puppet/modules/connect"
   config.vm.provision :shell, :inline => "ln -sf /vagrant/hiera.yaml /etc/puppet/hiera.yaml"

@@ -5,3 +5,4 @@ lib/connect/parser.output
 .yardoc
 coverage/.last_run.json
 coverage/.resultset.json
+pkg

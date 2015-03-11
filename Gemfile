@@ -13,6 +13,7 @@ group :development, :test do
   gem 'rubocop'       , :require => false
   gem 'yard'          , :require => false
   gem 'coveralls'     , :require => false
+  gem "puppet-blacksmith"
 end
 
 gem 'hiera'

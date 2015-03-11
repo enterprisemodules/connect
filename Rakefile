@@ -1,4 +1,9 @@
 require 'rspec/core/rake_task'
+begin
+  require 'puppet_blacksmith/rake_tasks'
+rescue LoadError
+end
+
  
 RSpec::Core::RakeTask.new do |c|
   options = ['--color']
@@ -7,6 +12,11 @@ RSpec::Core::RakeTask.new do |c|
 end
  
 task :default => [:lexer, :parser]
+
+desc "Build the module"
+task :build do
+  `puppet module build`
+end
 
 desc "Generate Lexer"
 task :lexer do
