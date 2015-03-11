@@ -24,15 +24,21 @@ Connect is a replacement for YAML in hiera. When you start with Puppet, using hi
 
 If you recognize any of these problems, Connect might be for you! If you haven't run into these problems, Connect is probably like taking a sledgehammer to crack a nut, and it is best to stay with YAML.
 
+Want to know the details, Check [the Connect Language, in a Nutshell](https://github.com/hajee/connect/blob/master/doc/nutshell.md), for more intro into the language.
+
 ##Module Description
 
 Connect is a `hiera` backend. Using the Connect language, you can describe your Puppet parameters in an simple and concise way. You can:
 - separate your config files into separate files and include them when you need them.
 - You can easily reference variables. These variables can be in any other configuration file. They can be in an included configuration, or they can be defined at another hiera hierarchy level.
+- You can import data from other sources like [PuppetDb](https://docs.puppetlabs.com/puppetdb/) and mix and match them with your own parameter settings.
+- You can reference encrypted variables in a safe way.
+
+...and much more.
 
 ##Example
 
-```
+```ruby
 domain_name = 'example.com'
 import from puppetdb into datacenter:: {
   ntp_servers = 'Class[Ntp::Server]'  # Fetches all NTP nodes from puppetdb 
