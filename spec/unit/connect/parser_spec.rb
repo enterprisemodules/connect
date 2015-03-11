@@ -530,6 +530,17 @@ RSpec.describe 'Parser' do
       end
     end
 
+    context 'using selector with &' do
+      it "passes to selector" do
+        expect(dsl).to receive(:connect).with('a', 'b', '.inject(&:ip)')
+        dsl.parse(<<-EOD)   
+        b = 10
+        a = b.inject(&:ip)
+        EOD
+      end
+    end
+
+
     context 'using single selector function syntax with parameters' do
       it "passes to selector" do
         expect(dsl).to receive(:connect).with('a', 'b', '.first(10,\'foo\')')

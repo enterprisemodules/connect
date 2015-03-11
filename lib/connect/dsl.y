@@ -104,6 +104,7 @@ rule
   selector
     : array_selector
     | function_selector
+    | special_selector
   ;
 
   array_selector
@@ -113,6 +114,10 @@ rule
   function_selector
     : '.' IDENTIFIER                          { result = val.join}
     | '.' IDENTIFIER '(' parameters ')'       { result = val[0] + val[1] + val[2] + to_param(val[3]) +  val[4]}
+    ;
+
+  special_selector
+    : '.' IDENTIFIER '(' '&' ':' IDENTIFIER')'    { result = val.join}
     ;
 
   #
