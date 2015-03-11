@@ -18,7 +18,11 @@ module Connect
     # @return the new value
     def run
       if @selector && @selection_value
-        instance_eval("@selection_value#{@selector}")
+        begin
+          instance_eval("@selection_value#{@selector}")
+        rescue => e
+          raise ArgumentError, "usage of invalid selector '#{@selector}' on value '#{@selection_value}', resulted in Ruby error #{e.message}"
+        end
       else
         @value
       end

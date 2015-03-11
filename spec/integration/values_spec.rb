@@ -99,16 +99,6 @@ RSpec.describe 'setting and retrieving values' do
 
   end
 
-  context 'using a selector on a Hash' do
-    it 'is settable and retrievable' do
-      dsl.parse(<<-EOD)
-      a = {'foo': 'bar'}
-      b = a.foo
-      EOD
-      expect(dsl.lookup_value('b')).to eql('bar')
-    end
-  end
-
 
   context 'using a single default scope' do
     it 'is settable and retrievable' do
