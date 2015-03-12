@@ -261,9 +261,9 @@ RSpec.describe 'selectors' do
         it 'is retrievable' do
           dsl.parse(<<-EOD)
             a = 'hallo'
-            b = a[1,2][0]
+            b = a[1,3][0,2]
           EOD
-          expect(dsl.lookup_value('b')).to eq 'a'
+          expect(dsl.lookup_value('b')).to eq 'al'
         end
       end
 
