@@ -23,7 +23,7 @@ RSpec.describe 'Parser' do
 
     context 'without trailing comma' do
       it 'is parsed' do
-        expect(dsl).to receive(:assign).with('a', {:a=>1,:b=>2}, nil)
+        expect(dsl).to receive(:assign).with('a', {'a'=>1,'b'=>2}, nil)
         dsl.parse(<<-EOD)
         a = {a:1,b:2}
         EOD
@@ -32,7 +32,7 @@ RSpec.describe 'Parser' do
 
     context 'with trailing comma' do
       it 'is parsed' do
-        expect(dsl).to receive(:assign).with('a', {:a=>1,:b=>2}, nil)
+        expect(dsl).to receive(:assign).with('a', {'a'=>1,'b'=>2}, nil)
         dsl.parse(<<-EOD)
         a = {a:1,b:2,}
         EOD
@@ -129,7 +129,7 @@ RSpec.describe 'Parser' do
   describe 'Hash assignments' do
 
     it 'using  hash rocket syntax' do
-      expect(dsl).to receive(:assign).with('a', {:a=>10}, nil)
+      expect(dsl).to receive(:assign).with('a', {'a'=>10}, nil)
       dsl.parse(<<-EOD)
       a = { a=>10}
       EOD
@@ -137,7 +137,7 @@ RSpec.describe 'Parser' do
 
 
     it 'using colon syntax' do
-      expect(dsl).to receive(:assign).with('a', {:a=>10}, nil)
+      expect(dsl).to receive(:assign).with('a', {'a'=>10}, nil)
       dsl.parse(<<-EOD)
       a = { a:10}
       EOD
@@ -151,7 +151,7 @@ RSpec.describe 'Parser' do
     end
 
     it 'using a reference' do
-      expect(dsl).to receive(:assign).with('a', {:a=>Connect::Entry::Connection}, nil)
+      expect(dsl).to receive(:assign).with('a', {'a'=>Connect::Entry::Connection}, nil)
       dsl.parse(<<-EOD)
       a = { a:b}
       EOD
@@ -384,7 +384,7 @@ RSpec.describe 'Parser' do
 
     context 'using curly braces' do
       it 'defines an object' do
-        expect(dsl).to receive(:define).with('host','dns', { :ip => '10.0.0.1', :fqdn => 'dns.a.b'}, nil)
+        expect(dsl).to receive(:define).with('host','dns', { 'ip' => '10.0.0.1', 'fqdn' => 'dns.a.b'}, nil)
         dsl.parse(<<-EOD)
         host('dns') { ip: '10.0.0.1', fqdn: 'dns.a.b'}
         EOD
@@ -394,7 +394,7 @@ RSpec.describe 'Parser' do
 
   context 'using do end' do
     it 'defines an object' do
-      expect(dsl).to receive(:define).with('host','dns', { :ip => '10.0.0.1', :fqdn => 'dns.a.b'}, nil)
+      expect(dsl).to receive(:define).with('host','dns', { 'ip' => '10.0.0.1', 'fqdn' => 'dns.a.b'}, nil)
       dsl.parse(<<-EOD)
       host('dns') do ip: '10.0.0.1', fqdn: 'dns.a.b'end
       EOD
@@ -403,7 +403,7 @@ RSpec.describe 'Parser' do
 
   context 'using unquoted strings' do
     it 'defines an object' do
-      expect(dsl).to receive(:define).with('host','dns', { :ip => '10.0.0.1', :fqdn => 'dns.a.b'}, nil)
+      expect(dsl).to receive(:define).with('host','dns', { 'ip' => '10.0.0.1', 'fqdn' => 'dns.a.b'}, nil)
       dsl.parse(<<-EOD)
       host(dns) do ip: '10.0.0.1', fqdn: 'dns.a.b'end
       EOD
@@ -413,7 +413,7 @@ RSpec.describe 'Parser' do
 
   context 'using an iterator' do
     it 'defines an object with an iterator' do
-      expect(dsl).to receive(:define).with('host','dns', { :ip => '10.0.0.1', :fqdn => 'dns.a.b'},  {:from => 10, :to => 20})
+      expect(dsl).to receive(:define).with('host','dns', { 'ip' => '10.0.0.1', 'fqdn' => 'dns.a.b'},  {:from => 10, :to => 20})
       dsl.parse(<<-EOD)
       host('dns') from 10 to 20 do 
       	ip:   '10.0.0.1', 

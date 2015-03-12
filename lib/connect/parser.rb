@@ -6,13 +6,14 @@
 
 require 'racc/parser.rb'
 
+  require 'connect/extended_array'
   require 'connect/dsl'
   require 'connect/lexer'
 
 module Connect
   class Dsl < Racc::Parser
 
-module_eval(<<'...end dsl.y/module_eval...', 'dsl.y', 257)
+module_eval(<<'...end dsl.y/module_eval...', 'dsl.y', 258)
 
   def parse(input)
     scan_str(input) unless empty_definition?(input)
@@ -532,7 +533,7 @@ module_eval(<<'.,.,', 'dsl.y', 67)
 
 module_eval(<<'.,.,', 'dsl.y', 68)
   def _reduce_29(val, _values, result)
-     result = [val[0]]
+     result = ExtendedArray[val[0]]
     result
   end
 .,.,
@@ -684,14 +685,14 @@ module_eval(<<'.,.,', 'dsl.y', 138)
 
 module_eval(<<'.,.,', 'dsl.y', 139)
   def _reduce_55(val, _values, result)
-     result = [val[1]] 
+     result = ExtendedArray[val[1]] 
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'dsl.y', 140)
   def _reduce_56(val, _values, result)
-     result = []
+     result = ExtendedArray[]
     result
   end
 .,.,
@@ -725,7 +726,7 @@ module_eval(<<'.,.,', 'dsl.y', 158)
 
 module_eval(<<'.,.,', 'dsl.y', 162)
   def _reduce_63(val, _values, result)
-     result = val[0].to_sym
+     result = val[0]
     result
   end
 .,.,

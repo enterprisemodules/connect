@@ -1,4 +1,5 @@
 require 'connect/entries/base'
+require 'hash_extensions'
 
 module Connect
   module Entry
@@ -19,7 +20,8 @@ module Connect
         when Array
           @value.map { |e| e.respond_to?(:to_ext) ? e.to_ext : e }
         when Hash
-          MethodHash[@value.map { |k, v| convert_hash_entry(k, v) }]
+          hash = MethodHash[@value.map { |k, v| convert_hash_entry(k, v) }]
+          hash.extend(HashExtensions).stringify_keys
         else
           @value
         end

@@ -93,7 +93,7 @@ RSpec.describe 'setting and retrieving values' do
         dsl.parse(<<-EOD)
         #{scope}a = {foo: 'bar'}
         EOD
-        expect(dsl.lookup_value("#{scope}a")).to eql({:foo =>'bar'})
+        expect(dsl.lookup_value("#{scope}a")).to eql({'foo' =>'bar'})
       end
     end
 

@@ -269,7 +269,51 @@ RSpec.describe 'selectors' do
 
     end
 
+  end
 
+  context 'special selectors' do
+
+    context 'Array extraction' do
+
+      context'on an array of hashes' do
+        it 'returns an array of entries' do
+          dsl.parse(<<-EOD)
+            a = [
+              {name: 'foo'},
+              {name: 'bar'}
+            ]
+            b = a.extract('name')
+          EOD
+          expect(dsl.lookup_value('b')).to eq ['foo','bar']
+        end
+      end
+
+      context'on an array of objects' do
+        it 'returns an array of entries' do
+          dsl.parse(<<-EOD)
+            a = [
+              foo('jabadoo_1'){name: 'foo'},
+              foo('jabadoo_2'){name: 'bar'}
+            ]
+            b = a.extract('name')
+          EOD
+          expect(dsl.lookup_value('b')).to eq ['foo','bar']
+        end
+      end
+
+      context'on an array of integers' do
+        it 'fails' do
+          dsl.parse(<<-EOD)
+            a = [1,2,3,4,5,6]
+            b = a.extract('name')
+          EOD
+          expect{
+            dsl.lookup_value('b')
+          }.to raise_error(/usage of invalid selector/)
+        end
+      end
+
+    end
   end
 
 

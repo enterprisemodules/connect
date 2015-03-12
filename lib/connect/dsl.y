@@ -66,7 +66,7 @@ rule
   values
     : values ',' value                              { result = val[0] << val[2]}
     | values ',' reference                          { result = val[0] << val[2]}
-    | value                                         { result = [val[0]]}
+    | value                                         { result = ExtendedArray[val[0]]}
   ;
 
   parameters
@@ -137,8 +137,8 @@ rule
   array
     : '[' values optional_comma ']'                 { result = val[1]}
     | '[' reference ',' values optional_comma ']'   { result = val[3].unshift(val[1])}
-    | '[' reference optional_comma ']'              { result = [val[1]] }
-    | '[' ']'                                       { result = []}
+    | '[' reference optional_comma ']'              { result = ExtendedArray[val[1]] }
+    | '[' ']'                                       { result = ExtendedArray[]}
   ;
 
   #
@@ -160,7 +160,7 @@ rule
   ;
 
   hashkey
-    : IDENTIFIER                                    { result = val[0].to_sym}
+    : IDENTIFIER                                    { result = val[0]}
     | scalar
   ;
 
@@ -250,6 +250,7 @@ rule
 end
 
 ---- header
+  require 'connect/extended_array'
   require 'connect/dsl'
   require 'connect/lexer'
 
