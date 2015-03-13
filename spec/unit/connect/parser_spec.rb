@@ -38,6 +38,25 @@ RSpec.describe 'Parser' do
         EOD
       end
     end
+
+    context 'with an array as value' do
+      it 'is parsed' do
+        expect(dsl).to receive(:assign).with('a', {'a'=>1,'b'=>[2,3]}, nil)
+        dsl.parse(<<-EOD)
+        a = {a:1,b:[2,3]}
+        EOD
+      end
+    end
+
+    context 'with a hash as value' do
+      it 'is parsed' do
+        expect(dsl).to receive(:assign).with('a', {'a'=>1,'b'=>{'c' => 'd'}}, nil)
+        dsl.parse(<<-EOD)
+        a = {a:1,b:{'c'=>'d'}}
+        EOD
+      end
+    end
+
   end
 
   describe 'Array syntax' do
@@ -50,6 +69,34 @@ RSpec.describe 'Parser' do
         EOD
       end
     end
+
+    context 'with an Array' do
+      it 'is parsed' do
+        expect(dsl).to receive(:assign).with('a', [1,[2,3],4], nil)
+        dsl.parse(<<-EOD)
+        a = [1,[2,3],4]
+        EOD
+      end
+    end
+
+    context 'with a Hash' do
+      it 'is parsed' do
+        expect(dsl).to receive(:assign).with('a', [1,{'x'=>1},4], nil)
+        dsl.parse(<<-EOD)
+        a = [1,{x:1},4]
+        EOD
+      end
+    end
+
+    context 'with an Object' do
+      it 'is parsed' do
+        expect(dsl).to receive(:assign).with('a', [1,Hash,4], nil)
+        dsl.parse(<<-EOD)
+        a = [1,foo('bar'),4]
+        EOD
+      end
+    end
+
 
     context 'with trailing comma' do
       it 'is parsed' do
