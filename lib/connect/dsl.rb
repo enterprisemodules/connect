@@ -7,7 +7,6 @@ require 'connect/interpolator'
 require 'connect/includer'
 require 'connect/entries/value'
 require 'connect/entries/connection'
-require 'connect/entries/object'
 require 'connect/datasources/base'
 
 module Connect
@@ -60,11 +59,7 @@ module Connect
     #
     def assign(name, value, selector = nil)
       name = scoped_name_for(name)
-      if value.is_a?(ObjectDefinition)
-        entry = ValuesTable.object_entry(name, value, selector)
-      else
-        entry = ValuesTable.value_entry(name, value, selector)
-      end
+      entry = ValuesTable.value_entry(name, value, selector)
       add_value(entry)
     end
 

@@ -2,7 +2,6 @@ require 'connect/selector'
 require 'connect/entries/null'
 require 'connect/entries/value'
 require 'connect/entries/connection'
-require 'connect/entries/object'
 require 'method_hash'
 
 module Connect
@@ -78,19 +77,6 @@ module Connect
     def self.connection_entry(name, value, selector = nil, value_table = nil)
       fail ArgumentError, 'invalid value_table' if value_table.nil?
       Entry::Connection.new(name, value, selector, value_table).to_entry
-    end
-
-    ##
-    #
-    # Create an object entry for the value table.
-    #
-    # @param name [String] the name/ket of the entry
-    # @param value [Any] the value to be stored
-    # @param selector [String] the selector to be applied
-    # @return [Connect::Entries::Base] an entry for the table
-    #
-    def self.object_entry(name, value, selector = nil)
-      Entry::Object.new(name, value, selector).to_entry
     end
   end
 end

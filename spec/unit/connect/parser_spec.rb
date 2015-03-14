@@ -98,6 +98,16 @@ RSpec.describe 'Parser' do
     end
 
 
+    context 'with an Object and selector' do
+      it 'is parsed' do
+        expect(dsl).to receive(:assign).with('a', [Connect::Entry::Value], nil)
+        dsl.parse(<<-EOD)
+        a = [foo('bar').ip]
+        EOD
+      end
+    end
+
+
     context 'with trailing comma' do
       it 'is parsed' do
         expect(dsl).to receive(:assign).with('a', [1,2,3,4], nil)

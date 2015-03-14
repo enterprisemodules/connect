@@ -68,6 +68,7 @@ rule
     : values ',' value                              { result = val[0] << val[2]}
     | values ',' reference                          { result = val[0] << val[2]}
     | value                                         { result = ExtendedArray[val[0]]}
+    | value selector                                { result = ExtendedArray[Entry::Value.new('', val[0], val[1])]}
   ;
 
   parameters

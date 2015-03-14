@@ -96,16 +96,32 @@ RSpec.describe 'objects' do
 
   context 'as part of an array' do
 
-    it 'is retrievable' do
-      dsl.parse(<<-EOD)
-      foo('foo.bar.nl') {
-        ip:   '10.0.0.100',
-        alias: 'foo'
-      }
-      a = [foo('foo.bar.nl'),10]
-      EOD
-      expect(dsl.lookup_value('a')).to eql([{ 'foo.bar.nl' => {'ip' => '10.0.0.100', 'alias' =>'foo'}},10])
+    context 'without selector' do
+      it 'is retrievable' do
+        dsl.parse(<<-EOD)
+        foo('foo.bar.nl') {
+          ip:   '10.0.0.100',
+          alias: 'foo'
+        }
+        a = [foo('foo.bar.nl'),10]
+        EOD
+        expect(dsl.lookup_value('a')).to eql([{ 'foo.bar.nl' => {'ip' => '10.0.0.100', 'alias' =>'foo'}},10])
+      end
     end
+
+    # context 'with selector' do
+    #   it 'is retrievable' do
+    #     dsl.parse(<<-EOD)
+    #     foo('foo.bar.nl') {
+    #       ip:   '10.0.0.100',
+    #       alias: 'foo'
+    #     }
+    #     a = [foo('foo.bar.nl').ip]
+    #     EOD
+    #     expect(dsl.lookup_value('a')).to eql(['10.0.0.100'])
+    #   end
+    # end
+
   end
 
   context 'as part of an Hash content' do

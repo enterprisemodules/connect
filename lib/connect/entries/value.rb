@@ -19,6 +19,8 @@ module Connect
         value = case @value
         when Array
           @value.map { |e| e.respond_to?(:to_ext) ? e.to_ext : e }
+        when Connect::ObjectDefinition
+          @value.to_ext
         when Hash
           hash = MethodHash[@value.map { |k, v| convert_hash_entry(k, v) }]
           hash.extend(HashExtensions).stringify_keys

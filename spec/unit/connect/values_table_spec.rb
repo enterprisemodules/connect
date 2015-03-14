@@ -9,7 +9,6 @@ RSpec.describe Connect::ValuesTable  do
 	let(:value_entry) 		{ Connect::ValuesTable.value_entry('existing_entry', 'exists') }
 	let(:other_entry) 		{ Connect::ValuesTable.value_entry('existing_entry', 'other') }
 	let(:connection_entry){ Connect::ValuesTable.connection_entry('connection', 'existing_entry', nil, table)}
-	let(:object_entry)		{ Connect::ValuesTable.object_entry('object', object_value)}
 
 	describe '#add' do
 
@@ -84,37 +83,6 @@ RSpec.describe Connect::ValuesTable  do
 			end
 
 		end
-
-
-		context 'for an object' do
-
-			context 'object entry exists' do
-
-				before do
-					table.add(object_entry)
-				end
-
-				it 'returns the value' do
-					expect(table.lookup('object')).to eql({'object_name' => { 'text' => 'exists'}})
-				end
-
-				# context 'with a specfied selector' do
-				# 	it 'returns the specified part of the value' do
-				# 		expect(table.lookup('object','.text')).to eql 'exists'
-				# 	end
-				# end
-			end
-
-			context 'object doesn\'t exists' do
-
-				it 'returns a nill' do
-					expect(table.lookup('object')).to be_nil
-				end
-			end
-		end
-
-
-
 
 
 	end
