@@ -22,7 +22,7 @@ rule
     | connection
     | include
     | import
-    | definition
+    | object_definition
     | with
   ;
 
@@ -60,7 +60,8 @@ rule
     : scalar
     | array
     | hash
-    | definition
+    | object_definition
+    | object_reference
   ;
 
   values
@@ -164,12 +165,15 @@ rule
     | scalar
   ;
 
+  hash_seperator
+    : ':'
+    | HASH_ROCKET
+    ;
+
   hashpair
-    : hashkey ':' value                             { result = MethodHash[val[0], val[2]] }
-    | hashkey HASH_ROCKET value                     { result = MethodHash[val[0], val[2]] }
-    | hashkey ':' reference                         { result = MethodHash[val[0], val[2]] }
-    | hashkey HASH_ROCKET reference                 { result = MethodHash[val[0], val[2]] }
-    | definition                                    { result = MethodHash[val[0].object_id, val[0]]}
+    : hashkey hash_seperator value                  { result = MethodHash[val[0], val[2]] }
+    | hashkey hash_seperator reference              { result = MethodHash[val[0], val[2]] }
+    | object_reference                              { result = MethodHash[val[0].object_id, val[0]]}
   ;
 
   #
@@ -229,16 +233,21 @@ rule
   #
   # Define object definitions syntax
   #
-  definition
+  object_definition
     : IDENTIFIER '(' string ')' iterator definition_block 
                                                     { result = define(val[0], val[2], val[5], val[4])}
     | IDENTIFIER '(' literal ')' iterator definition_block 
                                                     { result = define(val[0], val[2], val[5], val[4])}
   ;
 
+  object_reference
+    : IDENTIFIER '(' literal ')'                    { result = define(val[0], val[2], val[5], val[4])}
+    | IDENTIFIER '(' string ')'                     { result = define(val[0], val[2], val[5], val[4])} 
+  ;
+
+
   definition_block
-    : 
-    | block_begin hashpairs optional_comma block_end
+    : block_begin hashpairs optional_comma block_end
                                                     { result = val[1]}
   ;
 
