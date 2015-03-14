@@ -456,9 +456,9 @@ RSpec.describe 'Parser' do
 
   context 'using unquoted strings' do
     it 'defines an object' do
-      expect(dsl).to receive(:define).with('host','dns', { 'ip' => '10.0.0.1', 'fqdn' => 'dns.a.b'}, nil)
+      expect(dsl).to receive(:define).with('foo','bar', { 'ip' => '10.0.0.1', 'fqdn' => 'dns.a.b'}, nil)
       dsl.parse(<<-EOD)
-      host(dns) do ip: '10.0.0.1', fqdn: 'dns.a.b'end
+      foo(bar) do ip: '10.0.0.1', fqdn: 'dns.a.b'end
       EOD
     end
   end
@@ -466,13 +466,38 @@ RSpec.describe 'Parser' do
 
   context 'using an iterator' do
     it 'defines an object with an iterator' do
-      expect(dsl).to receive(:define).with('host','dns', { 'ip' => '10.0.0.1', 'fqdn' => 'dns.a.b'},  {:from => 10, :to => 20})
+      expect(dsl).to receive(:define).with('foo','bar', { 'ip' => '10.0.0.1', 'fqdn' => 'dns.a.b'},  {:from => 10, :to => 20})
       dsl.parse(<<-EOD)
-      host('dns') from 10 to 20 do 
+      foo('bar') from 10 to 20 do 
       	ip:   '10.0.0.1', 
       	fqdn: 'dns.a.b'end
       EOD
     end
+  end
+
+
+
+  describe 'object references' do
+
+    context 'using literal syntax' do
+      it 'refereces an object' do
+        expect(dsl).to receive(:define).with('foo','bar', nil, nil)
+        dsl.parse(<<-EOD)
+        a = foo(bar)
+        EOD
+      end
+    end
+
+    context 'using string syntax' do
+      it 'refereces an object' do
+        expect(dsl).to receive(:define).with('foo','bar', nil, nil)
+        dsl.parse(<<-EOD)
+        a = foo(bar)
+        EOD
+      end
+    end
+
+
   end
 
   describe 'interpolation' do
