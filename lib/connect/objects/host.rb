@@ -1,4 +1,4 @@
-require 'connect/entries/object'
+require 'connect/object_definition'
 
 module Connect
   #
@@ -15,9 +15,13 @@ module Connect
     class Host < Connect::ObjectDefinition
       def initialize(type, name, data)
         super(type, name, data)
-        self['hostname'] = name.split('.').first
-        self['domain']   = name.split('.')[-2..-1].join('.')
-        self['fqdn']     = name
+        begin
+          self['hostname'] = name.split('.').first
+          self['domain']   = name.split('.')[-2..-1].join('.')
+          self['fqdn']     = name
+        rescue
+          raise ArgumentError, 'Invalid host object definition'
+        end
       end
     end
   end
