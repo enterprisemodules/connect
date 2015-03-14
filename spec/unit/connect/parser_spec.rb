@@ -217,15 +217,23 @@ RSpec.describe 'Parser' do
       expect(dsl).to receive(:assign).with('a', Hash, nil)
       dsl.parse(<<-EOD)
       a = { 
-            something('else'),
-            x: 10,
-            obj('test')
-          }
+        something('else'),
+        x: 10,
+        obj('test')
+      }
       EOD
     end
 
+  end
 
+  describe 'Object assignments' do
 
+    it 'using  hash rocket syntax' do
+      expect(dsl).to receive(:assign).with('a', Connect::ObjectDefinition, nil)
+      dsl.parse(<<-EOD)
+      a = foo('bar')
+      EOD
+    end
   end
 
   describe 'connections' do
@@ -424,8 +432,6 @@ RSpec.describe 'Parser' do
     end
 
   end
-
-
 
   describe 'object definitions' do
 
