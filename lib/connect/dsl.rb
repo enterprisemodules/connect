@@ -200,6 +200,26 @@ module Connect
 
     ##
     #
+    # Dump the objects table
+    #
+    # @return [String] the content of the objects table
+    def dump_objects
+      @objects_table.dump
+    end
+
+
+    ##
+    #
+    # Dump the values table
+    #
+    # @return [String] the content of the values table
+    #
+    def dump_values
+      @values_table.dump
+    end
+
+    ##
+    #
     # Push the current variable scope to the stack.
     #
     # @param scope [String] the new scope scope

@@ -47,6 +47,23 @@ RSpec.describe Connect::ObjectsTable do
 
 	end
 
+	if RUBY_VERSION != '1.8.7'
+		#
+		# The ommission of Hash ordering, makes these tests fail sometimes
+		# We remove them from the 1.8.7 set of tests
+		#
+		describe '#dump' do
+
+			before do
+				table.add('person', 'bert', values)
+			end
+
+			it 'writes the content of the objects table in readable format' do
+				expect(table.dump()).to eq("person(bert) = {\"age\"=>20, \"gender\"=>\"male\"}\n")
+			end
+		end
+	end
+
 
 end
 

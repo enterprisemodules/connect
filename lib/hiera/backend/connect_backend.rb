@@ -16,7 +16,9 @@ class Hiera
 
       def initialize
         Hiera.debug('DSL Backend initialized')
-        configs_dir = Config[:connect].fetch(:datadir) { '/etc/puppet/config' }
+        configs_dir  = Config[:connect].fetch(:datadir) { '/etc/puppet/config' }
+        @dump_values  = Config[:connect].fetch(:dump_values) { false}
+        @dump_objects = Config[:connect].fetch(:dump_objects) { false }
         @connect    = Connect::Dsl.instance(configs_dir)
         @parsed = false
       end
@@ -33,7 +35,7 @@ class Hiera
       #
       def lookup(key, scope, order_override, _resolution_type)
         Connect::Dsl.config.scope = scope  # Pass the scope to connect
-        parse_config(scope, order_override) unless parsed
+        parse_config(scope, order_override) unless @parsed
         @connect.lookup_value(key)
       end
 
@@ -44,6 +46,9 @@ class Hiera
           file = Backend.datafile(:connect, scope, source, 'config')
           parse_file(file) if file
         end
+        @parsed = true
+        @connect.dump_values if @dump_values
+        @connect.dump_objects if @dump_objects
       end
 
       def reversed_hierarchy(scope, order_override)

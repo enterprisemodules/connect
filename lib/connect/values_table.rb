@@ -27,6 +27,23 @@ module Connect
 
     ##
     #
+    # return the content of the values table in human readable format
+    #
+    # @return table [String] the contents of the tabke
+    #
+    def dump
+      output = ''
+      @values_table.keys.sort.each do |key| 
+        #
+        # Use inspect, to make ruby 1.8.7 and ruby 1.8 and higher compatible
+        output << "#{key} = #{lookup(key).inspect}\n"
+      end
+      output
+    end
+
+
+    ##
+    #
     # Finds an entry in the lookup table and translates it to the external representationof it.
     #
     # @param name [String] the key/name of the entry in the list

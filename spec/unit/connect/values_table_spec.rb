@@ -87,4 +87,27 @@ RSpec.describe Connect::ValuesTable  do
 
 	end
 
+	if RUBY_VERSION != '1.8.7'
+		#
+		# The ommission of Hash ordering, makes these tests fail sometimes
+		# We remove them from the 1.8.7 set of tests
+		#
+		describe '#dump' do
+
+			before do
+				dsl = Connect::Dsl.new(table)
+				dsl.parse(<<-EOD)
+				a = 10
+				b = foo('bar')
+				c = b
+				d = a
+				EOD
+			end
+
+			it 'dumps the content of the values table' do
+				expect(table.dump).to eq("a = 10\nb = {\"bar\"=>{}}\nc = {\"bar\"=>{}}\nd = 10\n")
+			end
+		end
+	end
+
 end

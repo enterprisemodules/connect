@@ -29,6 +29,7 @@ module Connect
         { @name => self }
       end
 
+
       ##
       #
       # Make sure we have the final object in t

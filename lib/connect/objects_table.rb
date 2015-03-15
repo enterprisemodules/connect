@@ -36,6 +36,27 @@ module Connect
       from_table(type, name)
     end
 
+    ##
+    #
+    # return the content of the objects table in human readable format
+    #
+    # @return table [String] the contents of the tabke
+    #
+    def dump
+      output = ''
+      @objects_table.keys.sort.each do |key| 
+        object_entry = @objects_table[key]
+        name = object_entry.__name__
+        type = object_entry.__type__
+        #
+        # use the inspect to make ruby 1.8.7 and 1.9.3 compatible
+        #
+        object = lookup(type,name).to_hash.inspect
+        output << "#{type}(#{name}) = #{object}\n"
+      end
+      output
+    end
+
     #
     # Autoload a ruby class based on the type of the object. If it doesn't exists, just
     # instantiate a ObjectDefinition. This mechanism allows extension of the connect classes

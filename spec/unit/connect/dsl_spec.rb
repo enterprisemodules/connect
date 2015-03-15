@@ -168,4 +168,20 @@ RSpec.describe Connect::Dsl do
 
   end
 
+
+  describe '#dump_objects' do
+    it 'asks the objects table to fump itself' do
+      expect(objects_table).to receive(:dump)
+      dsl.dump_objects
+    end
+  end
+
+  describe '#dump_values' do
+    it 'asks the values table to dump itself' do
+      expect(values_table).to receive(:dump)
+      dsl.dump_values
+    end
+  end
+
+
 end
