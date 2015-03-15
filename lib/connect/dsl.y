@@ -62,14 +62,13 @@ rule
     | hash
     | object_definition
     | object_reference
+    | reference
   ;
 
   values
-    : values ',' value                              { result = val[0] << val[2]}
-    | values ',' reference                          { result = val[0] << val[2]}
-    | value                                         { result = ExtendedArray[val[0]]}
-    | value selector                                { result = ExtendedArray[Entry::Value.new('', val[0], val[1])]}
-  ;
+    : values ',' expression                              { result = val[0] << val[2]}
+    | expression                                         { result = ExtendedArray[val[0]]}
+   ;
 
   parameters
     : parameters ',' parameter                      { result = val[0] << val[2]}
@@ -77,7 +76,7 @@ rule
   ;
 
   parameter
-    : scalar
+    : expression
   ;
 
   reference
@@ -92,6 +91,7 @@ rule
     | value '-' value                         { result = subtract(val[0],val[2])}
     | value OR value                          { result = do_or(val[0],val[2])}
     | value AND value                         { result = do_and(val[0],val[2])}
+    | value selectors
     | value
   ;
 
@@ -138,8 +138,6 @@ rule
   #
   array
     : '[' values optional_comma ']'                 { result = val[1]}
-    | '[' reference ',' values optional_comma ']'   { result = val[3].unshift(val[1])}
-    | '[' reference optional_comma ']'              { result = ExtendedArray[val[1]] }
     | '[' ']'                                       { result = ExtendedArray[]}
   ;
 
@@ -172,8 +170,7 @@ rule
     ;
 
   hashpair
-    : hashkey hash_seperator value                  { result = MethodHash[val[0], val[2]] }
-    | hashkey hash_seperator reference              { result = MethodHash[val[0], val[2]] }
+    : hashkey hash_seperator expression            { result = MethodHash[val[0], val[2]] }
     | object_reference                              { result = MethodHash[val[0].object_id, val[0]]}
   ;
 
@@ -182,13 +179,8 @@ rule
   #
 	assignment
     : literal '=' expression                        { assign(val[0], val[2], nil)}
-    | literal '=' expression selectors              { assign(val[0], val[2], val[3])}
   ;
 
-	connection
-    : literal '=' literal                           { connect(val[0], val[2], nil)}
-    | literal '=' literal selectors                 { connect(val[0], val[2], val[3])}
-  ;
 
   #
   # Define the inport syntax

@@ -102,7 +102,8 @@ RSpec.describe 'Parser' do
       it 'is parsed' do
         expect(dsl).to receive(:assign).with('a', [Connect::Entry::Value], nil)
         dsl.parse(<<-EOD)
-        a = [foo('bar').ip]
+        # a = [foo('bar').ip]
+        a = foo('bar').ip
         EOD
       end
     end
