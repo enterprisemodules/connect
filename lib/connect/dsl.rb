@@ -44,6 +44,8 @@ module Connect
       # @yydebug = true
       @values_table  = values_table || ValuesTable.new
       @objects_table = objects_table || ObjectsTable.new
+      Connect::Entry::Base.values_table  = @values_table
+      Connect::Entry::Base.objects_table = @objects_table
       @interpolator  = interpolator || Interpolator.new(self)
       @includer      = includer || Includer.new
       @include_stack = []
@@ -55,35 +57,29 @@ module Connect
     #
     # @param name [String] the name of the assignment
     # @param value [Any] the value of the assignment
-    # @param selector [String] the selector to be used
     #
-    def assign(name, value, selector = nil)
+    def assign(name, value)
       name = scoped_name_for(name)
-      entry = ValuesTable.value_entry(name, value, selector)
+      entry = ValuesTable.value_entry(name, value)
       add_value(entry)
     end
 
     ##
     #
-    # Connect the variable to an other variable in the value table
+    # Add the selector to the last object
     #
-    # @param from [String] the name of the assignment.
-    # @param to [String] the value of the assignment
-    # @param selector [String] the selector to be used
-    #
-    #
-    def connect(from, to, selector = nil)
-      from = scoped_name_for(from)
-      to   = scoped_name_for(to)
-      entry = ValuesTable.connection_entry(from, to, selector, @values_table)
-      add_value(entry)
+    def selector(value, selector)
+      value.selector = selector
+      value
     end
+
+
     ##
     #
     # Connect the variable to an other variable in the value table
     #
     def reference(to)
-      Entry::Connection.new('', to, nil, @values_table)
+      Entry::Reference.new(to, nil)
     end
     ##
     #
@@ -146,11 +142,20 @@ module Connect
     # Define or lookup an object. If the values is empty, this method returns just the values.
     # It the values parameter is set, a new entry will be added to the objects table
     #
-    def define(type, name, values = nil, iterator = nil)
+    def define_object(type, name, values = nil, iterator = nil)
       fail ArgumentError, 'no iterator allowed if no block defined' if values.nil? && !iterator.nil?
       validate_iterator(iterator) unless iterator.nil?
       add_object(type, name, values) if values
-      lookup_object(type, name)
+      Entry::ObjectReference.new(type, name, nil)
+    end
+
+    ##
+    #
+    # Define or lookup an object. If the values is empty, this method returns just the values.
+    # It the values parameter is set, a new entry will be added to the objects table
+    #
+    def reference_object(type, name)
+      Entry::ObjectReference.new(type, name, nil)
     end
 
     ##

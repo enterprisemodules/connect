@@ -18,26 +18,35 @@ module Connect
       def to_ext
         value = case @value
         when Array
-          @value.map { |e| e.respond_to?(:to_ext) ? e.to_ext : e }
+          #
+          # Because we've defined some convinieance methods for Array's, we 
+          # force the return value to be of type ExtendedArray
+          #
+          Connect::ExtendedArray.new(@value.map { |e| e.respond_to?(:final) ? e.final : e })
         when Hash
-          hash = MethodHash[@value.map { |k, v| convert_hash_entry(k, v) }]
+          #
+          # Because we've defined some conveniance methods for Hashes, we force
+          # the type to be a MathodHash
+          #
+          MethodHash[@value.map { |k, v| convert_hash_entry(k, v) }]
         else
-          @value.respond_to?(:to_ext) ? @value.to_ext : @value
+          @value.respond_to?(:final) ? @value.final : @value
         end
-        Selector.run(value, @selector)
+        Selector.run(value, selector)
       end
       # rubocop:enable CaseEquality, ElseAlignment, EndAlignment, IndentationWidth
 
       private
 
       def convert_hash_entry(k, v)
-        if v.is_a?(Connect::Entry::Object) && v.object_id == k # Special case
-          key, value = v.to_ext.to_a[0]
+        if v.is_a?(ObjectReference) && v.object_id == k # Special case
+          key, value = v.final.to_a[0]
           [key, value]
         else
-          v.respond_to?(:to_ext) ? [k, v.to_ext] : [k, v]
+          v.respond_to?(:final) ? [k, v.final] : [k, v]
         end
       end
+
     end
   end
 end

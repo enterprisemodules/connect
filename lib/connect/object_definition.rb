@@ -1,5 +1,6 @@
 require 'hash_extensions'
 require 'method_hash'
+require 'connect/object_representation'
 
 module Connect
   ##
@@ -50,7 +51,7 @@ module Connect
     # @return [Hash] a hash containing the name as key and a [Hash] containing the object values as value
     #
     def full_representation
-      { __name__ => without_private_entries }
+      ObjectRepresentation[__name__, without_private_entries]
     end
 
     ##

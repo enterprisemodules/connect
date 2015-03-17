@@ -62,14 +62,13 @@ rule
     | hash
     | object_definition
     | object_reference
+    | reference
   ;
 
   values
-    : values ',' value                              { result = val[0] << val[2]}
-    | values ',' reference                          { result = val[0] << val[2]}
-    | value                                         { result = ExtendedArray[val[0]]}
-    | value selector                                { result = ExtendedArray[Entry::Value.new('', val[0], val[1])]}
-  ;
+    : values ',' expression                              { result = val[0] << val[2]}
+    | expression                                         { result = ExtendedArray[val[0]]}
+   ;
 
   parameters
     : parameters ',' parameter                      { result = val[0] << val[2]}
@@ -77,7 +76,7 @@ rule
   ;
 
   parameter
-    : scalar
+    : expression
   ;
 
   reference
@@ -92,6 +91,7 @@ rule
     | value '-' value                         { result = subtract(val[0],val[2])}
     | value OR value                          { result = do_or(val[0],val[2])}
     | value AND value                         { result = do_and(val[0],val[2])}
+    | value selectors                         { result = selector(val[0], val[1])}
     | value
   ;
 
@@ -99,7 +99,7 @@ rule
   # Selectors
   #
   selectors
-    : selectors selector                      { result =val.join}
+    : selectors selector                      { result = val.join}
     | selector
     ;
 
@@ -126,11 +126,11 @@ rule
   # with statement
   #
   with_scope_do
-    : WITH SCOPE block_begin          { push_scope(val[1])}
+    : WITH SCOPE block_begin                      { push_scope(val[1])}
     ;
 
   with
-    : with_scope_do dsl block_end     { pop_scope }
+    : with_scope_do dsl block_end                 { pop_scope }
   ;
 
   #
@@ -138,8 +138,6 @@ rule
   #
   array
     : '[' values optional_comma ']'                 { result = val[1]}
-    | '[' reference ',' values optional_comma ']'   { result = val[3].unshift(val[1])}
-    | '[' reference optional_comma ']'              { result = ExtendedArray[val[1]] }
     | '[' ']'                                       { result = ExtendedArray[]}
   ;
 
@@ -172,8 +170,7 @@ rule
     ;
 
   hashpair
-    : hashkey hash_seperator value                  { result = MethodHash[val[0], val[2]] }
-    | hashkey hash_seperator reference              { result = MethodHash[val[0], val[2]] }
+    : hashkey hash_seperator expression             { result = MethodHash[val[0], val[2]] }
     | object_reference                              { result = MethodHash[val[0].object_id, val[0]]}
   ;
 
@@ -181,14 +178,9 @@ rule
   # Assignments and connections
   #
 	assignment
-    : literal '=' expression                        { assign(val[0], val[2], nil)}
-    | literal '=' expression selectors              { assign(val[0], val[2], val[3])}
+    : literal '=' expression                        { assign(val[0], val[2])}
   ;
 
-	connection
-    : literal '=' literal                           { connect(val[0], val[2], nil)}
-    | literal '=' literal selectors                 { connect(val[0], val[2], val[3])}
-  ;
 
   #
   # Define the inport syntax
@@ -236,14 +228,15 @@ rule
   #
   object_definition
     : IDENTIFIER '(' string ')' iterator definition_block 
-                                                    { result = define(val[0], val[2], val[5], val[4])}
+                                                    { result = define_object(val[0], val[2], val[5], val[4])}
     | IDENTIFIER '(' literal ')' iterator definition_block 
-                                                    { result = define(val[0], val[2], val[5], val[4])}
+                                                    { result = define_object(val[0], val[2], val[5], val[4])}
   ;
 
+
   object_reference
-    : IDENTIFIER '(' literal ')'                    { result = define(val[0], val[2], val[5], val[4])}
-    | IDENTIFIER '(' string ')'                     { result = define(val[0], val[2], val[5], val[4])} 
+    : IDENTIFIER '(' literal ')'                    { result = reference_object(val[0], val[2])}
+    | IDENTIFIER '(' string ')'                     { result = reference_object(val[0], val[2])} 
   ;
 
 

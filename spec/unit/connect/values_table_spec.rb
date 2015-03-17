@@ -13,7 +13,7 @@ RSpec.describe Connect::ValuesTable  do
 	let!(:selected_value_entry) 		{ Connect::ValuesTable.value_entry('existing_entry', 'exists', '[0,3]') }
 	let!(:other_entry) 							{ Connect::ValuesTable.value_entry('existing_entry', 'other') }
 	let!(:reference_entry)					{ Connect::ValuesTable.reference_entry('reference', 'existing_entry')}
-	let!(:sel_ref_ref)							{ Connect::ValuesTable.reference_entry('reference2', 'reference', [0,2])}
+	let!(:sel_ref_ref)							{ Connect::ValuesTable.reference_entry('reference2', 'reference', '[0,2]')}
 	let!(:selected_reference_entry)	{ Connect::ValuesTable.reference_entry('reference', 'existing_entry', '[0,3]')}
 
 	let(:object_reference_entry) 		{ Connect::ValuesTable.object_reference_entry('object_reference', 'object_type', 'object_name') }
@@ -217,27 +217,27 @@ RSpec.describe Connect::ValuesTable  do
 
 	end
 
-	# if RUBY_VERSION != '1.8.7'
-	# 	#
-	# 	# The ommission of Hash ordering, makes these tests fail sometimes
-	# 	# We remove them from the 1.8.7 set of tests
-	# 	#
-	# 	describe '#dump' do
+	if RUBY_VERSION != '1.8.7'
+		#
+		# The ommission of Hash ordering, makes these tests fail sometimes
+		# We remove them from the 1.8.7 set of tests
+		#
+		describe '#dump' do
 
-	# 		before do
-	# 			dsl = Connect::Dsl.new(values_table)
-	# 			dsl.parse(<<-EOD)
-	# 			a = 10
-	# 			b = foo('bar')
-	# 			c = b
-	# 			d = a
-	# 			EOD
-	# 		end
+			before do
+				dsl = Connect::Dsl.new(values_table)
+				dsl.parse(<<-EOD)
+				a = 10
+				b = foo('bar')
+				c = b
+				d = a
+				EOD
+			end
 
-	# 		it 'dumps the content of the values table' do
-	# 			expect(values_table.dump).to eq("a = 10\nb = {\"bar\"=>{}}\nc = {\"bar\"=>{}}\nd = 10\n")
-	# 		end
-	# 	end
-	# end
+			it 'dumps the content of the values table' do
+				expect(values_table.dump).to eq("a = 10\nb = {\"bar\"=>{}}\nc = {\"bar\"=>{}}\nd = 10\n")
+			end
+		end
+	end
 
 end

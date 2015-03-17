@@ -7,6 +7,9 @@ module Connect
     # A class representing a object entry in the values table.
     #
     class ObjectReference < Base
+
+      attr_accessor :selector
+
       def initialize(type, name, selector = nil)
         @type     = type
         @name     = name
@@ -20,12 +23,8 @@ module Connect
       # @return [Hash] a hash containing the name as key and the data as a [Hash]
       #
       def to_ext
-        value = Connect::Entry::Base.objects_table.lookup(@type, @name)
-        if @selector
-          Connect::Selector.run(value.to_hash, @selector)
-        else
-          value.full_representation
-        end
+        value = Connect::Entry::Base.objects_table.lookup(@type, @name).full_representation
+        Connect::Selector.run(value, @selector)
       end
     end
   end

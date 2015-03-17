@@ -94,8 +94,6 @@ RSpec.describe 'setting and retrieving values' do
           a = foo(bar).a
           #{scope}b = [a]
           EOD
-          require 'byebug'
-          debugger
           expect(dsl.lookup_value("#{scope}b")).to eql(['hello'])
         end
       end

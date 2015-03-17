@@ -15,6 +15,7 @@ module Connect
         attr_accessor :objects_table, :values_table
       end
 
+      attr_accessor :selector
 
       def initialize(value, selector = nil)
         @value    = value

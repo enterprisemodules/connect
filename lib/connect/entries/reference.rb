@@ -15,7 +15,7 @@ module Connect
       # @return [Hash] a hash containing the name as key and the data as a [Hash]
       #
       def to_ext
-        value = Connect::Entry::Base.values_table.internal_lookup(@value)
+        value = Connect::Entry::Base.values_table.internal_lookup(@value).final
         # TODO: What if we have multiple references
         Connect::Selector.run(value, @selector)
       end
