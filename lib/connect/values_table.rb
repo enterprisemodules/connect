@@ -1,7 +1,8 @@
 require 'connect/selector'
 require 'connect/entries/null'
 require 'connect/entries/value'
-require 'connect/entries/connection'
+require 'connect/entries/object_reference'
+require 'connect/entries/reference'
 require 'method_hash'
 
 module Connect
@@ -13,6 +14,10 @@ module Connect
   class ValuesTable
     def initialize
       @values_table = {}
+    end
+
+    def entries
+      @values_table.keys
     end
 
     ##
@@ -50,9 +55,7 @@ module Connect
     # @return the value
     #
     def lookup(name)
-      value = internal_lookup(name)
-      value = value.is_a?(Entry::Base) ? value.select : value
-      value.respond_to?(:to_ext) ? value.to_ext : value
+      internal_lookup(name).final
     end
 
     ##
@@ -66,7 +69,6 @@ module Connect
       name = name.to_s
       # TODO: Check if name is a valid name
       entry = @values_table.fetch(name) { Entry::Null.new }
-      entry.to_final
     end
 
     ##
@@ -76,24 +78,39 @@ module Connect
     # @param name [String] the name/ket of the entry
     # @param value [Any] the value to be stored
     # @param selector [String] the selector to be applied
-    # @return [Connect::Entries::Base] an entry for the table
+    # @return [Hash] a Hash containing the name and the entry for the table
     #
     def self.value_entry(name, value, selector = nil)
-      Entry::Value.new(name, value, selector).to_entry
+      { name => Entry::Value.new(value, selector)}
     end
 
     ##
     #
-    # Create a connection entry for the value table.
+    # Create a reference entry for the value table.
     #
-    # @param name [String] the name/ket of the entry
-    # @param value [Any] the value to be stored
+    # @param name [String] the name of the entry
+    # @param reference [Any] the value to be referenced
     # @param selector [String] the selector to be applied
-    # @return [Connect::Entries::Base] an entry for the table
+    # @return [Hash] a Hash containing the name and the entry for the table
     #
-    def self.connection_entry(name, value, selector = nil, value_table = nil)
-      fail ArgumentError, 'invalid value_table' if value_table.nil?
-      Entry::Connection.new(name, value, selector, value_table).to_entry
+    def self.reference_entry(name, reference, selector = nil)
+      { name => Entry::Reference.new(reference, selector)}
     end
+
+    ##
+    #
+    # Create a object reference entry for the value table.
+    #
+    # @param name [String] the name of the entry
+    # @param object_type [String] the object type to be referenced
+    # @param object_name [String] the object name to be referenced
+    # @param selector [String] the selector to be applied
+    # @return [Hash] a Hash containing the name and the entry for the table
+    #
+    def self.object_reference_entry(name, object_type, object_name, selector = nil)
+      { name => Entry::ObjectReference.new(object_type, object_name, selector)}
+    end
+
+
   end
 end

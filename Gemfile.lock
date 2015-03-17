@@ -92,6 +92,8 @@ GEM
       rspec-core (~> 3.2.0)
       rspec-expectations (~> 3.2.0)
       rspec-mocks (~> 3.2.0)
+    rspec-collection_matchers (1.1.2)
+      rspec-expectations (>= 2.99.0.beta1)
     rspec-core (3.2.1)
       rspec-support (~> 3.2.0)
     rspec-expectations (3.2.0)
@@ -140,6 +142,7 @@ DEPENDENCIES
   rake
   rexical
   rspec
+  rspec-collection_matchers
   rubocop
   ruby_gntp
   yard

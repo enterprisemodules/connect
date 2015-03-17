@@ -86,14 +86,43 @@ RSpec.describe 'setting and retrieving values' do
 
       end
 
+      context 'with an object' do
+
+        it 'is settable and retrievable' do
+          dsl.parse(<<-EOD)
+          foo(bar) {a:'hello'}
+          a = foo(bar).a
+          #{scope}b = [a]
+          EOD
+          require 'byebug'
+          debugger
+          expect(dsl.lookup_value("#{scope}b")).to eql(['hello'])
+        end
+      end
+
     end
 
     context 'a hash value' do
-      it 'is settable and retrievable' do
-        dsl.parse(<<-EOD)
-        #{scope}a = {foo: 'bar'}
-        EOD
-        expect(dsl.lookup_value("#{scope}a")).to eql({'foo' =>'bar'})
+
+      context 'with a reference' do
+
+        it 'is settable and retrievable' do
+          dsl.parse(<<-EOD)
+          a = 'bar'
+          b = {foo: a}
+          EOD
+          expect(dsl.lookup_value('b')).to eql({'foo' =>'bar'})
+        end
+      end
+
+      context 'with sclar values' do
+
+        it 'is settable and retrievable' do
+          dsl.parse(<<-EOD)
+          #{scope}a = {foo: 'bar'}
+          EOD
+          expect(dsl.lookup_value("#{scope}a")).to eql({'foo' =>'bar'})
+        end
       end
     end
 

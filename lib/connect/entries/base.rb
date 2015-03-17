@@ -11,32 +11,14 @@ module Connect
     # A base class for an entry in the values tables
     #
     class Base
-      attr_reader :value, :selector
+      class << self
+        attr_accessor :objects_table, :values_table
+      end
 
-      def initialize(name, value, selector = nil)
-        @name     = name
+
+      def initialize(value, selector = nil)
         @value    = value
         @selector = selector
-      end
-
-      ##
-      #
-      # Translate the current entry to an entry
-      #
-      # @ return [Connect::Entries::Base]
-      #
-      def to_entry
-        { @name => self }
-      end
-
-
-      ##
-      #
-      # Make sure we have the final object in t
-      # @return [Any]
-      #
-      def to_final
-        Connect::Selector.run(self, selector)
       end
 
       ##
@@ -46,17 +28,23 @@ module Connect
       # @return [Hash] a hash containing the name as key and the data as a [Hash]
       #
       def to_ext
-        nil
+        fail ArgumentError, 'Internal error. to_ext must be implemented'
       end
 
       ##
       #
-      # Apply the selector to the value
+      # Translate the object for external representation
       #
-      # @return [Any] the selected values in the entry
-      def select
-        Connect::Selector.run(self, @selector)
+      # @return [Hash] a hash containing the name as key and the data as a [Hash]
+      #
+      def final
+        result = self
+        while(result.respond_to?(:to_ext)) do
+          result = result.to_ext
+        end
+        result
       end
+
     end
   end
 end

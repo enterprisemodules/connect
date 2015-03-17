@@ -6,7 +6,7 @@ require 'connect/selector'
 require 'connect/interpolator'
 require 'connect/includer'
 require 'connect/entries/value'
-require 'connect/entries/connection'
+require 'connect/entries/reference'
 require 'connect/datasources/base'
 
 module Connect

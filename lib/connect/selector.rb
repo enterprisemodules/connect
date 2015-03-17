@@ -7,7 +7,7 @@ module Connect
   class Selector
     def initialize(value, selector)
       @value = value
-      @selection_value = value.respond_to?(:for_selection) ? value.for_selection : value
+      @selection_value = value.respond_to?(:to_ext) ? value.to_ext : value
       @selector = selector
     end
 

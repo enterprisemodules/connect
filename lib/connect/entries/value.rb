@@ -19,35 +19,19 @@ module Connect
         value = case @value
         when Array
           @value.map { |e| e.respond_to?(:to_ext) ? e.to_ext : e }
-        when Connect::ObjectDefinition
-          @value.to_ext
         when Hash
           hash = MethodHash[@value.map { |k, v| convert_hash_entry(k, v) }]
-          hash.extend(HashExtensions).stringify_keys
         else
-          @value
+          @value.respond_to?(:to_ext) ? @value.to_ext : @value
         end
-        value
+        Selector.run(value, @selector)
       end
       # rubocop:enable CaseEquality, ElseAlignment, EndAlignment, IndentationWidth
-
-      ##
-      #
-      # transform an object so selection can be done. In this case the value will be
-      # translated to a [Hash]
-      #
-      # @return [Hash] the hash of value
-      #
-      # rubocop:disable TrivialAccessors
-      def for_selection
-        @value
-      end
-      # rubocop:enable TrivialAccessors
 
       private
 
       def convert_hash_entry(k, v)
-        if v.is_a?(ObjectDefinition) && v.object_id == k # Special case
+        if v.is_a?(Connect::Entry::Object) && v.object_id == k # Special case
           key, value = v.to_ext.to_a[0]
           [key, value]
         else

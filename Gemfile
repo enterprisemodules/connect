@@ -3,6 +3,7 @@ source 'https://rubygems.org'
 group :development, :test do
   gem 'rake'
   gem 'rspec'
+  gem 'rspec-collection_matchers'
   gem 'rexical'
   gem 'racc'
   gem 'guard-rspec'   , :require => false

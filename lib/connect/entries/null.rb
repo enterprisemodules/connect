@@ -13,17 +13,6 @@ module Connect
 
       ##
       #
-      # transform an object so selection can be done. In this case the value will be
-      # translated to a [Hash]
-      #
-      # @return [Hash] the hash of value
-      #
-      def for_selection
-        nil
-      end
-
-      ##
-      #
       # Translate the object for external representation
       #
       # @return [Hash] a hash containing the name as key and the data as a [Hash]

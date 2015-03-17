@@ -4,7 +4,8 @@ require 'method_hash'
 module Connect
   ##
   #
-  # Has all the begaviour of an defined object. Allows for setting and overriding the data
+  # This class represents an entry in the object definitions table. An object is identified by
+  # a type and a name and it contains values. 
   #
   class ObjectDefinition < Hash
     include MethodHashMethods
@@ -44,22 +45,11 @@ module Connect
 
     ##
     #
-    # Make sure we have the final object in the connection. Because an object is already
-    # an end value, we retrurn self.
-    #
-    # @return [ObjectDefinition]
-    #
-    def to_final
-      self
-    end
-
-    ##
-    #
     # Translate the current object to an external representation
     #
     # @return [Hash] a hash containing the name as key and a [Hash] containing the object values as value
     #
-    def to_ext
+    def full_representation
       { __name__ => without_private_entries }
     end
 
@@ -84,15 +74,6 @@ module Connect
       hash = dup
       hash.delete_if { |k, _v| k =~ /__.*__/ }
       hash
-    end
-
-    ##
-    #
-    # Transform the object so it is ready for selection
-    #
-    # @return [Hash] hash containing all public data
-    def for_selection
-      without_private_entries
     end
 
     ##
