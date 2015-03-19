@@ -1,4 +1,5 @@
 require 'openssl'
+require 'base64'
 require 'connect/datasources/base'
 
 module Connect
