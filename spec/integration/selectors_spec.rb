@@ -314,6 +314,22 @@ RSpec.describe 'selectors' do
       end
 
     end
+
+    context 'Resource entries' do
+
+
+      context'on an objects' do
+        it 'returns a valid hash for athe object' do
+          dsl.parse(<<-EOD)
+            a = something('/file') {ensure: 'present', invalid_attr: 'true', checksum: 10}
+            b = a.to_resource('file')
+          EOD
+          expect(dsl.lookup_value('b')).to eq({'/file' => {'ensure' => 'present', 'checksum' => 10}})
+        end
+      end
+
+    end
+
   end
 
 

@@ -7,6 +7,9 @@ module Connect
   #
   #
   class Selector
+
+    TO_RESOURCE_REGEX = /\.to_resource\('([a-zA-Z]+)'\)/
+
     def initialize(value, selector)
       @value = value
       @selection_value = convert(value)
@@ -21,7 +24,16 @@ module Connect
     def run
       if @selector && @selection_value
         begin
-          instance_eval("@selection_value#{@selector}")
+        if @selector =~ TO_RESOURCE_REGEX and @value.is_a?(Connect::ObjectRepresentation)
+            #
+            # The to_resource is a special selector when operating on an object. It will transform the
+            # object into a valid resource hash and filter all attributes not available in the selected 
+            # object.
+            #
+            convert_to_resource
+          else
+            instance_eval("@selection_value#{@selector}")
+          end
         rescue => e
           raise ArgumentError, "usage of invalid selector '#{@selector}' on value '#{@selection_value}', resulted in Ruby error #{e.message}"
         end
@@ -73,5 +85,18 @@ module Connect
       value.is_a?(Connect::ObjectRepresentation) ? value.value : value
     end
 
+    ##
+    #
+    # remove all attributes thar do not belong to the specified resource
+    #
+    # @return [Hash] Resource like hash containing only valid attributes
+    #
+    def convert_to_resource
+      resource_type = @selector.scan(TO_RESOURCE_REGEX).flatten.first
+      resource = Puppet::Type.type(resource_type)
+      all_attributes = resource.allattrs.collect(&:to_s)
+      cleaned_value = @value.value.collect {|k,v| all_attributes.include?(k) ? [k,v] : nil}.compact
+      { @value.keys.first => Hash[cleaned_value]}
+    end
   end
 end
