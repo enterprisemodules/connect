@@ -6,6 +6,9 @@ group :development, :test do
   gem 'rspec-collection_matchers'
   gem 'rexical'
   gem 'racc'
+  gem 'pry'
+  gem 'pry-byebug'
+  gem 'pry-stack_explorer'
   gem 'guard-rspec'   , :require => false
   gem 'guard-bundler' , :require => false
   gem 'ruby_gntp'
