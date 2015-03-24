@@ -2,6 +2,24 @@
 
 This file contains an overview of the connect language. It contains short snippets and is mainly intended to get you up to speed quickly.
 
+1. [Commenting](#commenting)
+2. [Variable names](#variable-names)
+3. [Assigning scalar values](#assigning-scalar-values)
+4. [Connecting variables](#connecting-variables)
+5. [String Interpolation](#string-interpolation)
+6. [Arrays](#arrays)
+7. [Hashes](#hashes)
+8. [include statement](#include-statement)
+9. [with statement](#with-statement)
+10. [Objects](#objects)
+    * [Using objects](#using-objects)
+11. [Selectors](#selectors)
+    * [Special selectors](#special-selectors)
+      * [extract](#extract)
+      * [to_resource](#to_resource)
+12. [importing data](#importing-data)
+13. [Ordering](#ordering)
+
 ##Commenting
 
 Just like in Ruby and Puppet, you can comment your code using `#`. The `#` can start at the beginning of a line, to make the whole line a comment. You can also append the `#` to some statements to comment this line of code.
@@ -72,7 +90,7 @@ my_connection = my_variable
 my_variable   = 20          # This means my_connection will also be 20
 ```
 
-##Interpolation
+##String interpolation
 
 Strings in double quotes are interpolated. Strings using single quotes are not interpellated.The Connect interpolator knows about its own variables, and it knows about Puppet variables. Let's first interpolate some Connect variables.
 
@@ -88,9 +106,9 @@ Connect also knows how to interpolate Puppet variables:
 welcome_text = "Welcome on host %{::hostname}"
                               # Will be: "Welcome on host host1"
 ```
-To allow Connect, to interpolate a Puppet variable, it must be defined in Puppet first. Because most of the times the Connect configuration is parsed before running the big parts of Puppet, you can safely reference fact's. If you want to reference other Puppet variables, you must ensure, they are defined early in the Puppet parsing process (e.g. at the beginning of the `site.pp` for example) 
+To allow Connect, to interpolate a Puppet variable, it must be defined in Puppet first. Because most of the times the Connect configuration is parsed before running the big parts of Puppet, you can safely reference fact's. If you want to reference other Puppet variables, you must ensure, they are defined early in the Puppet parsing process (e.g. at the beginning of the `site.pp` for example).
 
-##Array
+##Arrays
 
 To construct an array in Connect, use the `[` and `]`.
 
@@ -172,7 +190,7 @@ my_hash_with_reference = {
 } 
 ```
 
-##include
+##include statement
 
 Sometimes you would like to split your configuration files into multiple files and include them. 
 
@@ -200,7 +218,7 @@ include `settings` into settings::
 
 This statement means the file `settings.config` is included, and all non-scoped variables are put into the scope `settings::`. Check (`with`) for more information.
 
-##with
+##with statement
 
 One of the mechanisms to ensure variables are not overwritten by accident is scoping. In Connect, scopes are specified using double colons (`::`). When you are providing a set of variables in a specified scope, you can use the scope features of Connect. The `include` and `with` keywords manage scope. 
 
@@ -347,6 +365,57 @@ hostname = 'DMACHINE1'     # Development machine 1
 type     = hostname[0,1]   # type is 'O'
 ```
 
+You can also use selectors when interpolating strings. 
+
+```ruby
+presidents = ['Clinton', 'Bush', 'Obama']
+last_president = "The last President of the USA was #{presidents.last}"
+```
+
+Because interpolation only works on Connect variables, using selectors is  limited to interpolating Connect variables. Thus,
+
+```ruby
+last_president = "The last President of the USA was %{presidents.last}"
+```
+
+Doesn't work. Even if the array ` presidents` is defined in Puppet.
+
+### Special selectors
+
+The standard Array, Hash and String functions in ruby are already quite powerful. But sometimes you need some extra help. Connect defines the following special helper selectors.
+
+#### extract
+
+The `extract`  helper allows you to extract an array of values from an array of objects. An example clarifies this:
+ 
+```ruby
+all_nodes = [
+  host('node1.domein.com'){
+    ip : '10.0.0.1'
+  },
+  host('node2.domein.com'){
+    ip : '10.0.0.2'
+  }
+  host('node3.domein.com'){
+    ip : '10.0.0.3'
+  }
+]
+ip_adresses = all_nodes.extract('ip')  # will be ['10.0.0.1','10.0.0.2','10.0.0.3']
+```
+
+#### to_resource
+
+Sometimes your object contains values, the original puppet type doesn't support. To filter out all nonsupported attributes, you can use the `to_resource`  selector on an object. The selector must called with the type as a parameter.
+
+```ruby
+my_raw_host = host('db.domain.com') {
+  ip: '10.0.0.100',
+  just_a_random_attribute: 10,
+}  # my_raw_host cannot be use for create_resource call's because if the invalid attribute
+
+my_host = my_raw_host.to_resource('host') # can be used as a parameter for create_resource
+```
+
 ###importing data
 
 There ara a lot more possible sources of data for Puppet runs. For example:
@@ -397,5 +466,43 @@ import from yaml('/aaa/a.yaml') do
 end
 ```
 
-**WARNING** No all datasources are available yet. This is only to show the syntax.
+**WARNING** Not all datasources are available yet. This is only to show the syntax.
+
+## Ordering
+
+All values and connections will be calculated **when all parsing is done**.  So for defining values, it doesn't make a difference if you reference a variable before it is defined. For example:
+
+```ruby
+
+first_value       = second_value
+second_value = 10
+```
+ is the same as:
+
+```ruby
+second_value = 10
+first_value       = second_value
+```
+for both values.
+
+For interpolation, **there is a difference in order.** The interpolation takes the current value. For example:
+
+```ruby
+a_value  = 10
+a_string = "The value is ${a_value}  # The value is 10
+a_value = 20 # When you use the value a_valie in Puppet, it is 20
+```
+
+You can be caught of guard when using interpolation in the include statement. Included files are parsed once and only the first time when they are found. So:
+
+```ruby
+include 'an_include_file                      # defining value to 10
+first_string = "the value is ${value}"   # results in "the value is 10
+value = 20
+second_string = "the value is ${value}"   # results in "the value is 20
+include 'an_include_file                      # defining value to 10
+third_string = "the value is ${value}"   # results in "the value is still 20
+```
+
+
 
