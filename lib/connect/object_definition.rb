@@ -6,7 +6,7 @@ module Connect
   ##
   #
   # This class represents an entry in the object definitions table. An object is identified by
-  # a type and a name and it contains values. 
+  # a type and a name and it contains values.
   #
   class ObjectDefinition < Hash
     include MethodHashMethods

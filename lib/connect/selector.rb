@@ -7,7 +7,6 @@ module Connect
   #
   #
   class Selector
-
     TO_RESOURCE_REGEX = /\.to_resource\('([a-zA-Z]+)'\)/
 
     def initialize(value, selector)
@@ -21,13 +20,14 @@ module Connect
     # apply the current selector on the current value
     #
     # @return the new value
+    # rubocop:disable PerceivedComplexity
     def run
       if @selector && @selection_value
         begin
-        if @selector =~ TO_RESOURCE_REGEX and @value.is_a?(Connect::ObjectRepresentation)
+          if @selector =~ TO_RESOURCE_REGEX && @value.is_a?(Connect::ObjectRepresentation)
             #
             # The to_resource is a special selector when operating on an object. It will transform the
-            # object into a valid resource hash and filter all attributes not available in the selected 
+            # object into a valid resource hash and filter all attributes not available in the selected
             # object.
             #
             convert_to_resource
@@ -35,12 +35,14 @@ module Connect
             instance_eval("@selection_value#{@selector}")
           end
         rescue => e
-          raise ArgumentError, "usage of invalid selector '#{@selector}' on value '#{@selection_value}', resulted in Ruby error #{e.message}"
+          raise ArgumentError, "usage of invalid selector '#{@selector}' on value '#{@selection_value}',
+            resulted in Ruby error #{e.message}"
         end
       else
         @value
       end
     end
+    # rubocop:enable PerceivedComplexity
 
     #
     # Convenience  method
@@ -66,16 +68,16 @@ module Connect
       case value
       when Array
         #
-        # Because we've defined some convinieance methods for Array's, we 
+        # Because we've defined some convinieance methods for Array's, we
         # force the return value to be of type ExtendedArray
         #
         Connect::ExtendedArray.new(value.map { |e| transform(e) })
-      # when Hash
-      #   #
-      #   # Because we've defined some conveniance methods for Hashes, we force
-      #   # the type to be a MathodHash
-      #   #
-      #   MethodHash[@value.map { |k, v| [k, transform(v)]}]
+        # when Hash
+        #   #
+        #   # Because we've defined some conveniance methods for Hashes, we force
+        #   # the type to be a MathodHash
+        #   #
+        #   MethodHash[@value.map { |k, v| [k, transform(v)]}]
       else
         transform(value)
       end
@@ -95,8 +97,8 @@ module Connect
       resource_type = @selector.scan(TO_RESOURCE_REGEX).flatten.first
       resource = Puppet::Type.type(resource_type)
       all_attributes = resource.allattrs.collect(&:to_s)
-      cleaned_value = @value.value.collect {|k,v| all_attributes.include?(k) ? [k,v] : nil}.compact
-      { @value.keys.first => Hash[cleaned_value]}
+      cleaned_value = @value.value.collect { |k, v| all_attributes.include?(k) ? [k, v] : nil }.compact
+      { @value.keys.first => Hash[cleaned_value] }
     end
   end
 end

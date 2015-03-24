@@ -40,12 +40,9 @@ module Connect
       #
       def final
         result = self
-        while(result.respond_to?(:to_ext)) do
-          result = result.to_ext
-        end
+        result = result.to_ext  while result.respond_to?(:to_ext)
         result
       end
-
     end
   end
 end

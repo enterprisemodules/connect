@@ -19,7 +19,7 @@ module Connect
         value = case @value
         when Array
           #
-          # Because we've defined some convinieance methods for Array's, we 
+          # Because we've defined some convinieance methods for Array's, we
           # force the return value to be of type ExtendedArray
           #
           Connect::ExtendedArray.new(@value.map { |e| e.respond_to?(:final) ? e.final : e })
@@ -46,7 +46,6 @@ module Connect
           v.respond_to?(:final) ? [k, v.final] : [k, v]
         end
       end
-
     end
   end
 end

@@ -38,14 +38,13 @@ module Connect
     #
     def dump
       output = ''
-      @values_table.keys.sort.each do |key| 
+      @values_table.keys.sort.each do |key|
         #
         # Use inspect, to make ruby 1.8.7 and ruby 1.8 and higher compatible
         output << "#{key} = #{lookup(key).inspect}\n"
       end
       output
     end
-
 
     ##
     #
@@ -68,7 +67,7 @@ module Connect
     def internal_lookup(name)
       name = name.to_s
       # TODO: Check if name is a valid name
-      entry = @values_table.fetch(name) { Entry::Null.new }
+      @values_table.fetch(name) { Entry::Null.new }
     end
 
     ##
@@ -81,7 +80,7 @@ module Connect
     # @return [Hash] a Hash containing the name and the entry for the table
     #
     def self.value_entry(name, value, selector = nil)
-      { name => Entry::Value.new(value, selector)}
+      { name => Entry::Value.new(value, selector) }
     end
 
     ##
@@ -94,7 +93,7 @@ module Connect
     # @return [Hash] a Hash containing the name and the entry for the table
     #
     def self.reference_entry(name, reference, selector = nil)
-      { name => Entry::Reference.new(reference, selector)}
+      { name => Entry::Reference.new(reference, selector) }
     end
 
     ##
@@ -108,9 +107,7 @@ module Connect
     # @return [Hash] a Hash containing the name and the entry for the table
     #
     def self.object_reference_entry(name, object_type, object_name, selector = nil)
-      { name => Entry::ObjectReference.new(object_type, object_name, selector)}
+      { name => Entry::ObjectReference.new(object_type, object_name, selector) }
     end
-
-
   end
 end

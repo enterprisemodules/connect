@@ -17,7 +17,7 @@ class Hiera
       def initialize
         Hiera.debug('DSL Backend initialized')
         configs_dir  = Config[:connect].fetch(:datadir) { '/etc/puppet/config' }
-        @dump_values  = Config[:connect].fetch(:dump_values) { false}
+        @dump_values  = Config[:connect].fetch(:dump_values) { false }
         @dump_objects = Config[:connect].fetch(:dump_objects) { false }
         @connect    = Connect::Dsl.instance(configs_dir)
         @parsed = false

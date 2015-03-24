@@ -73,7 +73,6 @@ module Connect
       value
     end
 
-
     ##
     #
     # Connect the variable to an other variable in the value table
@@ -211,7 +210,6 @@ module Connect
     def dump_objects
       @objects_table.dump
     end
-
 
     ##
     #

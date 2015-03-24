@@ -44,14 +44,14 @@ module Connect
     #
     def dump
       output = ''
-      @objects_table.keys.sort.each do |key| 
+      @objects_table.keys.sort.each do |key|
         object_entry = @objects_table[key]
         name = object_entry.__name__
         type = object_entry.__type__
         #
         # use the inspect to make ruby 1.8.7 and 1.9.3 compatible
         #
-        object = lookup(type,name).to_hash.inspect
+        object = lookup(type, name).to_hash.inspect
         output << "#{type}(#{name}) = #{object}\n"
       end
       output

@@ -7,7 +7,6 @@ module Connect
     # A class representing a object entry in the values table.
     #
     class ObjectReference < Base
-
       attr_accessor :selector
 
       def initialize(type, name, selector = nil)
