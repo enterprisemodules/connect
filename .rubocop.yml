@@ -1,5 +1,4 @@
 # inherit_from: rubocop-todo.yml
-
 AllCops:
   Exclude:
     - 'spec/**/*'
