@@ -16,8 +16,8 @@ module Connect
       @values_table = {}
     end
 
-    def entries
-      @values_table.keys
+    def entries( name = /.*/)
+      @values_table.keys.select{| k| Regexp.new(name).match(k) }.sort
     end
 
     ##

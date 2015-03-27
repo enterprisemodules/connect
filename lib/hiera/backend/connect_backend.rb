@@ -1,6 +1,5 @@
 require 'hiera'
 require 'connect/dsl'
-require 'puppet'
 
 class Hiera
   #
@@ -22,7 +21,7 @@ class Hiera
         @dump_values  = Config[:connect].fetch(:dump_values) { false }
         @dump_objects = Config[:connect].fetch(:dump_objects) { false }
         @connect      = Connect::Dsl.instance(configs_dir)
-        @parsed = false
+        @parsed       = false
       end
 
       ##
@@ -43,7 +42,7 @@ class Hiera
 
       ##
       #
-      # Lookup an key in the connect configuration
+      # Lookup specified values in the connect configuration
       #
       # @param keys [Regexp] key the keys to be looked up. Can be a key containing a scope in the form of a::b::c
       # @param scope [Scope] the Puppet scope.
@@ -52,13 +51,24 @@ class Hiera
       # @return [Any] the value of the specfied key.
       #
       def lookup_values(keys, scope, order_override, _resolution_type)
-      require 'byebug'
-      debugger
-
         setup_context(scope, order_override)
-        #
-        # TODO: Implement this
-        #
+        @connect.lookup_values(keys)
+      end
+
+      ##
+      #
+      # Lookup specfied objects in the connect configuration
+      #
+      # @param name [Regexp] the object(s) to be looked up.
+      # @param type [String] the object type to be looked up. 
+      # @param scope [Scope] the Puppet scope.
+      # @param order_override [Bool] ?
+      # @param _resolution_type [?]
+      # @return [Any] the value of the specfied key.
+      #
+      def lookup_objects(keys, type, scope, order_override, _resolution_type)
+        setup_context(scope, order_override)
+        @connect.lookup_objects(keys, type)
       end
 
 

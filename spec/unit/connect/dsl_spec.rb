@@ -16,6 +16,7 @@ RSpec.describe Connect::Dsl do
     let(:includer)     {Connect::Includer.new}
   end
 
+
   let(:dsl) {Connect::Dsl.new( values_table, objects_table, interpolator, includer)}
 
   describe '#assign' do
@@ -34,10 +35,7 @@ RSpec.describe Connect::Dsl do
         dsl.assign('a', Connect::Entry::Reference.new('x'))
       end
     end
-
-
   end
-
 
   describe '#include_file' do
     it 'include\'s a file' do
@@ -45,7 +43,6 @@ RSpec.describe Connect::Dsl do
       dsl.include_file('test')
     end
   end
-
 
   describe '#datasource' do
     context "importer exists" do
@@ -62,7 +59,6 @@ RSpec.describe Connect::Dsl do
         }.to raise_exception(ArgumentError, 'specfied importer \'nonexisting\' doesn\'t exist' )
       end
     end
-
   end
 
   describe '#import' do
@@ -78,9 +74,7 @@ RSpec.describe Connect::Dsl do
        dsl.import('value', 'lookup')
     end
 
-
   end
-
 
   describe '#define' do
 
@@ -171,6 +165,27 @@ RSpec.describe Connect::Dsl do
       dsl.interpolate('${foo::bar} is ${value}')
     end
 
+  end
+
+  describe '#lookup_values' do
+
+    let(:values_table)  {Connect::ValuesTable.new}
+    let!(:value_entry)  {Connect::ValuesTable.value_entry('existing_entry', 'exists') }
+    let!(:second_entry) {Connect::ValuesTable.value_entry('second_entry', 'second') }
+    let!(:third_entry ) {Connect::ValuesTable.value_entry('third', 'third') }
+
+    before do
+      values_table.add(value_entry)
+      values_table.add(second_entry)
+      values_table.add(third_entry)
+    end
+
+    it 'call\'s the value table'  do
+      expect(values_table).to receive(:lookup).with('existing_entry')
+      expect(values_table).to receive(:lookup).with('second_entry')
+      expect(values_table).not_to receive(:lookup).with('third')
+      dsl.lookup_values(/.*entry/)
+    end
   end
 
 

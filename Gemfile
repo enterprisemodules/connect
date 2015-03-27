@@ -22,6 +22,7 @@ group :development, :test do
 end
 
 gem 'hiera'
+gem 'awesome_print'
 
 if puppetversion = ENV['PUPPET_GEM_VERSION']
   gem 'puppet', puppetversion, :require => false

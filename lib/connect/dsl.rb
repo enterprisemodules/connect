@@ -64,6 +64,14 @@ module Connect
       add_value(entry)
     end
 
+    def lookup_objects(keys, type)
+      # TODO: Implement this
+    end
+
+    def lookup_values(keys)
+      @values_table.entries(keys).reduce([]) {| c, v| c << [v,lookup_value(v)]}
+    end
+
     ##
     #
     # Add the selector to the last object

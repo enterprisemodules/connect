@@ -10,6 +10,8 @@ RSpec.describe Connect::ValuesTable  do
 	let!(:objects_table) 						{ Connect::ObjectsTable.new()}
 
 	let!(:value_entry) 							{ Connect::ValuesTable.value_entry('existing_entry', 'exists') }
+	let!(:second_entry) 						{ Connect::ValuesTable.value_entry('second_entry', 'second') }
+	let!(:third_entry ) 						{ Connect::ValuesTable.value_entry('third', 'third') }
 	let!(:selected_value_entry) 		{ Connect::ValuesTable.value_entry('existing_entry', 'exists', '[0,3]') }
 	let!(:other_entry) 							{ Connect::ValuesTable.value_entry('existing_entry', 'other') }
 	let!(:reference_entry)					{ Connect::ValuesTable.reference_entry('reference', 'existing_entry')}
@@ -23,6 +25,53 @@ RSpec.describe Connect::ValuesTable  do
 		Connect::Entry::Base.values_table  = values_table
 		Connect::Entry::Base.objects_table = objects_table
 		objects_table.add('object_type','object_name', {:text => 'exists'})
+	end
+
+	describe '#entries' do
+
+		context 'values table is empty' do
+
+			it 'returns an empty array ' do
+				expect(values_table.entries).to eq([])
+			end
+		end
+
+		context 'values table contains elements' do
+
+			before do
+				values_table.add(value_entry)
+				values_table.add(second_entry)
+				values_table.add(third_entry)
+			end
+
+			context 'with an existing entry' do
+				context 'without arguments' do
+					it 'returns an array of all variable names' do
+						expect(values_table.entries).to eq(['existing_entry','second_entry', 'third'])
+					end
+				end
+
+				context 'with a string argument' do
+					it 'returns an array with the selected variable name' do
+						expect(values_table.entries('third')).to eq(['third'])
+					end
+				end
+
+				context 'with a wildcard argument' do
+					it 'returns an array of the the selected variable names' do
+						expect(values_table.entries(/.*entry/)).to eq(['existing_entry','second_entry'])
+					end
+				end
+			end
+
+			context 'with a non exiting variable' do
+				it 'returns an empty array' do
+					expect(values_table.entries('non_existing')).to eq([])
+				end
+			end
+
+		end
+
 	end
 
 	describe '#add' do
