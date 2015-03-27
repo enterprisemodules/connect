@@ -1,8 +1,10 @@
+require 'hiera'
 require 'connect/dsl'
+require 'puppet'
 
 class Hiera
   #
-  # Hier backend are the objects that implement the hiera lookups
+  # Hiera backend are the objects that implement the hiera lookups
   #
   module Backend
     ##
@@ -16,10 +18,10 @@ class Hiera
 
       def initialize
         Hiera.debug('DSL Backend initialized')
-        configs_dir  = Config[:connect].fetch(:datadir) { '/etc/puppet/config' }
+        configs_dir   = Config[:connect].fetch(:datadir) { '/etc/puppet/config' }
         @dump_values  = Config[:connect].fetch(:dump_values) { false }
         @dump_objects = Config[:connect].fetch(:dump_objects) { false }
-        @connect    = Connect::Dsl.instance(configs_dir)
+        @connect      = Connect::Dsl.instance(configs_dir)
         @parsed = false
       end
 
@@ -27,19 +29,46 @@ class Hiera
       #
       # Lookup an key in the connect configuration
       #
-      # @param key [String] key the key to be looked up. Can be a ke containing a scope in the form of a::b::c
+      # @param key [String] key the key to be looked up. Can be a key containing a scope in the form of a::b::c
       # @param scope [Scope] the Puppet scope.
       # @param order_override [Bool] ?
       # @param _resolution_type [?]
       # @return [Any] the value of the specfied key.
       #
       def lookup(key, scope, order_override, _resolution_type)
-        Connect::Dsl.config.scope = scope  # Pass the scope to connect
-        parse_config(scope, order_override) unless @parsed
+        setup_context(scope, order_override)
         @connect.lookup_value(key)
       end
 
+
+      ##
+      #
+      # Lookup an key in the connect configuration
+      #
+      # @param keys [Regexp] key the keys to be looked up. Can be a key containing a scope in the form of a::b::c
+      # @param scope [Scope] the Puppet scope.
+      # @param order_override [Bool] ?
+      # @param _resolution_type [?]
+      # @return [Any] the value of the specfied key.
+      #
+      def lookup_values(keys, scope, order_override, _resolution_type)
+      require 'byebug'
+      debugger
+
+        setup_context(scope, order_override)
+        #
+        # TODO: Implement this
+        #
+      end
+
+
       private
+
+      def setup_context(scope, order_override)
+        Connect::Dsl.config.scope = scope  # Pass the scope to connect
+        parse_config(scope, order_override) unless @parsed
+      end
+
 
       def parse_config(scope, order_override)
         reversed_hierarchy(scope, order_override).each do |source|

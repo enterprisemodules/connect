@@ -15,6 +15,7 @@ end
 
 require 'rspec'
 require 'rspec/collection_matchers'
+require 'rspec/its'
 
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|

@@ -4,6 +4,7 @@ group :development, :test do
   gem 'rake'
   gem 'rspec'
   gem 'rspec-collection_matchers'
+  gem 'rspec-its'
   gem 'rexical'
   gem 'racc'
   gem 'pry'
