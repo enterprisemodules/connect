@@ -61,7 +61,7 @@ Puppet::Face.define(:connect, '0.0.1') do
   def scope
     nodename = Facter.value('hostname')
     fact_values = Facter.to_hash
-    node = Puppet::Node.new("testnode", :facts => Puppet::Node::Facts.new("facts", fact_values))
+    node = Puppet::Node.new(nodename, :facts => Puppet::Node::Facts.new("facts", fact_values))
     compiler = Puppet::Parser::Compiler.new(node)
     # configure compiler with facts and node related data
     # Set all global variables from facts

@@ -33,6 +33,7 @@ RSpec.describe "puppet connect values" do
     it 'calls the dsl lookup method' do
       expect_any_instance_of(Hiera::Backend::Connect_backend).to receive(:lookup_values).with('scope::a_value', {}, false, 1).and_return([])
       expect(Hiera).to receive(:new)
+      allow(Puppet::Face.define(:connect, '0.0.1')).to receive(:scope).and_return({})
       subject.values('scope::a_value',{})
     end
 
