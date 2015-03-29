@@ -1,6 +1,11 @@
 History
 ========
 
+29-03-2015  version 0.0.3
+--------------------------
+- Added Puppet connect values commands to read the configs
+
+
 24-03-2015  version 0.0.2
 --------------------------
 - Better support for selectors
