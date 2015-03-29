@@ -8,6 +8,7 @@
     * [What connect affects](#what-connect-affects)
     * [Setup requirements](#setup-requirements)
     * [Beginning with connect](#beginning-with-connect)
+    * [Tools](#tools)
 4. [Usage - Configuration options and additional functionality](#usage)
 5. [Troubleshooting](#troubleshooting)
 6. [Limitations - OS compatibility, etc.](#limitations)
@@ -119,6 +120,22 @@ Notice: Scope(Class[Test]): it works
 Notice: Compiled catalog for 10.0.2.15 in environment production in 0.20 seconds
 Notice: Finished catalog run in 0.03 seconds
 ```
+
+###Tools
+
+Bundled with connect comes the values inspector. This tool lets you see the interpreted value of a specified parameter. In lay man's terms, it parses your connect file's and shows you the value.
+
+```
+$ puppet connect values my_parameter
+```
+
+You can also use a wildcard for the parameter. Wildcards are specified as [regular expressions](http://www.regular-expressions.info/reference.html).
+
+```
+$ puppet connect values my_scope::.*
+```
+
+This will show all parameters in the scope `my_scope`.
 
 ###Using the accompanying Vagrant box
 
