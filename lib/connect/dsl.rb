@@ -16,13 +16,43 @@ module Connect
   #
   class Config < OpenStruct
   end
+
+  ##
+  #
+  # Two structures to hold an reference to a definition and usage
+  #
+  Xref = Struct.new(:file_name, :lineno)
+  Xdef = Struct.new(:file_name, :lineno)
   ##
   #
   # This class contains all methods called by the DSL parser
   #
   # rubocop:disable ClassLength
   class Dsl < Racc::Parser
+    extend Forwardable
+
     attr_reader :interpolator, :current_file, :config
+
+    #
+    # A lot of the object work is delegated to the objects_table
+    #
+    def_delegator :@objects_table,  :add,         :add_object
+    def_delegator :@objects_table,  :lookup,      :lookup_object
+    def_delegator :@objects_table,  :dump,        :dump_objects
+    def_delegator :@objects_table,  :definitions, :object_definitions
+
+    #
+    # A lot of the values work is delegated to the values_table
+    #
+    def_delegator :@values_table,  :add,                  :add_value
+    def_delegator :@values_table,  :lookup,               :lookup_value
+    def_delegator :@values_table,  :dump,                 :dump_values
+    def_delegator :@values_table,  :definitions,          :value_definitions
+    def_delegator :@values_table,  :references,           :value_references
+    def_delegator :@values_table,  :register_reference,   :register_reference
+ 
+    def_delegator :@interpolator,  :translate, :interpolate
+
     class << self
       def config
         @config ||= Config.new
@@ -58,9 +88,9 @@ module Connect
     # @param name [String] the name of the assignment
     # @param value [Any] the value of the assignment
     #
-    def assign(name, value)
+    def assign(name, value, xdef = nil)
       name = scoped_name_for(name)
-      entry = ValuesTable.value_entry(name, value)
+      entry = ValuesTable.value_entry(name, value, nil, xdef)
       add_value(entry)
     end
 
@@ -85,8 +115,9 @@ module Connect
     #
     # Connect the variable to an other variable in the value table
     #
-    def reference(to)
-      Entry::Reference.new(to, nil)
+    def reference(parameter, xref = nil)
+      @values_table.register_reference(parameter, xref)
+      Entry::Reference.new(parameter, nil, xref)
     end
     ##
     #
@@ -137,23 +168,14 @@ module Connect
 
     ##
     #
-    # Interpolate the specfied strings and transalte any interoplation strings to the actual values
-    #
-    # @param string [String] the string to interpolate
-    def interpolate(string)
-      @interpolator.translate(string)
-    end
-
-    ##
-    #
     # Define or lookup an object. If the values is empty, this method returns just the values.
     # It the values parameter is set, a new entry will be added to the objects table
     #
-    def define_object(type, name, values = nil, iterator = nil)
+    def define_object(type, name, values = nil, iterator = nil, xdef = nil)
       fail ArgumentError, 'no iterator allowed if no block defined' if values.nil? && !iterator.nil?
       validate_iterator(iterator) unless iterator.nil?
       add_object(type, name, values) if values
-      Entry::ObjectReference.new(type, name, nil)
+      Entry::ObjectReference.new(type, name, nil, xdef)
     end
 
     ##
@@ -161,72 +183,8 @@ module Connect
     # Define or lookup an object. If the values is empty, this method returns just the values.
     # It the values parameter is set, a new entry will be added to the objects table
     #
-    def reference_object(type, name)
-      Entry::ObjectReference.new(type, name, nil)
-    end
-
-    ##
-    #
-    # add an object with a specfied name and type and value to the objects table.
-    #
-    # @param name [String] the name of the object
-    # @param type [String] the type of object
-    # @param values [Hash] a [Hash] of object values
-    #
-    def add_object(name, type, values)
-      @objects_table.add(name, type, values)
-    end
-
-    ##
-    #
-    # Fetch object identified by the name and the type from the objects table
-    #
-    # @param type [String] the type of object
-    # @param name [String] the name of the object
-    #
-    # @return [ObjectDefinition] the object
-    #
-    def lookup_object(type, name)
-      @objects_table.lookup(type, name)
-    end
-
-    ##
-    #
-    # Add the specified value identified by the name to the value table
-    #
-    # @param entry [Connect::Entries::Base] the antry to add the the values table
-    #
-    def add_value(entry)
-      @values_table.add(entry)
-    end
-
-    ##
-    #
-    # Lookup the values specified by the name from the value table.
-    #
-    # @param name [String] the name/ket to lookup in the value_table
-    #
-    def lookup_value(name)
-      @values_table.lookup(name)
-    end
-
-    ##
-    #
-    # Dump the objects table
-    #
-    # @return [String] the content of the objects table
-    def dump_objects
-      @objects_table.dump
-    end
-
-    ##
-    #
-    # Dump the values table
-    #
-    # @return [String] the content of the values table
-    #
-    def dump_values
-      @values_table.dump
+    def reference_object(type, name, xref = nil)
+      Entry::ObjectReference.new(type, name, nil, xref)
     end
 
     ##
@@ -254,6 +212,14 @@ module Connect
     #
     def to_param(parameters)
       parameters.collect { |p| p.is_a?(String) ? "'#{p}'" : p }.join(',')
+    end
+
+    def xref
+      Xref.new(current_file, lineno)
+    end
+
+    def xdef
+      Xdef.new(current_file, lineno)
     end
 
     private

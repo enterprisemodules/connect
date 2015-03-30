@@ -500,7 +500,7 @@ module_eval(<<'.,.,', 'dsl.y', 43)
 
 module_eval(<<'.,.,', 'dsl.y', 47)
   def _reduce_17(val, _values, result)
-     result = interpolate(val[0])
+     result = interpolate(val[0], xref)
     result
   end
 .,.,
@@ -559,7 +559,7 @@ module_eval(<<'.,.,', 'dsl.y', 74)
 
 module_eval(<<'.,.,', 'dsl.y', 82)
   def _reduce_34(val, _values, result)
-    result = reference(val[0])
+    result = reference(val[0], xref)
     result
   end
 .,.,
@@ -749,7 +749,7 @@ module_eval(<<'.,.,', 'dsl.y', 173)
 
 module_eval(<<'.,.,', 'dsl.y', 180)
   def _reduce_69(val, _values, result)
-     assign(val[0], val[2])
+     assign(val[0], val[2], xdef)
     result
   end
 .,.,
@@ -815,28 +815,28 @@ module_eval(<<'.,.,', 'dsl.y', 222)
 
 module_eval(<<'.,.,', 'dsl.y', 230)
   def _reduce_82(val, _values, result)
-     result = define_object(val[0], val[2], val[5], val[4])
+     result = define_object(val[0], val[2], val[5], val[4], xdef)
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'dsl.y', 232)
   def _reduce_83(val, _values, result)
-     result = define_object(val[0], val[2], val[5], val[4])
+     result = define_object(val[0], val[2], val[5], val[4], xdef)
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'dsl.y', 237)
   def _reduce_84(val, _values, result)
-     result = reference_object(val[0], val[2])
+     result = reference_object(val[0], val[2], xref)
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'dsl.y', 238)
   def _reduce_85(val, _values, result)
-     result = reference_object(val[0], val[2])
+     result = reference_object(val[0], val[2], xref)
     result
   end
 .,.,

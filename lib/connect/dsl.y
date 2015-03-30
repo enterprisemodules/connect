@@ -45,7 +45,7 @@ rule
   ;
 
   string
-    : DOUBLE_QUOTED                            { result = interpolate(val[0])}
+    : DOUBLE_QUOTED                            { result = interpolate(val[0], xref)}
     | SINGLE_QUOTED
   ;
 
@@ -80,7 +80,7 @@ rule
   ;
 
   reference
-    : literal                                 {result = reference(val[0])}
+    : literal                                 {result = reference(val[0], xref)}
     ;
 
   expression
@@ -178,7 +178,7 @@ rule
   # Assignments and connections
   #
 	assignment
-    : literal '=' expression                        { assign(val[0], val[2])}
+    : literal '=' expression                        { assign(val[0], val[2], xdef)}
   ;
 
 
@@ -228,15 +228,15 @@ rule
   #
   object_definition
     : IDENTIFIER '(' string ')' iterator definition_block 
-                                                    { result = define_object(val[0], val[2], val[5], val[4])}
+                                                    { result = define_object(val[0], val[2], val[5], val[4], xdef)}
     | IDENTIFIER '(' literal ')' iterator definition_block 
-                                                    { result = define_object(val[0], val[2], val[5], val[4])}
+                                                    { result = define_object(val[0], val[2], val[5], val[4], xdef)}
   ;
 
 
   object_reference
-    : IDENTIFIER '(' literal ')'                    { result = reference_object(val[0], val[2])}
-    | IDENTIFIER '(' string ')'                     { result = reference_object(val[0], val[2])} 
+    : IDENTIFIER '(' literal ')'                    { result = reference_object(val[0], val[2], xref)}
+    | IDENTIFIER '(' string ')'                     { result = reference_object(val[0], val[2], xref)} 
   ;
 
 

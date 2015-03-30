@@ -46,12 +46,36 @@ Puppet::Face.define(:connect, '0.0.1') do
       values_list = backend.lookup_values(name, scope, false, 1)
       output = ''
       values_list.each do | parameter, value|
+        output << definitions_for(parameter, backend)
+        output << references_for(parameter, backend)
         output << "#{parameter} = #{value.ai(:indent => 2)}\n"
       end
       output
     end
 
+  end
 
+  def definitions_for(parameter, backend)
+    output = ''
+    output << "# Parameter #{parameter} is defined at:\n"
+    backend.value_definitions(parameter).each do | file_name, linenno|
+      output << "#   #{file_name}:#{linenno}\n"
+    end
+    output
+  end
+
+  def references_for(parameter, backend)
+    output = ''
+    output << "# Parameter #{parameter} is referenced at:\n"
+    references = backend.value_references(parameter)
+    if references.length > 0
+      references.each do | file_name, linenno|
+        output << "#   #{file_name}:#{linenno}\n"
+      end
+    else
+      output <<   "#   not referenced in any connect config file\n"
+    end
+    output
   end
 
   #

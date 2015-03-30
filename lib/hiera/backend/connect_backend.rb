@@ -13,6 +13,13 @@ class Hiera
     #
     # rubocop:disable ClassAndModuleCamelCase
     class Connect_backend
+      extend Forwardable
+
+      def_delegator :@connect,  :value_definitions,         :value_definitions
+      def_delegator :@connect,  :value_references,          :value_references
+      def_delegator :@connect,  :object_definitions,        :object_definitions
+      def_delegator :@connect,  :object_references,         :object_references
+
       attr_reader :parsed
 
       def initialize
@@ -54,6 +61,7 @@ class Hiera
         setup_context(scope, order_override)
         @connect.lookup_values(keys)
       end
+
 
       ##
       #

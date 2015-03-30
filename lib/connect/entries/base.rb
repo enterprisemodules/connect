@@ -15,13 +15,25 @@ module Connect
         attr_accessor :objects_table, :values_table
       end
 
-      attr_accessor :selector
+      attr_accessor :selector, :xref, :value
 
-      def initialize(value, selector = nil)
+      def initialize(value, selector = nil, xref = nil)
+        @xref     = [xref].compact
         @value    = value
         @selector = selector
       end
 
+      def merge!(entry)
+        @xref     << entry.xref
+        @xref     = @xref.flatten.compact
+        @value    = entry.value
+        @selector = entry.selector
+      end
+
+      def add_reference(reference)
+        @xref << reference
+        @xref = @xref.flatten.compact
+      end
       ##
       #
       # Translate the object for external representation

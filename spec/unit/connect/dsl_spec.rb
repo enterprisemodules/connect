@@ -22,7 +22,7 @@ RSpec.describe Connect::Dsl do
   describe '#assign' do
     context 'a value' do
       it 'add\'s a value to the value table' do
-        expect(Connect::ValuesTable).to receive(:value_entry).with('a',10).and_call_original
+        expect(Connect::ValuesTable).to receive(:value_entry).with('a',10, nil, nil).and_call_original
         expect(dsl).to receive(:add_value).with('a' => Connect::Entry::Value)
         dsl.assign('a', 10)
       end
@@ -30,7 +30,7 @@ RSpec.describe Connect::Dsl do
 
     context 'a reference' do
       it 'add\'s a reference to the value table' do
-        expect(Connect::ValuesTable).to receive(:value_entry).with('a',Connect::Entry::Reference).and_call_original
+        expect(Connect::ValuesTable).to receive(:value_entry).with('a',Connect::Entry::Reference, nil, nil).and_call_original
         expect(dsl).to receive(:add_value).with('a' => Connect::Entry::Value)
         dsl.assign('a', Connect::Entry::Reference.new('x'))
       end

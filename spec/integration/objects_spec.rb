@@ -105,7 +105,7 @@ RSpec.describe 'objects' do
         }
         a = [foo('foo.bar.nl'),10]
         EOD
-        expect(dsl.lookup_value('a')).to eql([{ 'foo.bar.nl' => {'ip' => '10.0.0.100', 'alias' =>'foo'}},10])
+        expect(dsl.lookup_value('a')).to eq([{ 'foo.bar.nl' => {'ip' => '10.0.0.100', 'alias' =>'foo'}},10])
       end
     end
 

@@ -23,7 +23,7 @@ RSpec.describe 'Parser' do
 
     context 'without trailing comma' do
       it 'is parsed' do
-        expect(dsl).to receive(:assign).with('a', {'a'=>1,'b'=>2})
+        expect(dsl).to receive(:assign).with('a', {'a'=>1,'b'=>2}, Connect::Xdef)
         dsl.parse(<<-EOD)
         a = {a:1,b:2}
         EOD
@@ -32,7 +32,7 @@ RSpec.describe 'Parser' do
 
     context 'with trailing comma' do
       it 'is parsed' do
-        expect(dsl).to receive(:assign).with('a', {'a'=>1,'b'=>2})
+        expect(dsl).to receive(:assign).with('a', {'a'=>1,'b'=>2}, Connect::Xdef)
         dsl.parse(<<-EOD)
         a = {a:1,b:2,}
         EOD
@@ -41,7 +41,7 @@ RSpec.describe 'Parser' do
 
     context 'with an array as value' do
       it 'is parsed' do
-        expect(dsl).to receive(:assign).with('a', {'a'=>1,'b'=>[2,3]})
+        expect(dsl).to receive(:assign).with('a', {'a'=>1,'b'=>[2,3]}, Connect::Xdef)
         dsl.parse(<<-EOD)
         a = {a:1,b:[2,3]}
         EOD
@@ -50,7 +50,7 @@ RSpec.describe 'Parser' do
 
     context 'with a hash as value' do
       it 'is parsed' do
-        expect(dsl).to receive(:assign).with('a', {'a'=>1,'b'=>{'c' => 'd'}})
+        expect(dsl).to receive(:assign).with('a', {'a'=>1,'b'=>{'c' => 'd'}}, Connect::Xdef)
         dsl.parse(<<-EOD)
         a = {a:1,b:{'c'=>'d'}}
         EOD
@@ -63,7 +63,7 @@ RSpec.describe 'Parser' do
 
     context 'without trailing comma' do
       it 'is parsed' do
-        expect(dsl).to receive(:assign).with('a', [1,2,3,4])
+        expect(dsl).to receive(:assign).with('a', [1,2,3,4], Connect::Xdef)
         dsl.parse(<<-EOD)
         a = [1,2,3,4]
         EOD
@@ -72,7 +72,7 @@ RSpec.describe 'Parser' do
 
     context 'with an Array' do
       it 'is parsed' do
-        expect(dsl).to receive(:assign).with('a', [1,[2,3],4])
+        expect(dsl).to receive(:assign).with('a', [1,[2,3],4], Connect::Xdef)
         dsl.parse(<<-EOD)
         a = [1,[2,3],4]
         EOD
@@ -81,7 +81,7 @@ RSpec.describe 'Parser' do
 
     context 'with a Hash' do
       it 'is parsed' do
-        expect(dsl).to receive(:assign).with('a', [1,{'x'=>1},4])
+        expect(dsl).to receive(:assign).with('a', [1,{'x'=>1},4], Connect::Xdef)
         dsl.parse(<<-EOD)
         a = [1,{x:1},4]
         EOD
@@ -90,7 +90,7 @@ RSpec.describe 'Parser' do
 
     context 'with an Object' do
       it 'is parsed' do
-        expect(dsl).to receive(:assign).with('a', [1,Connect::Entry::ObjectReference,4])
+        expect(dsl).to receive(:assign).with('a', [1,Connect::Entry::ObjectReference,4], Connect::Xdef)
         dsl.parse(<<-EOD)
         a = [1,foo('bar'),4]
         EOD
@@ -101,7 +101,7 @@ RSpec.describe 'Parser' do
     context 'with an Object and selector' do
       it 'is parsed' do 
         expect(dsl).to receive(:selector).with(Connect::Entry::ObjectReference, '.ip').and_call_original
-        expect(dsl).to receive(:assign).with('a', Connect::Entry::ObjectReference)
+        expect(dsl).to receive(:assign).with('a', Connect::Entry::ObjectReference, Connect::Xdef)
         dsl.parse(<<-EOD)
         a = foo('bar').ip
         EOD
@@ -111,7 +111,7 @@ RSpec.describe 'Parser' do
 
     context 'with trailing comma' do
       it 'is parsed' do
-        expect(dsl).to receive(:assign).with('a', [1,2,3,4])
+        expect(dsl).to receive(:assign).with('a', [1,2,3,4], Connect::Xdef)
         dsl.parse(<<-EOD)
         a = [1,2,3,4,]
         EOD
@@ -123,35 +123,35 @@ RSpec.describe 'Parser' do
   describe 'scalar assignments' do
 
     it 'boolean' do
-      expect(dsl).to receive(:assign).with('a', true)
+      expect(dsl).to receive(:assign).with('a', true, Connect::Xdef)
       dsl.parse(<<-EOD)
       a = true
       EOD
     end
 
     it 'undef' do
-      expect(dsl).to receive(:assign).with('a', nil)
+      expect(dsl).to receive(:assign).with('a', nil, Connect::Xdef)
       dsl.parse(<<-EOD)
       a = undefined
       EOD
     end
 
     it 'integer' do
-      expect(dsl).to receive(:assign).with('a', 1)
+      expect(dsl).to receive(:assign).with('a', 1, Connect::Xdef)
       dsl.parse(<<-EOD)
       a = 1
       EOD
     end
 
     it 'float' do
-      expect(dsl).to receive(:assign).with('a', 1.1)
+      expect(dsl).to receive(:assign).with('a', 1.1, Connect::Xdef)
       dsl.parse(<<-EOD)
       a = 1.1
       EOD
     end
 
     it 'string' do
-      expect(dsl).to receive(:assign).with('a', 'hello')
+      expect(dsl).to receive(:assign).with('a', 'hello', Connect::Xdef)
       dsl.parse(<<-EOD)
       a = 'hello'
       EOD
@@ -161,14 +161,14 @@ RSpec.describe 'Parser' do
   describe 'Array assignments' do
 
     it 'integers' do
-      expect(dsl).to receive(:assign).with('a', [1,2,3])
+      expect(dsl).to receive(:assign).with('a', [1,2,3], Connect::Xdef)
       dsl.parse(<<-EOD)
       a = [1,2,3]
       EOD
     end
 
     it 'with reference' do
-      expect(dsl).to receive(:assign).with('a', [1,Connect::Entry::Reference,3])
+      expect(dsl).to receive(:assign).with('a', [1,Connect::Entry::Reference,3], Connect::Xdef)
       dsl.parse(<<-EOD)
       a = [1,b,3]
       EOD
@@ -176,7 +176,7 @@ RSpec.describe 'Parser' do
 
 
     it 'empty array' do
-      expect(dsl).to receive(:assign).with('a', [])
+      expect(dsl).to receive(:assign).with('a', [], Connect::Xdef)
       dsl.parse(<<-EOD)
       a = []
       EOD
@@ -187,7 +187,7 @@ RSpec.describe 'Parser' do
   describe 'Hash assignments' do
 
     it 'using  hash rocket syntax' do
-      expect(dsl).to receive(:assign).with('a', {'a'=>10})
+      expect(dsl).to receive(:assign).with('a', {'a'=>10}, Connect::Xdef)
       dsl.parse(<<-EOD)
       a = { a=>10}
       EOD
@@ -195,28 +195,28 @@ RSpec.describe 'Parser' do
 
 
     it 'using colon syntax' do
-      expect(dsl).to receive(:assign).with('a', {'a'=>10})
+      expect(dsl).to receive(:assign).with('a', {'a'=>10}, Connect::Xdef)
       dsl.parse(<<-EOD)
       a = { a:10}
       EOD
     end
 
     it 'empty hash' do
-      expect(dsl).to receive(:assign).with('a', {})
+      expect(dsl).to receive(:assign).with('a', {}, Connect::Xdef)
       dsl.parse(<<-EOD)
       a = {}
       EOD
     end
 
     it 'using a reference' do
-      expect(dsl).to receive(:assign).with('a', {'a'=>Connect::Entry::Reference})
+      expect(dsl).to receive(:assign).with('a', {'a'=>Connect::Entry::Reference}, Connect::Xdef)
       dsl.parse(<<-EOD)
       a = { a:b}
       EOD
     end
 
     it 'using a single object' do
-      expect(dsl).to receive(:assign).with('a', Hash)
+      expect(dsl).to receive(:assign).with('a', Hash, Connect::Xdef)
       dsl.parse(<<-EOD)
       a = { x: 10,
             obj('test')
@@ -225,7 +225,7 @@ RSpec.describe 'Parser' do
     end
 
     it 'using a multiple objects' do
-      expect(dsl).to receive(:assign).with('a', Hash)
+      expect(dsl).to receive(:assign).with('a', Hash, Connect::Xdef)
       dsl.parse(<<-EOD)
       a = { 
         something('else'),
@@ -241,8 +241,8 @@ RSpec.describe 'Parser' do
 
     context 'with definition' do
       it 'defines the object and assigns the reference' do
-        expect(dsl).to receive(:define_object).with('foo', 'bar', {'a' => 10}, nil).and_call_original
-        expect(dsl).to receive(:assign).with('a', Connect::Entry::ObjectReference)
+        expect(dsl).to receive(:define_object).with('foo', 'bar', {'a' => 10}, nil, Connect::Xdef).and_call_original
+        expect(dsl).to receive(:assign).with('a', Connect::Entry::ObjectReference, Connect::Xdef)
         dsl.parse(<<-EOD)
         a = foo('bar') {a=>10}
         EOD
@@ -251,7 +251,7 @@ RSpec.describe 'Parser' do
 
     context 'just a reference' do
       it 'assigns the reference' do
-        expect(dsl).to receive(:assign).with('a', Connect::Entry::ObjectReference)
+        expect(dsl).to receive(:assign).with('a', Connect::Entry::ObjectReference, Connect::Xdef)
         dsl.parse(<<-EOD)
         a = foo('bar')
         EOD
@@ -264,7 +264,7 @@ RSpec.describe 'Parser' do
 
     context 'no selector' do
       it 'connects two variables' do
-        expect(dsl).to receive(:assign).with('a', Connect::Entry::Reference)
+        expect(dsl).to receive(:assign).with('a', Connect::Entry::Reference, Connect::Xdef)
         dsl.parse(<<-EOD)
         a = b
         EOD
@@ -274,7 +274,7 @@ RSpec.describe 'Parser' do
     context 'with a selector' do
       it 'connects two variables' do
         expect(dsl).to receive(:selector).with(Connect::Entry::Reference, '[0].ip').and_call_original
-        expect(dsl).to receive(:assign).with('a', Connect::Entry::Reference)
+        expect(dsl).to receive(:assign).with('a', Connect::Entry::Reference, Connect::Xdef)
         dsl.parse(<<-EOD)
         a = b[0].ip
         EOD
@@ -462,7 +462,7 @@ RSpec.describe 'Parser' do
 
     context 'using curly braces' do
       it 'defines an object' do
-        expect(dsl).to receive(:define_object).with('host','dns', { 'ip' => '10.0.0.1', 'fqdn' => 'dns.a.b'}, nil)
+        expect(dsl).to receive(:define_object).with('host','dns', { 'ip' => '10.0.0.1', 'fqdn' => 'dns.a.b'}, nil, Connect::Xdef)
         dsl.parse(<<-EOD)
         host('dns') { ip: '10.0.0.1', fqdn: 'dns.a.b'}
         EOD
@@ -472,7 +472,7 @@ RSpec.describe 'Parser' do
 
   context 'using do end' do
     it 'defines an object' do
-      expect(dsl).to receive(:define_object).with('host','dns', { 'ip' => '10.0.0.1', 'fqdn' => 'dns.a.b'}, nil)
+      expect(dsl).to receive(:define_object).with('host','dns', { 'ip' => '10.0.0.1', 'fqdn' => 'dns.a.b'}, nil, Connect::Xdef)
       dsl.parse(<<-EOD)
       host('dns') do ip: '10.0.0.1', fqdn: 'dns.a.b'end
       EOD
@@ -481,7 +481,7 @@ RSpec.describe 'Parser' do
 
   context 'using unquoted strings' do
     it 'defines an object' do
-      expect(dsl).to receive(:define_object).with('foo','bar', { 'ip' => '10.0.0.1', 'fqdn' => 'dns.a.b'}, nil)
+      expect(dsl).to receive(:define_object).with('foo','bar', { 'ip' => '10.0.0.1', 'fqdn' => 'dns.a.b'}, nil, Connect::Xdef)
       dsl.parse(<<-EOD)
       foo(bar) do ip: '10.0.0.1', fqdn: 'dns.a.b'end
       EOD
@@ -491,7 +491,7 @@ RSpec.describe 'Parser' do
 
   context 'using an iterator' do
     it 'defines an object with an iterator' do
-      expect(dsl).to receive(:define_object).with('foo','bar', { 'ip' => '10.0.0.1', 'fqdn' => 'dns.a.b'},  {:from => 10, :to => 20})
+      expect(dsl).to receive(:define_object).with('foo','bar', { 'ip' => '10.0.0.1', 'fqdn' => 'dns.a.b'},  {:from => 10, :to => 20}, Connect::Xdef)
       dsl.parse(<<-EOD)
       foo('bar') from 10 to 20 do 
         ip:   '10.0.0.1', 
@@ -506,7 +506,7 @@ RSpec.describe 'Parser' do
 
     context 'using literal syntax' do
       it 'refereces an object' do
-        expect(dsl).to receive(:assign).with('a', Connect::Entry::ObjectReference)
+        expect(dsl).to receive(:assign).with('a', Connect::Entry::ObjectReference, Connect::Xdef)
         dsl.parse(<<-EOD)
         a = foo(bar)
         EOD
@@ -515,7 +515,7 @@ RSpec.describe 'Parser' do
 
     context 'using string syntax' do
       it 'refereces an object' do
-        expect(dsl).to receive(:assign).with('a', Connect::Entry::ObjectReference)
+        expect(dsl).to receive(:assign).with('a', Connect::Entry::ObjectReference, Connect::Xdef)
         dsl.parse(<<-EOD)
         a = foo(bar)
         EOD
@@ -529,7 +529,7 @@ RSpec.describe 'Parser' do
     context 'double quoted strings' do
 
       it 'are passed to the interpolation filter' do
-        expect(dsl).to receive(:interpolate).with("hallo ${foo::bar} and ${hallo}")
+        expect(dsl).to receive(:interpolate).with("hallo ${foo::bar} and ${hallo}", Connect::Xref)
         dsl.parse(<<-EOD)
         a = "hallo ${foo::bar} and ${hallo}"
         EOD

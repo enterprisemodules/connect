@@ -1,5 +1,4 @@
 require 'connect/selector'
-require 'connect/entries/null'
 require 'connect/entries/value'
 require 'connect/entries/object_reference'
 require 'connect/entries/reference'
@@ -22,12 +21,51 @@ module Connect
 
     ##
     #
+    # return the array of defintions for the specfied parameter
+    #
+    # @return defintions [Array] the Array of definitions
+    #
+    def definitions(parameter)
+      entry = @values_table.fetch(parameter) { fail "internal error. Parameter entry #{parameter} not found" }
+      entry.xref.collect {|e| e.class == Connect::Xdef ? [e.file_name, e.lineno] : nil}.compact
+    end
+
+    ##
+    #
+    # return the array of references for the specfied parameter
+    #
+    # @return defintions [Array] the Array of references
+    #
+    def references(parameter)
+      entry = @values_table.fetch(parameter) { fail "internal error. Parameter entry #{parameter} not found" }
+      entry.xref.collect {|e| e.class == Connect::Xref ? [e.file_name, e.lineno] : nil}.compact
+    end
+
+    ##
+    #
+    # Register a cross reference in the entry for the specfied parameter
+    #
+    def register_reference(parameter, xref)
+      entry = @values_table.fetch(parameter) do
+        value = Entry::Value.new(nil)
+        add( parameter => value)
+        value
+      end
+      entry.add_reference(xref)
+    end
+
+    ##
+    #
     # Add an entry to the values tables
     #
     # @param entry [Connect::Entries::Base] an entry to add to the tabke
     #
     def add(entry)
-      @values_table.merge!(entry)
+      if exists?(entry)
+        @values_table[entry.keys.first].merge!(entry.values.first)
+      else
+        @values_table.merge!(entry)
+      end
     end
 
     ##
@@ -67,7 +105,7 @@ module Connect
     def internal_lookup(name)
       name = name.to_s
       # TODO: Check if name is a valid name
-      @values_table.fetch(name) { Entry::Null.new }
+      @values_table.fetch(name) { Entry::Value.new(nil) }
     end
 
     ##
@@ -79,8 +117,8 @@ module Connect
     # @param selector [String] the selector to be applied
     # @return [Hash] a Hash containing the name and the entry for the table
     #
-    def self.value_entry(name, value, selector = nil)
-      { name => Entry::Value.new(value, selector) }
+    def self.value_entry(name, value, selector = nil, xref = nil)
+      { name => Entry::Value.new(value, selector, xref) }
     end
 
     ##
@@ -92,8 +130,8 @@ module Connect
     # @param selector [String] the selector to be applied
     # @return [Hash] a Hash containing the name and the entry for the table
     #
-    def self.reference_entry(name, reference, selector = nil)
-      { name => Entry::Reference.new(reference, selector) }
+    def self.reference_entry(name, reference, selector = nil, xref = nil)
+      { name => Entry::Reference.new(reference, selector, xref) }
     end
 
     ##
@@ -106,8 +144,14 @@ module Connect
     # @param selector [String] the selector to be applied
     # @return [Hash] a Hash containing the name and the entry for the table
     #
-    def self.object_reference_entry(name, object_type, object_name, selector = nil)
-      { name => Entry::ObjectReference.new(object_type, object_name, selector) }
+    def self.object_reference_entry(name, object_type, object_name, selector = nil, xref = nil)
+      { name => Entry::ObjectReference.new(object_type, object_name, selector, xref) }
+    end
+
+    private
+
+    def exists?(entry)
+      @values_table.keys.include?(entry.keys.first)
     end
   end
 end

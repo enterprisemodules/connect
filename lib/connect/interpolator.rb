@@ -21,17 +21,17 @@ module Connect
     #
     # @param string [String] the string to be interpolated
     #
-    def translate(string)
-      string = interpolate_connect_variables(string)
+    def translate(string, xref = nil)
+      string = interpolate_connect_variables(string, xref)
       interpolate_puppet_variables(string)
     end
 
     private
 
-    def interpolate_connect_variables(string)
+    def interpolate_connect_variables(string, xref)
       variable_strings = string.scan(CONNECT_REGEXP).flatten
       variable_names   = variable_strings.map { |n| n.split(/\{|\}/).last.gsub(/\s+/, '') }
-      variable_values  = variable_names.map { |n| connect_interpolate(n) }
+      variable_values  = variable_names.map { |n| connect_interpolate(n, xref) }
       variable_strings.each_index do |index|
         string.gsub!(variable_strings[index], variable_values[index])
       end
@@ -50,9 +50,10 @@ module Connect
 
     private
 
-    def connect_interpolate(variable)
+    def connect_interpolate(variable, xref)
       variable, selector = variable.split(/([\[\.].*)/)
       value = @resolver.lookup_value(variable)
+      @resolver.register_reference(variable, xref)
       Selector.run(value, selector).to_s
     end
 

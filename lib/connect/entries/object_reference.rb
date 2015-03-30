@@ -9,10 +9,11 @@ module Connect
     class ObjectReference < Base
       attr_accessor :selector
 
-      def initialize(type, name, selector = nil)
+      def initialize(type, name, selector = nil, xref = nil)
         @type     = type
         @name     = name
         @selector = selector
+        @xref     = xref
       end
 
       ##
