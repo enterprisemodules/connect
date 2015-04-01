@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
 group :development, :test do
+  gem "codeclimate-test-reporter",  require: nil
   gem 'rake'
   gem 'rspec'
   gem 'rspec-collection_matchers'
@@ -20,6 +21,8 @@ group :development, :test do
   gem 'coveralls'     , :require => false
   gem "puppet-blacksmith"
 end
+
+
 
 gem 'hiera'
 gem 'awesome_print'

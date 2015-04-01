@@ -1,5 +1,7 @@
 require 'puppet'
 if RUBY_VERSION[0,3] != '1.8'
+  require "codeclimate-test-reporter"
+  CodeClimate::TestReporter.start
   require 'bogus/rspec'
   require 'coveralls'
   Coveralls.wear!
