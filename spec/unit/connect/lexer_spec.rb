@@ -8,18 +8,20 @@ RSpec.describe 'Lexer' do
 
   describe 'comments' do
 
-    context 'with a newline at the end'
-    it 'is recognised' do
-      content = <<-EOD
-      # This a comment and should do anything
-      EOD
-      expect(dsl.tokenize(content)).to be_empty
+    context 'with a newline at the end' do
+      it 'is recognised' do
+        content = <<-EOD
+        # This a comment and should do anything
+        EOD
+        expect(dsl.tokenize(content)).to be_empty
+      end
     end
 
-    context 'without a new line at the end'
-    it 'is recognised' do
-      content = "# This a comment and should do anything"
-      expect(dsl.tokenize(content)).to be_empty
+    context 'without a new line at the end' do
+      it 'is recognised' do
+        content = "# This a comment and should do anything"
+        expect(dsl.tokenize(content)).to be_empty
+      end
     end
   end
 

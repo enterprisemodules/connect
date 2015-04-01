@@ -136,35 +136,35 @@ RSpec.describe 'Parser' do
 
   describe 'scalar assignments' do
 
-    it 'boolean' do
+    it 'Assigns a boolean' do
       expect(dsl).to receive(:assign).with('a', true, Connect::Xdef)
       dsl.parse(<<-EOD)
       a = true
       EOD
     end
 
-    it 'undef' do
+    it 'Assigns a undef' do
       expect(dsl).to receive(:assign).with('a', nil, Connect::Xdef)
       dsl.parse(<<-EOD)
       a = undefined
       EOD
     end
 
-    it 'integer' do
+    it 'Assigns a integer' do
       expect(dsl).to receive(:assign).with('a', 1, Connect::Xdef)
       dsl.parse(<<-EOD)
       a = 1
       EOD
     end
 
-    it 'float' do
+    it 'Assigns a float' do
       expect(dsl).to receive(:assign).with('a', 1.1, Connect::Xdef)
       dsl.parse(<<-EOD)
       a = 1.1
       EOD
     end
 
-    it 'string' do
+    it 'Assigns a string' do
       expect(dsl).to receive(:assign).with('a', 'hello', Connect::Xdef)
       dsl.parse(<<-EOD)
       a = 'hello'
@@ -738,6 +738,39 @@ RSpec.describe 'Parser' do
 
   end
 
+  describe 'cross referencing' do
+
+    context 'a single assignment' do
+      it 'registers a defintion at the specfied file and line' do
+        reference = Connect::Xdef.new(nil, 3)
+        expect(dsl).to receive(:assign).with('a', Connect::Entry::Reference, reference)
+        dsl.parse(<<-EOD)
+
+        a = b
+        EOD
+      end
+    end
+
+    # context 'a double assignment' do
+    #   it 'registers two defintion at the specfied file and line' do
+    #     reference_1 = Connect::Xdef.new(nil, 3)
+    #     reference_2 = Connect::Xdef.new(nil, 5)
+    #     expect(dsl).to receive(:assign).with('a', Connect::Entry::Reference, reference_1).ordered
+    #     expect(dsl).to receive(:assign).with('a', Connect::Entry::Reference, reference_2).ordered
+    #     require 'byebug'
+    #     dsl.parse(<<-EOD)
+
+
+    #     a = b 
+
+    #     a = c 
+
+    #     EOD
+    #   end
+    # end
+
+
+  end
 
 
 end
