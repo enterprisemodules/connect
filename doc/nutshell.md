@@ -96,8 +96,8 @@ Strings in double quotes are interpolated. Strings using single quotes are not i
 
 ```ruby
 my_name   = 'Bert'
-greetings = "Hello ${bert}"   # Will be "Hello Bert"
-strange   = 'Hello ${bert}'   # Will be "Hello ${bert}"
+greetings = "Hello ${my_name}"   # Will be "Hello Bert"
+strange   = 'Hello ${my_name}'   # Will be "Hello ${my_name}"
 ```
 
 Connect also knows how to interpolate Puppet variables:
