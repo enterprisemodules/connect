@@ -6,16 +6,30 @@ RSpec.describe 'Parser' do
   let(:dsl) { Connect::Dsl.new }
 
 
-  describe 'empty file' do
+  describe 'emptyness' do
 
-    it 'is parsed' do
-      expect {
+    describe 'total file' do
+      it 'is parsed' do
+        expect {
+          dsl.parse(<<-EOD)
+                       
+
+          EOD
+          }.not_to raise_error
+      end
+    end
+
+    describe 'On the first lines' do
+      it 'is parsed' do
+        expect(dsl).to receive(:assign).with('a', {'a'=>1,'b'=>2}, Connect::Xdef)
         dsl.parse(<<-EOD)
-                     
+
+        a = {a:1,b:2}
 
         EOD
-        }.not_to raise_error
+      end
     end
+
 
   end
 

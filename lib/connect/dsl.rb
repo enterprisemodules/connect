@@ -267,7 +267,7 @@ module Connect
     end
 
     def empty_definition?(string)
-      (string =~ /^(\s|\n)*$/) == 0
+      (string =~ /\A(\s|\n)*\Z/) == 0
     end
   end
   # rubocop:enable ClassLength
