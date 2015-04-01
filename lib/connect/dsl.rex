@@ -30,6 +30,7 @@ macro
   OR                  or\s|(\|\|)
 
 rule
+  {NEWLINE}
   {COMMENT} 
   {OR}                    { [:OR, text]}
   {AND}                   { [:AND, text]}
@@ -52,7 +53,6 @@ rule
   {DOUBLE_QUOTED}        { [:DOUBLE_QUOTED, dequote(text)]}
   {SINGLE_QUOTED}        { [:SINGLE_QUOTED, dequote(text)]}
   {WHITESPACE}
-  {NEWLINE}
   .                       { [text, text] }
 
 inner

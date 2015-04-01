@@ -59,6 +59,9 @@ class Dsl < Racc::Parser
     token = case @state
     when nil
       case
+      when (text = @ss.scan(/\n/))
+        ;
+
       when (text = @ss.scan(/\#.*$/))
         ;
 
@@ -123,9 +126,6 @@ class Dsl < Racc::Parser
          action { [:SINGLE_QUOTED, dequote(text)]}
 
       when (text = @ss.scan(/[\s|\t]+/))
-        ;
-
-      when (text = @ss.scan(/\n/))
         ;
 
       when (text = @ss.scan(/./))

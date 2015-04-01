@@ -712,7 +712,7 @@ RSpec.describe 'Parser' do
     it ' reports errors with line numbers' do
       expect{
         dsl.include_file(error_config)
-      }.to raise_error(ParseError, /Syntax error on line 4/)
+      }.to raise_error(ParseError, /Syntax error on line 5/)
     end
 
 
