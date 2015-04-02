@@ -102,7 +102,7 @@ RSpec.describe 'setting and retrieving values' do
 
     context 'a hash value' do
 
-      context 'with a reference' do
+      context 'with a reference at level 1' do
 
         it 'is settable and retrievable' do
           dsl.parse(<<-EOD)
@@ -111,6 +111,19 @@ RSpec.describe 'setting and retrieving values' do
           EOD
           expect(dsl.lookup_value('b')).to eql({'foo' =>'bar'})
         end
+
+      end
+
+      context 'with a reference at level 2' do
+
+        it 'is settable and retrievable' do
+          dsl.parse(<<-EOD)
+          a = 'bar'
+          b = {foo: { hello: a}}
+          EOD
+          expect(dsl.lookup_value('b')).to eql({'foo' => { 'hello' => 'bar'}})
+        end
+
       end
 
       context 'with sclar values' do

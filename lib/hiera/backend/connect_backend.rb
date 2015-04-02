@@ -25,8 +25,11 @@ class Hiera
       def initialize
         Hiera.debug('DSL Backend initialized')
         configs_dir   = Config[:connect].fetch(:datadir) { '/etc/puppet/config' }
+        Hiera.debug("datadir is set to #{configs_dir}")
         @dump_values  = Config[:connect].fetch(:dump_values) { false }
         @dump_objects = Config[:connect].fetch(:dump_objects) { false }
+        Hiera.debug "dump_values is #{@dump_values}"
+        Hiera.debug "dump_objects is #{@dump_objects}"
         @connect      = Connect::Dsl.instance(configs_dir)
         @parsed       = false
       end
@@ -43,7 +46,9 @@ class Hiera
       #
       def lookup(key, scope, order_override, _resolution_type)
         setup_context(scope, order_override)
-        @connect.lookup_value(key)
+        value = @connect.lookup_value(key)
+        Hiera.debug("looked up #{key} in connect backend and found #{value}")
+        value
       end
 
 

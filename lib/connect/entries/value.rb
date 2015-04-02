@@ -22,13 +22,13 @@ module Connect
           # Because we've defined some convinieance methods for Array's, we
           # force the return value to be of type ExtendedArray
           #
-          Connect::ExtendedArray.new(@value.map { |e| e.respond_to?(:final) ? e.final : e })
+          convert_array(@value)
         when Hash
           #
           # Because we've defined some conveniance methods for Hashes, we force
           # the type to be a MathodHash
           #
-          MethodHash[@value.map { |k, v| convert_hash_entry(k, v) }]
+          convert_hash(@value)
         else
           @value.respond_to?(:final) ? @value.final : @value
         end
@@ -38,10 +38,29 @@ module Connect
 
       private
 
+      def convert_hash(hash)
+        MethodHash[hash.map { |k, v| convert_hash_entry(k, v) }]
+      end
+
+      def convert_array(array)
+        Connect::ExtendedArray.new(array.map { |e| e.respond_to?(:final) ? e.final : e })
+      end
+
+
       def convert_hash_entry(k, v)
-        if v.is_a?(ObjectReference) && v.object_id == k # Special case
-          key, value = v.final.to_a[0]
-          [key, value]
+        case v
+        when ObjectReference 
+          # TODO: Refacter. This is to difficult
+          if v.object_id == k
+            key, value = v.final.to_a[0]
+            [key, value]
+          else
+            v.respond_to?(:final) ? [k, v.final] : [k, v]
+          end
+        when Hash
+          [k, convert_hash(v)]
+        when Array
+          [k, convert_array(v)]
         else
           v.respond_to?(:final) ? [k, v.final] : [k, v]
         end
