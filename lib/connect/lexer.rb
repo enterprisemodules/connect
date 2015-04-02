@@ -62,6 +62,9 @@ class Dsl < Racc::Parser
       when (text = @ss.scan(/\n/))
         ;
 
+      when (text = @ss.scan(/\#.*\n/))
+         action { @lineno += 1; nil}
+
       when (text = @ss.scan(/\#.*$/))
         ;
 

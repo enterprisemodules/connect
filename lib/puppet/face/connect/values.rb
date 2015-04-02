@@ -57,7 +57,7 @@ Puppet::Face.define(:connect, '0.0.1') do
 
   def definitions_for(parameter, backend)
     output = ''
-    output << "# Parameter #{parameter} is defined at:\n"
+    output << "# Parameter #{parameter} is defined around:\n"
     backend.value_definitions(parameter).each do | file_name, linenno|
       output << "#   #{file_name}:#{linenno}\n"
     end
@@ -66,7 +66,7 @@ Puppet::Face.define(:connect, '0.0.1') do
 
   def references_for(parameter, backend)
     output = ''
-    output << "# Parameter #{parameter} is referenced at:\n"
+    output << "# Parameter #{parameter} is referenced around:\n"
     references = backend.value_references(parameter)
     if references.length > 0
       references.each do | file_name, linenno|

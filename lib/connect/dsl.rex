@@ -10,6 +10,7 @@ macro
   DIGIT               [0-9]
   INT                 {DIGIT}+
   FLOAT               {DIGIT}+\.{DIGIT}+
+  COMMENT_LINE        \#.*\n
   COMMENT             \#.*$
   DOUBLE_QUOTED       \"(\\.|[^\\"])*\"
   SINGLE_QUOTED       \'(\\.|[^\\'])*\'
@@ -31,7 +32,8 @@ macro
 
 rule
   {NEWLINE}
-  {COMMENT} 
+  {COMMENT_LINE}          { @lineno += 1; nil}
+  {COMMENT}
   {OR}                    { [:OR, text]}
   {AND}                   { [:AND, text]}
   {DO}                    { [:DO, text]}
@@ -50,8 +52,8 @@ rule
   \=\>                    { [:HASH_ROCKET, text]}
   {FLOAT}                 { [:FLOAT, text.to_f] }
   {INT}                   { [:INTEGER, text.to_i] }
-  {DOUBLE_QUOTED}        { [:DOUBLE_QUOTED, dequote(text)]}
-  {SINGLE_QUOTED}        { [:SINGLE_QUOTED, dequote(text)]}
+  {DOUBLE_QUOTED}         { [:DOUBLE_QUOTED, dequote(text)]}
+  {SINGLE_QUOTED}         { [:SINGLE_QUOTED, dequote(text)]}
   {WHITESPACE}
   .                       { [text, text] }
 

@@ -8,6 +8,13 @@ require 'connect/includer'
 require 'connect/entries/value'
 require 'connect/entries/reference'
 require 'connect/datasources/base'
+begin
+  require 'byebug'
+  require 'pry'
+  require 'ruby-debug'
+rescue LoadError
+# Ignore error's in loading these files
+end
 
 module Connect
   ##

@@ -48,7 +48,7 @@ module_eval(<<'...end dsl.y/module_eval...', 'dsl.y', 261)
   end
 
   def on_error(token, value, vstack )
-    position =  "Syntax error on line #{lineno} of config file '#{current_file}'"
+    position =  "Syntax error around line #{lineno} of config file '#{current_file}'"
     text = @ss.peek(20)
     unless value.nil?
       msg = "#{position} at value '#{value}' : #{text}"
