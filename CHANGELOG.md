@@ -1,6 +1,11 @@
 History
 ========
 
+02-04-2015  version 0.0.4
+--------------------------
+- Added cross referencing output to Puppetconnect values. 
+
+
 29-03-2015  version 0.0.3
 --------------------------
 - Added Puppet connect values commands to read the configs

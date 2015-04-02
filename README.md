@@ -137,6 +137,8 @@ $ puppet connect values my_scope::.*
 
 This will show all parameters in the scope `my_scope`.
 
+`puppet connect values`  will also show you where your parameters are defined and referenced. This is a tremendous help when debugging or just understand a complex set of connect configuration files.
+
 ###Using the accompanying Vagrant box
 
 You can also get started with a Vagrant box that is preconfigured.
