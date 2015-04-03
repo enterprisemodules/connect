@@ -230,7 +230,7 @@ rule
     : IDENTIFIER '(' string ')' iterator definition_block 
                                                     { result = define_object(val[0], val[2], val[5], val[4], xdef)}
     | IDENTIFIER '(' literal ')' iterator definition_block 
-                                                    { result = define_object(val[0], val[2], val[5], val[4], xdef)}
+                                                    { result = define_object(val[0], lookup_value(val[2]), val[5], val[4], xdef)}
   ;
 
 

@@ -249,22 +249,23 @@ Using `create_resource` and `ensure_resource` , Puppet has the means to create r
 ###Defining objects
 
 ```ruby
-an_object(my_object_name) {
-  property_1: 10,
-  property_2: 20,
-}
-```
-
-This defines an object of type `an_object` and name `my_object_name`. If the name contains only characters, and numbers and underscores, there is no need to put quote's around the name. If your name contains other characters, you must use quotes:
-
-```ruby
 an_object('my.host.name.com') {
   property_1: 10,
   property_2: 20,
 }
 ```
 
-The type can be anything you want, as long as it only includes characters, numbers, and underscores.
+You can also use a reference to an other variable as an object name:
+
+```ruby
+object_name = 'my.host.name.com'
+an_object(object_name) {
+  property_1: 10,
+  property_2: 20,
+}
+```
+
+The object type can be anything you want, as long as it only includes characters, numbers, and underscores. You cannot use references as object types.
 
 ```ruby
 a_rediculous_type_of_object('my.host.name.com') {
@@ -272,6 +273,28 @@ a_rediculous_type_of_object('my.host.name.com') {
   property_2: 20,
 }
 ```
+
+The object properties can contain references to other variables:
+
+
+```ruby
+a_value = 10
+an_object('my.host.name.com') {
+  property_1: a_value,
+  property_2: 20,
+}
+```
+
+You cannot use references as object keys:
+
+```ruby
+a_property = 'property_1'
+an_object('my.host.name.com') {
+  a_property: 10,
+}
+# {'my.host.name.com' => {'a_property' => 10}}
+```
+
 You can overwrite object properties.
 
 ```ruby

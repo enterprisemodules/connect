@@ -1,6 +1,17 @@
 History
 ========
 
+03-04-2015  version 0.0.6
+--------------------------
+- Fixed a bug on interpreting Objects beyond the first level
+- Unquoted object names are references
+
+
+02-04-2015  version 0.0.5
+--------------------------
+- Fixed a bug on interpreting Hashes beyond the first level
+
+
 02-04-2015  version 0.0.4
 --------------------------
 - Added cross referencing output to Puppetconnect values. 

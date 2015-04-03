@@ -19,6 +19,21 @@ RSpec.describe 'objects' do
   end
 
 
+  context 'definition with a variable in the title' do
+
+    it 'is setable and retrievable' do
+      dsl.parse(<<-EOD)
+      title = 'foo.bar.nl'
+      a = foo(title) {
+        ip:   '10.0.0.100',
+        alias: 'foo'
+      }
+      EOD
+      expect(dsl.lookup_value('a')).to eql({ 'foo.bar.nl' => {'ip' => '10.0.0.100', 'alias' =>'foo'}})
+    end
+  end
+
+
   context 'indirect assignment before definition' do
 
     it 'is setable and retrievable' do
@@ -61,6 +76,20 @@ RSpec.describe 'objects' do
       expect(dsl.lookup_value('a')).to eql({ 'foo.bar.nl' => {'ip' => '10.0.0.100', 'alias' =>'foo'}})
     end
   end
+
+  context 'with a refrence in the attribute' do
+
+    it 'is setable and retrievable' do
+      dsl.parse(<<-EOD)
+      b = 'a reference'
+      a = foo("foo.bar.nl") {
+        ref:     b,
+      }
+      EOD
+      expect(dsl.lookup_value('a')).to eql({ 'foo.bar.nl' => {'ref' => 'a reference'}})
+    end
+  end
+
 
   context 'with an interpolation in the name of the definition' do
 
@@ -109,18 +138,18 @@ RSpec.describe 'objects' do
       end
     end
 
-    # context 'with selector' do
-    #   it 'is retrievable' do
-    #     dsl.parse(<<-EOD)
-    #     foo('foo.bar.nl') {
-    #       ip:   '10.0.0.100',
-    #       alias: 'foo'
-    #     }
-    #     a = [foo('foo.bar.nl').ip]
-    #     EOD
-    #     expect(dsl.lookup_value('a')).to eql(['10.0.0.100'])
-    #   end
-    # end
+    context 'with selector' do
+      it 'is retrievable' do
+        dsl.parse(<<-EOD)
+        foo('foo.bar.nl') {
+          ip:   '10.0.0.100',
+          alias: 'foo'
+        }
+        a = [foo('foo.bar.nl').ip]
+        EOD
+        expect(dsl.lookup_value('a')).to eql(['10.0.0.100'])
+      end
+    end
 
   end
 

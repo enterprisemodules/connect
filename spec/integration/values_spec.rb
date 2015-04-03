@@ -90,8 +90,8 @@ RSpec.describe 'setting and retrieving values' do
 
         it 'is settable and retrievable' do
           dsl.parse(<<-EOD)
-          foo(bar) {a:'hello'}
-          a = foo(bar).a
+          foo('bar') {a:'hello'}
+          a = foo('bar').a
           #{scope}b = [a]
           EOD
           expect(dsl.lookup_value("#{scope}b")).to eql(['hello'])

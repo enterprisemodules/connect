@@ -822,7 +822,7 @@ module_eval(<<'.,.,', 'dsl.y', 230)
 
 module_eval(<<'.,.,', 'dsl.y', 232)
   def _reduce_83(val, _values, result)
-     result = define_object(val[0], val[2], val[5], val[4], xdef)
+     result = define_object(val[0], lookup_value(val[2]), val[5], val[4], xdef)
     result
   end
 .,.,

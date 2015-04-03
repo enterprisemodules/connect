@@ -494,9 +494,10 @@ RSpec.describe 'Parser' do
   end
 
   context 'using unquoted strings' do
-    it 'defines an object' do
+    it 'defines an object with a reference' do
       expect(dsl).to receive(:define_object).with('foo','bar', { 'ip' => '10.0.0.1', 'fqdn' => 'dns.a.b'}, nil, Connect::Xdef)
       dsl.parse(<<-EOD)
+      bar = 'bar'
       foo(bar) do ip: '10.0.0.1', fqdn: 'dns.a.b'end
       EOD
     end

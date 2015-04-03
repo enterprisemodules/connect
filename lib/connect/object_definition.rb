@@ -1,6 +1,7 @@
 require 'hash_extensions'
 require 'method_hash'
 require 'connect/object_representation'
+require 'connect/conversions'
 
 module Connect
   ##
@@ -10,6 +11,7 @@ module Connect
   #
   class ObjectDefinition < Hash
     include MethodHashMethods
+    include Connect::Conversions
 
     ##
     #
@@ -74,7 +76,7 @@ module Connect
     def without_private_entries
       hash = dup
       hash.delete_if { |k, _v| k =~ /__.*__/ }
-      hash
+      convert_hash(hash)
     end
 
     ##

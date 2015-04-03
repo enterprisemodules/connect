@@ -1,4 +1,5 @@
 require 'connect/entries/base'
+require 'connect/conversions'
 require 'hash_extensions'
 
 module Connect
@@ -8,6 +9,8 @@ module Connect
     # Represent an actual value in the values_table
     #
     class Value < Base
+      include Connect::Conversions
+
       ##
       #
       # Translate the object for external representation
@@ -36,35 +39,10 @@ module Connect
       end
       # rubocop:enable CaseEquality, ElseAlignment, EndAlignment, IndentationWidth
 
-      private
-
-      def convert_hash(hash)
-        MethodHash[hash.map { |k, v| convert_hash_entry(k, v) }]
-      end
-
-      def convert_array(array)
-        Connect::ExtendedArray.new(array.map { |e| e.respond_to?(:final) ? e.final : e })
-      end
 
 
-      def convert_hash_entry(k, v)
-        case v
-        when ObjectReference 
-          # TODO: Refacter. This is to difficult
-          if v.object_id == k
-            key, value = v.final.to_a[0]
-            [key, value]
-          else
-            v.respond_to?(:final) ? [k, v.final] : [k, v]
-          end
-        when Hash
-          [k, convert_hash(v)]
-        when Array
-          [k, convert_array(v)]
-        else
-          v.respond_to?(:final) ? [k, v.final] : [k, v]
-        end
-      end
+
     end
+
   end
 end

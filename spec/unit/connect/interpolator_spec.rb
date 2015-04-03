@@ -11,15 +11,22 @@ RSpec.describe Connect::Interpolator do
 		dsl.assign('name', 'James')
 		dsl.assign('scope::number', 10)
 		dsl.assign('struct', MethodHash['first_part', [10,20,'hello John']])
+		dsl.assign('name_reference', Connect::Entry::Reference.new('name', nil, nil))
 	end
 
 	describe '#translate' do
 
 		context 'with a direct variable name' do
 
-			context 'a string with valid connect interpolation' do
+			context 'a string with valid connect interpolation of a value' do
 				it 'returns an interpolated string' do
 					expect(interpolator.translate('Hello ${name}, see you in ${scope::number} days')).to eql('Hello James, see you in 10 days')
+				end
+			end
+
+			context 'a string with valid connect interpolation of a refrence' do
+				it 'returns an interpolated string' do
+					expect(interpolator.translate('Hello ${name_reference}, see you in ${scope::number} days')).to eql('Hello James, see you in 10 days')
 				end
 			end
 
