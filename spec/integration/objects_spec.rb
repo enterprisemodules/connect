@@ -77,6 +77,22 @@ RSpec.describe 'objects' do
     end
   end
 
+  context 'indirect assignment with a reference in the title' do
+
+    it 'is setable and retrievable' do
+      dsl.parse(<<-EOD)
+      title = 'foo.bar.nl'
+      foo('foo.bar.nl') {
+        ip:   '10.0.0.100',
+        alias: 'foo'
+      }
+      a = foo(title)
+      EOD
+      expect(dsl.lookup_value('a')).to eql({ 'foo.bar.nl' => {'ip' => '10.0.0.100', 'alias' =>'foo'}})
+    end
+  end
+
+
   context 'with a refrence in the attribute' do
 
     it 'is setable and retrievable' do

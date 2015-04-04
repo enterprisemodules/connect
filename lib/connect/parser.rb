@@ -829,7 +829,7 @@ module_eval(<<'.,.,', 'dsl.y', 232)
 
 module_eval(<<'.,.,', 'dsl.y', 237)
   def _reduce_84(val, _values, result)
-     result = reference_object(val[0], val[2], xref)
+     result = reference_object(val[0], lookup_value(val[2]), xref)
     result
   end
 .,.,
