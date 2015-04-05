@@ -27,17 +27,29 @@ RSpec.describe "puppet connect objects" do
   end
 
   describe 'the options' do
+
+    before do       
+      expect(Puppet).to receive(:[]).and_return(Pathname.new(File.dirname(__FILE__)).parent.parent.parent.parent.parent)
+    end
+
     it "should accept the --type option" do
+      allow_any_instance_of(Hiera::Backend::Connect_backend).to receive(:lookup_objects).with('host', 'www.hajee.org', {}, false, 1).and_return([])
+      allow(Hiera).to receive(:new)
+      allow(Puppet::Face.define(:connect, '0.0.1')).to receive(:scope).and_return({})
       options[:type] = 'host'
-      expect { subject.objects('', options)}.to_not raise_error
+      expect { subject.objects('www.hajee.org', options)}.to_not raise_error
     end
   end
 
   describe "its action" do
 
-    it 'call \'s the dsl lookup method' do
-      expect_any_instance_of(Hiera::Backend::Connect_backend).to receive(:lookup_objects).with('www.demo.org', 'host', {}, false, 1)
-      subject.objects('www.demo.org',{:type => 'host'})
+    subject { Puppet::Face[:connect, :current] }
+
+    it 'calls the dsl lookup method' do
+      expect_any_instance_of(Hiera::Backend::Connect_backend).to receive(:lookup_objects).with('host', 'www.hajee.org', {}, false, 1).and_return([])
+      allow(Hiera).to receive(:new)
+      allow(Puppet::Face.define(:connect, '0.0.1')).to receive(:scope).and_return({})
+      subject.objects('www.hajee.org',{:type => 'host'})
     end
 
   end

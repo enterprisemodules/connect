@@ -43,11 +43,13 @@ module Connect
     #
     # A lot of the object work is delegated to the objects_table
     #
-    def_delegator :@objects_table,  :add,         :add_object
-    def_delegator :@objects_table,  :lookup,      :lookup_object
-    def_delegator :@objects_table,  :dump,        :dump_objects
-    def_delegator :@objects_table,  :definitions, :object_definitions
-
+    def_delegator :@objects_table,  :add,                  :add_object
+    def_delegator :@objects_table,  :lookup,               :lookup_object
+    def_delegator :@objects_table,  :lookup,               :lookup_object
+    def_delegator :@objects_table,  :dump,                 :dump_objects
+    def_delegator :@objects_table,  :definitions,          :object_definitions
+    def_delegator :@objects_table,  :references,           :object_references
+    def_delegator :@objects_table,  :register_reference,   :object_reference
     #
     # A lot of the values work is delegated to the values_table
     #
@@ -56,7 +58,7 @@ module Connect
     def_delegator :@values_table,  :dump,                 :dump_values
     def_delegator :@values_table,  :definitions,          :value_definitions
     def_delegator :@values_table,  :references,           :value_references
-    def_delegator :@values_table,  :register_reference,   :register_reference
+    def_delegator :@values_table,  :register_reference,   :value_reference
  
     def_delegator :@interpolator,  :translate, :interpolate
 
@@ -101,8 +103,12 @@ module Connect
       add_value(entry)
     end
 
-    def lookup_objects(keys, type)
-      # TODO: Implement this
+    def lookup_objects(type, keys)
+      @objects_table.entries(type, keys).reduce([]) do | c, v | 
+        type = v[0]
+        name = v[1]
+        lookup_object(type, name).full_representation
+      end
     end
 
     def lookup_values(keys)
@@ -123,7 +129,7 @@ module Connect
     # Connect the variable to an other variable in the value table
     #
     def reference(parameter, xref = nil)
-      @values_table.register_reference(parameter, xref)
+      value_reference(parameter, xref)
       Entry::Reference.new(parameter, nil, xref)
     end
     ##
@@ -175,22 +181,22 @@ module Connect
 
     ##
     #
-    # Define or lookup an object. If the values is empty, this method returns just the values.
+    # Define an object. If the values is empty, this method returns just the values.
     # It the values parameter is set, a new entry will be added to the objects table
     #
     def define_object(type, name, values = nil, iterator = nil, xdef = nil)
       fail ArgumentError, 'no iterator allowed if no block defined' if values.nil? && !iterator.nil?
       validate_iterator(iterator) unless iterator.nil?
-      add_object(type, name, values) if values
+      add_object(type, name, values, xdef) if values
       Entry::ObjectReference.new(type, name, nil, xdef)
     end
 
     ##
     #
-    # Define or lookup an object. If the values is empty, this method returns just the values.
-    # It the values parameter is set, a new entry will be added to the objects table
+    # Create an object reference.
     #
     def reference_object(type, name, xref = nil)
+      object_reference(type,name, xref)
       Entry::ObjectReference.new(type, name, nil, xref)
     end
 

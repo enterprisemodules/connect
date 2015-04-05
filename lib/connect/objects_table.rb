@@ -15,14 +15,55 @@ module Connect
 
     ##
     #
+    # Give all entries in the objects table based on the specfied type and name.
+    # As name, you can specify a regular expression.
+    #
+    #
+    def entries( type, name = /.*/)
+      all_keys = @objects_table.keys.select{| k| Regexp.new(key(type,name)).match(k) }.sort
+      all_keys.collect {|key| identity(key)}
+    end
+
+    ##
+    #
+    # return the array of defintions for the specfied object
+    #
+    # @return defintions [Array] the Array of definitions
+    #
+    def definitions(type, name)
+      key = key(type,name)
+      entry = @objects_table.fetch(key) { fail "internal error. Object #{type} #{name} not found" }
+      entry.xref.collect {|e| e.class == Connect::Xdef ? [e.file_name, e.lineno] : nil}.compact
+    end
+
+    ##
+    #
+    # return the array of references for the specfied parameter
+    #
+    # @return defintions [Array] the Array of references
+    #
+    def references(type, name)
+      key = key(type,name)
+      entry = @objects_table.fetch(key) { fail "internal error. Object #{type} #{name} not found" }
+      entry.xref.collect {|e| e.class == Connect::Xref ? [e.file_name, e.lineno] : nil}.compact
+    end
+
+    ##
+    #
     # Add an object to the objects table.
     #
     # @param type [String] the type of object to lookup
     # @param name [String] the name of the object to lookup
     # @param values [Hash] a [Hash] containing all the values of the object
-    def add(type, name, values)
-      object = from_table(type, name)
+    def add(type, name, values, xref = nil)
+      object = register_reference(type, name, xref)
       add_values_to_existing!(object, values)
+    end
+
+    def register_reference(type,name, xref)
+      object = from_table(type, name)
+      object.add_reference(xref)
+      object
     end
 
     ##
@@ -78,6 +119,13 @@ module Connect
     def key(type, name)
       "__#{name}__#{type}__"
     end
+
+    def identity(key)
+      match = key.match(/__(.*)__(.*)__/).to_a
+      match.shift
+      match.reverse
+    end
+
 
     def add_new_object(type, name, values)
       object = ObjectsTable.entry(type, name, values)

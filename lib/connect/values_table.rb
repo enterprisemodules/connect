@@ -15,6 +15,13 @@ module Connect
       @values_table = {}
     end
 
+    ##
+    #
+    # Give all entries in the values table based on the specfied name.
+    # As name, you can specify a regular expression.
+    #
+    # @return [Array]
+    #
     def entries( name = /.*/)
       @values_table.keys.select{| k| Regexp.new(name).match(k) }.sort
     end

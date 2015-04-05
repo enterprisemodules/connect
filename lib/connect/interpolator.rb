@@ -53,7 +53,7 @@ module Connect
     def connect_interpolate(variable, xref)
       variable, selector = variable.split(/([\[\.].*)/)
       value = @resolver.lookup_value(variable)
-      @resolver.register_reference(variable, xref)
+      @resolver.value_reference(variable, xref)
       Selector.run(value, selector).to_s
     end
 

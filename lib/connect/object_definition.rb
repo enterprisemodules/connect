@@ -13,6 +13,8 @@ module Connect
     include MethodHashMethods
     include Connect::Conversions
 
+    attr_reader :xref
+
     ##
     #
     # Initialize a object definition for the object table and the value table
@@ -22,6 +24,7 @@ module Connect
     # @param data [Hash] the content of the object
     #
     def initialize(type, name, data)
+      @xref = []
       identify(type, name)
       #
       # To make sure there are no lookup problems mixing
@@ -44,6 +47,11 @@ module Connect
       data.extend(HashExtensions)
       data = data.stringify_keys
       super(data)
+    end
+
+    def add_reference(reference)
+      @xref << reference
+      @xref = @xref.flatten.compact
     end
 
     ##

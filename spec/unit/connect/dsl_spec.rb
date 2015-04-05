@@ -112,7 +112,7 @@ RSpec.describe Connect::Dsl do
 
     context 'with a definition' do
       it 'add\'s an object to the object table' do
-        expect(objects_table).to receive(:add).with('person','bert', {:age=>20})
+        expect(objects_table).to receive(:add).with('person','bert', {:age=>20}, nil)
         dsl.define_object('person','bert',{:age=>20})
       end
     end
