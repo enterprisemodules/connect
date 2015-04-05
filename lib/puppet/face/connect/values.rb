@@ -3,10 +3,9 @@ require 'hiera'
 require 'hiera/backend/connect_backend'
 begin
   require 'awesome_print'
-rescue
-  fail 'to use puppet connect values, you must have gem awesome_print loaded'
+rescue LoadError
+# Ignore error's in loading these files
 end
-
 
 
 Puppet::Face.define(:connect, '0.0.1') do
@@ -40,6 +39,9 @@ Puppet::Face.define(:connect, '0.0.1') do
     arguments "<variable_name>"
 
     when_invoked do | name , options| 
+      unless defined?(AwesomePrint::Inspector)
+        puts "installing awesome_print gem, improves the output readability."
+      end
       config_dir = Puppet['confdir']
       Hiera.new(:config => "#{config_dir}/hiera.yaml")
       backend = Hiera::Backend::Connect_backend.new
@@ -48,7 +50,7 @@ Puppet::Face.define(:connect, '0.0.1') do
       values_list.each do | parameter, value|
         output << definitions_for(parameter, backend)
         output << references_for(parameter, backend)
-        output << "#{parameter} = #{value.ai(:indent => 2)}\n"
+        output << "#{parameter} = #{inspect(value)}\n"
       end
       output
     end
@@ -104,6 +106,14 @@ Puppet::Face.define(:connect, '0.0.1') do
     scope.source = Puppet::Resource::Type.new(:node, nodename)
     scope.parent = compiler.topscope
     scope
+  end
+
+  def inspect(value)
+    if defined?(AwesomePrint::Inspector)
+      value.ai(:indent => 2)
+    else
+      value.inspect
+    end
   end
 
 
