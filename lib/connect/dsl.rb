@@ -133,8 +133,8 @@ module Connect
     def include_file(names, scope = nil)
       in_scope(scope) do
         @includer.include(names) do |content, file_name|
-          @current_file = file_name
           push_current_parse_state
+          @current_file = file_name
           scan_str(content) unless empty_definition?(content)
           pop_current_parse_state
         end
@@ -239,9 +239,10 @@ module Connect
 
     def push_current_parse_state
       state = {
-        :ss       => @ss,
-        :lineno   => @lineno,
-        :state    => @state
+        :ss            => @ss,
+        :lineno        => @lineno,
+        :current_file  => @current_file,
+        :state         => @state
       }
       @include_stack << state
     end
@@ -249,9 +250,10 @@ module Connect
     def pop_current_parse_state
       fail 'include stack poped beyond end' if @include_stack.empty?
       state = @include_stack.pop
-      @ss     = state[:ss]
-      @lineno = state[:lineno]
-      @state  = state[:state]
+      @ss           = state[:ss]
+      @lineno       = state[:lineno]
+      @current_file = state[:current_file]
+      @state        = state[:state]
     end
 
     #

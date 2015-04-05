@@ -3,7 +3,8 @@ require 'connect/dsl'
 
 RSpec.describe 'dsl features' do
 
-  let(:dsl) { Connect::Dsl.new}
+  let(:dsl)             { Connect::Dsl.instance('./examples')}
+  let(:error_config)    { Pathname.new('./examples/error.config').expand_path.to_s}
 
   context 'calculating values' do
 
@@ -47,13 +48,27 @@ RSpec.describe 'dsl features' do
       it 'is settable and retrievable' do
         dsl.parse(<<-EOD)
         a = true or false
-        # expect(dsl.lookup_value("a")).to eql(false)
         EOD
         expect(dsl.lookup_value("a")).to eql(true)
-        # expect(dsl.lookup_value("b")).to eql(false)
       end
     end
 
+    context 'including files' do
+      it 'reports errors in the included file' do
+        expect {
+          dsl.parse(<<-EOD)
+          include 'error.config'
+          EOD
+        }.to raise_error(ParseError, /error\.config/)
+      end
+
+      it 'reports errors in the main file after an include' do
+        expect {
+          dsl.include_file('error_after_include')
+        }.to raise_error(ParseError, /error_after_include\.config/)
+      end
+
+    end
 
   end
 
