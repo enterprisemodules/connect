@@ -1,6 +1,13 @@
 History
 ========
 
+05-04-2015  version 0.0.7
+--------------------------
+- Added Puppet connect objects face to list objects
+- object('name') is now different dfrom object(name). Without quotes is a reference
+- awesome_print is no longer a requirement, but an add-on
+
+
 03-04-2015  version 0.0.6
 --------------------------
 - Fixed a bug on interpreting Objects beyond the first level
