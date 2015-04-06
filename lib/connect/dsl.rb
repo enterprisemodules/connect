@@ -45,7 +45,6 @@ module Connect
     #
     def_delegator :@objects_table,  :add,                  :add_object
     def_delegator :@objects_table,  :lookup,               :lookup_object
-    def_delegator :@objects_table,  :lookup,               :lookup_object
     def_delegator :@objects_table,  :dump,                 :dump_objects
     def_delegator :@objects_table,  :definitions,          :object_definitions
     def_delegator :@objects_table,  :references,           :object_references
@@ -107,7 +106,7 @@ module Connect
       @objects_table.entries(type, keys).reduce([]) do | c, v | 
         type = v[0]
         name = v[1]
-        lookup_object(type, name).full_representation
+        c << [type, lookup_object(type, name).full_representation]
       end
     end
 
