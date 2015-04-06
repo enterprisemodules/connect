@@ -38,15 +38,17 @@ Puppet::Face.define(:connect, '0.0.1') do
         puts "installing awesome_print gem, improves the output readability."
       end
       config_dir = Puppet['confdir']
-      type = options.fetch(:type) {'host'}
+      type = options.fetch(:type) {/.*/}
       Hiera.new(:config => "#{config_dir}/hiera.yaml")
       backend = Hiera::Backend::Connect_backend.new
       object_list = backend.lookup_objects(type, name, scope, false, 1)
       output = ''
-      object_list.each do | name , value|
+      object_list.each do | type, object |
+        name = object.keys.first
+        value = object.values.first
         output << object_definitions_for(type, name, backend)
         output << object_references_for(type, name, backend)
-        output << "#{type}('#{name}'') = #{inspect(value)}\n"
+        output << "#{type}('#{name}') = #{inspect(value)}\n"
       end
       output
     end
@@ -55,7 +57,7 @@ Puppet::Face.define(:connect, '0.0.1') do
 
   def object_definitions_for(type, name, backend)
     output = ''
-    output << "# Object #{type}('#{name}'') is defined around:\n"
+    output << "# Object #{type}('#{name}') is defined around:\n"
     backend.object_definitions(type, name).each do | file_name, linenno|
       output << "#   #{file_name}:#{linenno}\n"
     end
@@ -64,7 +66,7 @@ Puppet::Face.define(:connect, '0.0.1') do
 
   def object_references_for(type,name, backend)
     output = ''
-    output << "# Object #{type}('#{name}'') is referenced around:\n"
+    output << "# Object #{type}('#{name}') is referenced around:\n"
     references = backend.object_references(type, name)
     if references.length > 0
       references.each do | file_name, linenno|
