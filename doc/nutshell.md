@@ -386,6 +386,7 @@ array  = [1,2,3,4,5]
 string = array.join(',')   # "1,2,3,4,5" 
 hostname = 'DMACHINE1'     # Development machine 1
 type     = hostname[0,1]   # type is 'O'
+host     = hostname[1..-1] # host is MACHINE1 
 ```
 
 You can also use selectors when interpolating strings. 
