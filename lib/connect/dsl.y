@@ -15,6 +15,10 @@ rule
   number
     : INTEGER
     | FLOAT
+    | '-' INTEGER           { result = 0 - val[1]}
+    | '-' FLOAT             { result = 0 - val[1]}
+    | '+' INTEGER           { result = val[1]}
+    | '+' FLOAT             { result = val[1]}
   ;
 
   config

@@ -150,19 +150,51 @@ RSpec.describe 'Parser' do
       EOD
     end
 
-    it 'Assigns a integer' do
+    it 'Assigns a positive integer without sign' do
       expect(dsl).to receive(:assign).with('a', 1, Connect::Xdef)
       dsl.parse(<<-EOD)
       a = 1
       EOD
     end
 
-    it 'Assigns a float' do
+    it 'Assigns a positive integer with sign' do
+      expect(dsl).to receive(:assign).with('a', 1, Connect::Xdef)
+      dsl.parse(<<-EOD)
+      a = +1
+      EOD
+    end
+
+    it 'Assigns a negative integer' do
+      expect(dsl).to receive(:assign).with('a', -1, Connect::Xdef)
+      dsl.parse(<<-EOD)
+      a = -1
+      EOD
+    end
+
+
+    it 'Assigns a positive float without sign' do
       expect(dsl).to receive(:assign).with('a', 1.1, Connect::Xdef)
       dsl.parse(<<-EOD)
       a = 1.1
       EOD
     end
+
+    it 'Assigns a positive float with sign' do
+      expect(dsl).to receive(:assign).with('a', 1.1, Connect::Xdef)
+      dsl.parse(<<-EOD)
+      a = +1.1
+      EOD
+    end
+
+
+
+    it 'Assigns a negative float' do
+      expect(dsl).to receive(:assign).with('a', -1.1, Connect::Xdef)
+      dsl.parse(<<-EOD)
+      a = -1.1
+      EOD
+    end
+
 
     it 'Assigns a string' do
       expect(dsl).to receive(:assign).with('a', 'hello', Connect::Xdef)
