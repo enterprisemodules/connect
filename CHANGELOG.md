@@ -1,6 +1,12 @@
 History
 ========
 
+23-04-2015  version 0.0.8
+--------------------------
+- Add support for range syntax in selectors
+- Add support for negative numbers and explicit positive numbers
+- Add support for wildcard object searches
+
 05-04-2015  version 0.0.7
 --------------------------
 - Added Puppet connect objects face to list objects
