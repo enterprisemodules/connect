@@ -29,6 +29,7 @@ macro
   INCLUDE             include\s
   AND                 and\s|\&\&
   OR                  or\s|(\|\|)
+  DOUBLE_DOTS         \.\.
 
 rule
   {NEWLINE}
@@ -54,6 +55,7 @@ rule
   {INT}                   { [:INTEGER, text.to_i] }
   {DOUBLE_QUOTED}         { [:DOUBLE_QUOTED, dequote(text)]}
   {SINGLE_QUOTED}         { [:SINGLE_QUOTED, dequote(text)]}
+  {DOUBLE_DOTS}           { [:DOUBLE_DOTS, text]}
   {WHITESPACE}
   .                       { [text, text] }
 

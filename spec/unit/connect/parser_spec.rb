@@ -706,6 +706,18 @@ RSpec.describe 'Parser' do
     end
 
 
+    context 'using multiple selector Array syntax with range syntax' do
+      it "passes to selector" do
+        expect(dsl).to receive(:selector).with(Connect::Entry::Reference, "[1..10]")
+        dsl.parse(<<-EOD)   
+        a = b[1..10]
+        EOD
+      end
+
+    end
+
+
+
     context 'using multiple mixed selectors' do
       it "passes to selector" do
         expect(dsl).to receive(:selector).with(Connect::Entry::Reference, ".first[10,11,12,'hallo'][1,2,3.5,'hallo'].last(1,2,3)")

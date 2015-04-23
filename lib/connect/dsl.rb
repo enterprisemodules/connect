@@ -223,6 +223,7 @@ module Connect
     # @param parameters [Array] the set of parameters to recieve from the parser
     #
     def to_param(parameters)
+      parameters = [parameters] unless parameters.is_a?(Array)
       parameters.collect { |p| p.is_a?(String) ? "'#{p}'" : p }.join(',')
     end
 

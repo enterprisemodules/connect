@@ -128,6 +128,9 @@ class Dsl < Racc::Parser
       when (text = @ss.scan(/\'(\\.|[^\\'])*\'/))
          action { [:SINGLE_QUOTED, dequote(text)]}
 
+      when (text = @ss.scan(/\.\./))
+         action { [:DOUBLE_DOTS, text]}
+
       when (text = @ss.scan(/[\s|\t]+/))
         ;
 

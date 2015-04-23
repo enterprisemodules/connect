@@ -81,6 +81,7 @@ RSpec.describe 'Lexer' do
   end
 
 
+
   describe 'booleans' do
     true_values = [
       'TRUE',
@@ -258,5 +259,16 @@ RSpec.describe 'Lexer' do
       expect(dsl.tokenize(content)).to eql([[:HASH_ROCKET, '=>']])
     end
   end
+
+
+  context '..' do
+    it 'is recognised' do
+      content = <<-EOD
+      ..
+        EOD
+      expect(dsl.tokenize(content)).to eql([[:DOUBLE_DOTS, '..']])
+    end
+  end
+
 
 end

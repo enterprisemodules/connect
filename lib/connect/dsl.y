@@ -110,7 +110,8 @@ rule
   ;
 
   array_selector
-    : '[' parameters ']'                      { result = val[0] + to_param(val[1]) +  val[2]}
+    : '[' parameters ']'                        { result = "[#{to_param(val[1])}]" }
+    | '[' parameter DOUBLE_DOTS parameter ']'   { result = "[#{to_param(val[1])}..#{to_param(val[3])}]" }
     ;
 
   function_selector
