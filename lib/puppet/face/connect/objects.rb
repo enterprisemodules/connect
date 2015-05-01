@@ -13,6 +13,13 @@ Puppet::Face.define(:connect, '0.0.1') do
       EOT
     end
 
+    option "--all", "-a" do
+      summary "List all objects"
+      description <<-EOT
+        List all objects
+      EOT
+    end
+
     description <<-EOT
       List the object(s) specfied in the connect config file(s). If you specfy a parameter name,
       Connect wil show you the specfied object. You can use regular expresion wildcards for the name.       

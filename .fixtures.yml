@@ -1,0 +1,3 @@
+fixtures:
+  repositories:
+    connect_yaml: https://github.com/hajee/connect_yaml.git

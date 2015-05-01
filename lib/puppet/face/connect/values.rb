@@ -19,6 +19,15 @@ Puppet::Face.define(:connect, '0.0.1') do
       Connect wil show you the specfied name. You can use regular expresion wildcards for the name.       
     EOT
 
+
+    option "--all", "-a" do
+      summary "List all values"
+      description <<-EOT
+        List all values
+      EOT
+    end
+
+
     examples <<-EOT
 
       Given a connect config file:

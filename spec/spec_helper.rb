@@ -15,6 +15,14 @@ else
   end
 end
 
+# Set prepend lib's from all modules to current path
+module_path = Pathname(__FILE__).parent + 'fixtures' + 'modules'
+module_path.children.each  do | dir |
+  lib_path = dir + 'lib'
+  $:.unshift(lib_path)
+end
+
+
 require 'rspec'
 require 'rspec/collection_matchers'
 require 'rspec/its'

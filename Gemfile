@@ -20,6 +20,7 @@ group :development, :test do
   gem 'yard'          , :require => false
   gem 'coveralls'     , :require => false
   gem "puppet-blacksmith"
+  gem "puppetlabs_spec_helper"
 end
 
 

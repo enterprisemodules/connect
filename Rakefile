@@ -1,15 +1,10 @@
 require 'rspec/core/rake_task'
 begin
   require 'puppet_blacksmith/rake_tasks'
+  require 'puppetlabs_spec_helper/rake_tasks'
 rescue LoadError
 end
 
- 
-RSpec::Core::RakeTask.new do |c|
-  options = ['--color']
-  options += ["--format", "documentation"]
-  c.rspec_opts = options
-end
  
 task :default => [:lexer, :parser]
 
