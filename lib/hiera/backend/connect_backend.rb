@@ -23,6 +23,7 @@ class Hiera
       attr_reader :parsed
 
       def initialize
+        fail 'Connect section not filled in hiera.yaml' if Config[:connect].nil?
         Hiera.debug('DSL Backend initialized')
         configs_dir   = Config[:connect].fetch(:datadir) { '/etc/puppet/config' }
         Hiera.debug("datadir is set to #{configs_dir}")

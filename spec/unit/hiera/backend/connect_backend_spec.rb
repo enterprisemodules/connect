@@ -4,7 +4,7 @@ require 'hiera/backend/connect_backend'
 RSpec.describe Hiera::Backend::Connect_backend do
 
   before do
-    Hiera::Config.load({:connect => {}})
+    Hiera::Config.load({})
     allow(Hiera).to receive(:debug)
     allow(Hiera).to receive(:warn)
     allow(Hiera).to receive(:warn)
@@ -12,25 +12,41 @@ RSpec.describe Hiera::Backend::Connect_backend do
 
   let(:subject) {described_class.new}
 
-  describe '#lookup' do
-    it 'calls the DSL lookup_value' do
-      expect_any_instance_of(Connect::Dsl).to receive(:lookup_value).with('a::b')
-      subject.lookup('a::b', {}, true, 0)
+  context 'no connect section in hiera' do
+
+    it 'raises an error' do
+      expect {
+          subject
+        }.to raise_error(RuntimeError, 'Connect section not filled in hiera.yaml')
     end
   end
 
-  describe '#lookup_values' do
-    it 'calls the DSL lookup_values' do
-      expect_any_instance_of(Connect::Dsl).to receive(:lookup_values).with('a::b')
-      subject.lookup_values('a::b', {}, true, 0)
+  context 'a valid section in hiera.yaml' do
+
+    before do
+      Hiera::Config.load({:connect => {}})
     end
-  end
+
+    describe '#lookup' do
+      it 'calls the DSL lookup_value' do
+        expect_any_instance_of(Connect::Dsl).to receive(:lookup_value).with('a::b')
+        subject.lookup('a::b', {}, true, 0)
+      end
+    end
+
+    describe '#lookup_values' do
+      it 'calls the DSL lookup_values' do
+        expect_any_instance_of(Connect::Dsl).to receive(:lookup_values).with('a::b')
+        subject.lookup_values('a::b', {}, true, 0)
+      end
+    end
 
 
-  describe '#lookup_objects' do
-    it 'calls the DSL lookup_objects' do
-      expect_any_instance_of(Connect::Dsl).to receive(:lookup_objects).with('www.nu.nl', 'host')
-      subject.lookup_objects('www.nu.nl', 'host', {}, true, 0)
+    describe '#lookup_objects' do
+      it 'calls the DSL lookup_objects' do
+        expect_any_instance_of(Connect::Dsl).to receive(:lookup_objects).with('www.nu.nl', 'host')
+        subject.lookup_objects('www.nu.nl', 'host', {}, true, 0)
+      end
     end
   end
 
