@@ -1,6 +1,12 @@
 History
 ========
 
+3-05-2015  version 0.0.9
+------------------------
+- Extracted the datasources
+- Fix error messages when using connect without a valid section in hiera.yaml
+- Add support for data source names with underscores.
+
 23-04-2015  version 0.0.8
 --------------------------
 - Add support for range syntax in selectors

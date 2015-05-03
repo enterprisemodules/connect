@@ -1,13 +1,13 @@
 {
   "name": "hajee-connect",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "author": "Bert Hajee",
   "summary": "A replacement for YAML in hiera",
   "license": "Apache-2.0",
   "source": "https://github.com/hajee/connect",
   "project_page": "https://github.com/hajee/connect",
   "issues_url": "https://github.com/hajee/connect/issues",
-  "description": "A replacement for YAML in hiera. Connect allows you to describe and transfor your data for usage in Puppet modules",
+  "description": "A replacement for YAML in hiera. Connect allows you to describe and transform your data for usage in Puppet modules",
   "dependencies": [
   ],
   "operatingsystem_support": [
