@@ -582,20 +582,6 @@ RSpec.describe 'Parser' do
 
     end
 
-    context 'with an as clause' do
-
-      it 'defines an object with an iterator' do
-        expect(dsl).to receive(:define_object).with('foo','bar', { 'ip' => '10.0.0.1', 'fqdn' => 'dns.a.b'},  {:from => 10, :to => 20, :iterator => 'iterator_value'}, Connect::Xdef)
-        dsl.parse(<<-EOD)
-        foo('bar') from 10 to 20 as iterator_value do 
-          ip:   '10.0.0.1', 
-          fqdn: 'dns.a.b'
-        end
-        EOD
-      end
-    end
-
-
   end
 
 

@@ -183,12 +183,26 @@ module Connect
     # Define an object. If the values is empty, this method returns just the values.
     # It the values parameter is set, a new entry will be added to the objects table
     #
-    def define_object(type, name, values = nil, iterator = nil, as = nil, xdef = nil)
-      fail ArgumentError, 'no iterator allowed if no block defined' if values.nil? && !iterator.nil?
+    def define_object(type, name, values = nil, iterator = nil, xdef = nil)
+      fail ArgumentError, 'Iterator only allowed with block definition' if values.nil? && !iterator.nil?
       validate_iterator(iterator) unless iterator.nil?
-      add_object(type, name, values, xdef) if values
+      if iterator
+        add_objects_with_iterator(type, name, values, xdef, iterator)
+      else
+        add_object(type, name, values, xdef) if values
+      end
       Entry::ObjectReference.new(type, name, nil, xdef)
     end
+
+    def add_objects_with_iterator(type, name, values, xdef, iterator)
+      range = range_from_iterator(iterator)
+      range.each do | value|
+        object_name   = name % value
+        object_values = substitute_values(values, value)
+        add_object(type, object_name, object_values, xdef)
+      end
+    end
+
 
     ##
     #
@@ -237,6 +251,23 @@ module Connect
 
     private
 
+    def substitute_values(hash, value)
+      hash.extend(HashExtensions)
+      hash.transform_hash do |hash, key, content|
+        hash[key] = content % value
+      end
+    end
+
+    def range_from_iterator(iterator)
+      Range.new( as_value(iterator[:from]),  as_value(iterator[:to]))
+    rescue ArgumentError
+      raise 'Invalid arguments for Object iterator'
+    end
+
+    def as_value(iterator_value)
+      iterator_value.class == Connect::Entry::Reference ? iterator_value.final : iterator_value
+    end
+
     def in_scope(scope)
       push_scope(scope)
       yield
@@ -275,10 +306,10 @@ module Connect
     end
 
     def validate_iterator(iterator)
-      invalid_keys = iterator.keys - [:from, :to, :iterator]
+      invalid_keys = iterator.keys - [:from, :to]
       fail ArgumentError, 'from value missing from iterator' if iterator[:from].nil?
       fail ArgumentError, 'to value missing from iterator' if iterator[:to].nil?
-      fail ArgumentError, "iterator contains unknown key(s): #{invalid_keys}" if invalid_keys
+      fail ArgumentError, "iterator contains unknown key(s): #{invalid_keys}" unless invalid_keys.empty?
     end
 
     def empty_definition?(string)

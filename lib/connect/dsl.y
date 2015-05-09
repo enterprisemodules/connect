@@ -260,8 +260,6 @@ rule
     :
     | FROM string_number_reference TO string_number_reference
                                                     { result = {:from => val[1], :to => val[3]}}
-    | FROM string_number_reference TO string_number_reference AS IDENTIFIER  
-                                                     { result = {:from => val[1], :to => val[3], :iterator => val[5]}}
   ;
 
 end
