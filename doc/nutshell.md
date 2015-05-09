@@ -12,6 +12,8 @@ This file contains an overview of the connect language. It contains short snippe
 8. [include statement](#include-statement)
 9. [with statement](#with-statement)
 10. [Objects](#objects)
+    * [Defining objects](#defining-objects)
+    * [Multiple Objects with iterator](multiple-objects-with-iterator)
     * [Using objects](#using-objects)
 11. [Selectors](#selectors)
     * [Special selectors](#special-selectors)
@@ -319,6 +321,40 @@ object = my_object('foo') {
 ```
 
 This behavior can be useful when you want to override standard settings included in a default file.
+
+###Multiple Objects with iterator
+
+Sometimes you want to define a set of objects. Like, for example, a set of dns servers. Besides some specific attributes, these object definitions are the same. It would be a waste if we had to define them all. Connect has a solution for this. It's called iterators. 
+
+ With an iterator, you can define similar objects and replace specific values. That 's a little bit abstract. Let show an example:
+
+```ruby
+dnsserver('dnsserver%d.mydomain.org') from 1 to 10 do
+  ip: '10.0.0.%d',
+  aliases: ['dnsserver%d'],
+end
+```
+This little snippet of connect code, defines 10 dns servers: `dnsserver1.mydomain.org` with ip address 10.0.0.1 and alias `dnsserver1`  up to `dnsserver10.mydomain.org` with ip address 10.0.0.11 and alias `dnsserver10`.  This concept is extremely convenient when defining a set of resources.
+
+You can use integers like in the example above, but you can also strings:
+
+```ruby
+users('user%s') from 'aa' to 'bb' do
+  username: 'user%s',
+  home: '/users/user%s'
+end
+```
+
+And last but not least, you can use references in the definition of the iterator. 
+
+```ruby
+start  = 'aa'
+finish = 'bb'
+users('user%s') from start to finish do
+  username: 'user%s',
+  home: '/users/user%s'
+end
+```
 
 ###Using objects
 
