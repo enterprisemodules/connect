@@ -9,6 +9,8 @@
     * [Setup requirements](#setup-requirements)
     * [Beginning with connect](#beginning-with-connect)
     * [Tools](#tools)
+      * [The value inspector](#the-values-inspector)
+      * [The objects inspector](#the-objects-inspector)
 4. [Usage - Configuration options and additional functionality](#usage)
 5. [Troubleshooting](#troubleshooting)
 6. [Limitations - OS compatibility, etc.](#limitations)
@@ -105,7 +107,7 @@ If you have configured connect, like specified in the `hiera.yaml` **ALL** hiera
 
 Because connect is based on hiera and puppet, you need to have both the hiera and puppet gem installed.
 
-When you want to use the forthcoming Puppetdb datasource, you need to have the [Puppetdb query tool](https://forge.puppetlabs.com/dalen/puppetdbquery installed). The forthcoming LDAP datasource, you need the [ruby ldap gem](https://rubygems.org/gems/net-ldap) installed.
+Some of the [data sources](https://github.com/hajee/connect/blob/master/datasources.md) require extra Ruby gems or other components. Check their documentation for details
 
 ###Beginning with connect module
 
@@ -121,7 +123,15 @@ Notice: Compiled catalog for 10.0.2.15 in environment production in 0.20 seconds
 Notice: Finished catalog run in 0.03 seconds
 ```
 
+You can also use the values inpsector to check the value:
+
+```sh
+$ puppet connect values test::parameter
+```
+
 ###Tools
+
+#### The values inspector
 
 Bundled with connect comes the values inspector. This tool lets you see the interpreted value of a specified parameter. In lay man's terms, it parses your connect file's and shows you the value.
 
@@ -138,6 +148,34 @@ $ puppet connect values my_scope::.*
 This will show all parameters in the scope `my_scope`.
 
 `puppet connect values`  will also show you where your parameters are defined and referenced. This is a tremendous help when debugging or just understand a complex set of connect configuration files.
+
+
+#### The objects inspector
+
+Similar to the values inspector, is the objects inspector This tool lets you see the interpreted value of a specified object. Just like the values inspector, it parses your connect file's and shows you the contents of your objects.
+
+```
+$ puppet connect objects  my_node
+```
+
+You can also use a wildcard for the parameter. Wildcards are specified as [regular expressions](http://www.regular-expressions.info/reference.html).
+
+```
+$ puppet connect objects my_*.
+```
+
+This will show all objects starting with  `my_`.
+
+If you just want to see the objects of a certain type, use `--type`  or `-t`
+
+```
+$ puppet connect objects --type host my_*.
+```
+
+Will show you all just starting with `my_`
+
+`puppet connect objects`  will also show you where your objects are defined and referenced. This is a tremendous help when debugging or just understand a complex set of connect configuration files.
+
 
 ###Using the accompanying Vagrant box
 
