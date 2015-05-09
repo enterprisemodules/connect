@@ -1,6 +1,11 @@
 History
 ========
 
+9-05-2015  version 0.0.10
+-------------------------
+- Implemented the object iterator
+- Added the description of the object inspector to the readme
+
 3-05-2015  version 0.0.9
 ------------------------
 - Extracted the datasources
