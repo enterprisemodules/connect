@@ -1,6 +1,5 @@
 require 'spec_helper'
 require 'connect/dsl'
-require 'connect/datasources/yaml'
 
 RSpec.describe Connect::Dsl do
 

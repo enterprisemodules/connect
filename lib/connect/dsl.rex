@@ -22,6 +22,7 @@ macro
   DO                  do\s
   IMPORT              import\s
   END                 end\s
+  AS                  as\s
   FROM                from\s
   TO                  to\s
   WITH                with\s
@@ -35,6 +36,7 @@ rule
   {NEWLINE}
   {COMMENT_LINE}          { @lineno += 1; nil}
   {COMMENT}
+  {AS}                    { [:AS, text]}
   {OR}                    { [:OR, text]}
   {AND}                   { [:AND, text]}
   {DO}                    { [:DO, text]}

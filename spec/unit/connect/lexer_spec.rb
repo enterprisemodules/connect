@@ -27,6 +27,7 @@ RSpec.describe 'Lexer' do
 
   reserved_words = [
     'into',
+    'as',
     'with',
     'do',
     'end',

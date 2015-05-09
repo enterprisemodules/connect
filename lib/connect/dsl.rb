@@ -183,7 +183,7 @@ module Connect
     # Define an object. If the values is empty, this method returns just the values.
     # It the values parameter is set, a new entry will be added to the objects table
     #
-    def define_object(type, name, values = nil, iterator = nil, xdef = nil)
+    def define_object(type, name, values = nil, iterator = nil, as = nil, xdef = nil)
       fail ArgumentError, 'no iterator allowed if no block defined' if values.nil? && !iterator.nil?
       validate_iterator(iterator) unless iterator.nil?
       add_object(type, name, values, xdef) if values
@@ -275,7 +275,7 @@ module Connect
     end
 
     def validate_iterator(iterator)
-      invalid_keys = iterator.keys - [:from, :to]
+      invalid_keys = iterator.keys - [:from, :to, :iterator]
       fail ArgumentError, 'from value missing from iterator' if iterator[:from].nil?
       fail ArgumentError, 'to value missing from iterator' if iterator[:to].nil?
       fail ArgumentError, "iterator contains unknown key(s): #{invalid_keys}" if invalid_keys
