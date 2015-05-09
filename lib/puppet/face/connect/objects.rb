@@ -29,10 +29,11 @@ Puppet::Face.define(:connect, '0.0.1') do
 
       Given a connect config file:
 
-        a_value = 10
-        my_scope::b_value = a
+        host('www.apache.org') {
+          ip: '10.0.0.100',
+        }
 
-      When you want to see the value of a_value:
+      When you want to see the object 'www.apache.org'
 
       $ puppet connect objects www.apache.org --type host
 
