@@ -329,9 +329,9 @@ Sometimes you want to define a set of objects. Like, for example, a set of dns s
  With an iterator, you can define similar objects and replace specific values. That 's a little bit abstract. Let show an example:
 
 ```ruby
-dnsserver('dnsserver%d.mydomain.org') from 1 to 10 do
-  ip: '10.0.0.%d',
-  aliases: ['dnsserver%d'],
+dnsserver('dnsserver%d.mydomain.org') iterate ip from 1 to 10 do
+  ip: '10.0.0.%{ip}',
+  aliases: ['dnsserver%{ip}'],
 end
 ```
 This little snippet of connect code, defines 10 dns servers: `dnsserver1.mydomain.org` with ip address 10.0.0.1 and alias `dnsserver1`  up to `dnsserver10.mydomain.org` with ip address 10.0.0.11 and alias `dnsserver10`.  This concept is extremely convenient when defining a set of resources.
@@ -339,22 +339,48 @@ This little snippet of connect code, defines 10 dns servers: `dnsserver1.mydomai
 You can use integers like in the example above, but you can also strings:
 
 ```ruby
-users('user%s') from 'aa' to 'bb' do
-  username: 'user%s',
-  home: '/users/user%s'
+users('user%{postfix}') iterate postfix from 'aa' to 'bb' do
+  username: 'user%{postfix}',
+  home: '/users/user%{postfix}'
 end
 ```
 
-And last but not least, you can use references in the definition of the iterator. 
+You can use references in the definition of the iterator. 
 
 ```ruby
 start  = 'aa'
 finish = 'bb'
-users('user%s') from start to finish do
-  username: 'user%s',
-  home: '/users/user%s'
+users('user%{postfix}') iterate postfix from start to finish do
+  username: 'user%{postfix}',
+  home: '/users/user%{postfix}'
 end
 ```
+
+And last but not least, you can use multiple iterators:
+
+```ruby
+route('%{ipaddress}') 
+  iterate ipaddress from '10.0.0.1' to '10.0.0.9'
+  iterate adapter from 'eth0' to 'eth2'
+  do
+    ip:     %{ipaddress}',
+    device: '%{adapter}'
+end
+```
+This will create the follwing objects:
+
+```
+route('10.0.0.1') {ip: '10.0.0.1', device:'/eth0'}
+route('10.0.0.2') {ip: '10.0.0.2', device:'/eth1'}
+route('10.0.0.3') {ip: '10.0.0.3', device:'/eth2'}
+route('10.0.0.4') {ip: '10.0.0.4', device:'/eth0'}
+route('10.0.0.5') {ip: '10.0.0.5', device:'/eth1'}
+route('10.0.0.6') {ip: '10.0.0.6', device:'/eth2'}
+route('10.0.0.7') {ip: '10.0.0.7', device:'/eth0'}
+route('10.0.0.8') {ip: '10.0.0.8', device:'/eth1'}
+route('10.0.0.9') {ip: '10.0.0.9', device:'/eth2'}
+```
+You can stack as many iterators as you want. The largest iterator is leading for the number of objects that are generated. All other iterators will cycle their values.
 
 ###Using objects
 
