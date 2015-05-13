@@ -1,6 +1,10 @@
 History
 ========
 
+13-05-2015  version 0.0.11
+-------------------------
+- Added support for multiple named iterators
+
 9-05-2015  version 0.0.10
 -------------------------
 - Implemented the object iterator
