@@ -80,7 +80,7 @@ RSpec.describe Connect::Dsl do
     context 'with iterator, but without values' do
       it 'raises an exception' do
         expect{
-          dsl.define_object('person','bert', nil, {:from=>1, :to=>20})
+          dsl.define_object('person','bert', nil, {'iterator' => {:from=>1, :to=>20}})
         }.to raise_exception(ArgumentError)
       end
     end
@@ -88,7 +88,7 @@ RSpec.describe Connect::Dsl do
     context 'with iterator without to clause' do
       it 'raises an exception' do
         expect{
-          dsl.define_object('person','bert', {:from=>1},{:age=>20} )
+          dsl.define_object('person','bert', nil, {'iterator' => {:from=>1, :age=>20}} )
         }.to raise_exception(ArgumentError)
       end
     end
@@ -96,7 +96,7 @@ RSpec.describe Connect::Dsl do
     context 'with iterator without from clause' do
       it 'raises an exception' do
         expect{
-          dsl.define_object('person','bert', {:to=>20},{:age=>20} )
+          dsl.define_object('person','bert', nil, {'iterator' => {:to=>20, :age=>20}} )
         }.to raise_exception(ArgumentError)
       end
     end
@@ -104,7 +104,7 @@ RSpec.describe Connect::Dsl do
     context 'with iterator including invalid clause' do
       it 'raises an exception' do
         expect{
-          dsl.define_object('person','bert', {:from=>1, :go => 'to', :to=>20},{:age=>20} )
+          dsl.define_object('person','bert', nil, {'iterator' => {:from=>1, :go => 'to', :to=>20, :age=>20}} )
         }.to raise_exception(ArgumentError)
       end
     end

@@ -68,8 +68,11 @@ class Dsl < Racc::Parser
       when (text = @ss.scan(/\#.*$/))
         ;
 
-      when (text = @ss.scan(/as\s/))
-         action { [:AS, text]}
+      when (text = @ss.scan(/iterate\s/))
+         action { [:ITERATE, text]}
+
+      when (text = @ss.scan(/step\s/))
+         action { [:STEP, text]}
 
       when (text = @ss.scan(/or\s|(\|\|)/))
          action { [:OR, text]}

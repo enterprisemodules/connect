@@ -536,14 +536,14 @@ RSpec.describe 'Parser' do
   end
 
 
-  context 'using an iterator' do
+  context 'using a single anonymous iterator' do
 
-    context 'without an as clause' do
+    context 'without an step clause' do
 
       context 'using an integer iterator' do
  
         it 'defines an object with an iterator' do
-          expect(dsl).to receive(:define_object).with('foo','bar', { 'ip' => '10.0.0.1', 'fqdn' => 'dns.a.b'},  {:from => 10, :to => 20}, Connect::Xdef)
+          expect(dsl).to receive(:define_object).with('foo','bar', { 'ip' => '10.0.0.1', 'fqdn' => 'dns.a.b'},  {'unnamed' => {:from => 10, :to => 20, :step =>1}}, Connect::Xdef)
           dsl.parse(<<-EOD)
           foo('bar') from 10 to 20 do 
             ip:   '10.0.0.1', 
@@ -556,7 +556,7 @@ RSpec.describe 'Parser' do
       context 'using a string iterator' do
  
         it 'defines an object with an iterator' do
-          expect(dsl).to receive(:define_object).with('foo','bar', { 'ip' => '10.0.0.1', 'fqdn' => 'dns.a.b'},  {:from => 'aaa', :to => 'bbb'}, Connect::Xdef)
+          expect(dsl).to receive(:define_object).with('foo','bar', { 'ip' => '10.0.0.1', 'fqdn' => 'dns.a.b'},  {'unnamed' => {:from => 'aaa', :to => 'bbb', :step => 1}}, Connect::Xdef)
           dsl.parse(<<-EOD)
           foo('bar') from 'aaa' to 'bbb' do 
             ip:   '10.0.0.1', 
@@ -569,7 +569,7 @@ RSpec.describe 'Parser' do
       context 'using an identifier iterator' do
  
         it 'defines an object with an iterator' do
-          expect(dsl).to receive(:define_object).with('foo','bar', { 'ip' => '10.0.0.1', 'fqdn' => 'dns.a.b'},  {:from => Connect::Entry::Reference, :to => Connect::Entry::Reference}, Connect::Xdef)
+          expect(dsl).to receive(:define_object).with('foo','bar', { 'ip' => '10.0.0.1', 'fqdn' => 'dns.a.b'},  {'unnamed' => {:from => Connect::Entry::Reference, :to => Connect::Entry::Reference, :step => 1}}, Connect::Xdef)
           dsl.parse(<<-EOD)
           foo('bar') from aaa to bbb do 
             ip:   '10.0.0.1', 
@@ -579,11 +579,78 @@ RSpec.describe 'Parser' do
         end
       end
 
+    end
+
+    context 'with a step clause' do
+
+      context 'using an integer iterator' do
+ 
+        it 'defines an object with an iterator and step' do
+          expect(dsl).to receive(:define_object).with('foo','bar', { 'ip' => '10.0.0.1', 'fqdn' => 'dns.a.b'},  {'unnamed' => {:from => 10, :to => 20, :step => 5}}, Connect::Xdef)
+          dsl.parse(<<-EOD)
+          foo('bar') from 10 to 20 step 5 do 
+            ip:   '10.0.0.1', 
+            fqdn: 'dns.a.b'
+          end
+          EOD
+        end
+      end
+
+      context 'using an reference iterator' do
+ 
+        it 'defines an object with an iterator and step' do
+          expect(dsl).to receive(:define_object).with('foo','bar', { 'ip' => '10.0.0.1', 'fqdn' => 'dns.a.b'},  {'unnamed' => {:from => 10, :to => 20, :step =>Connect::Entry::Reference }}, Connect::Xdef)
+          dsl.parse(<<-EOD)
+          foo('bar') from 10 to 20 step step_value do 
+            ip:   '10.0.0.1', 
+            fqdn: 'dns.a.b'
+          end
+          EOD
+        end
+      end
 
     end
 
+
+    context 'with a named iterator' do
+
+      context 'using an integer iterator' do
+ 
+        it 'defines an object with a named iterator' do
+          expect(dsl).to receive(:define_object).with('foo','bar', { 'ip' => '10.0.0.1', 'fqdn' => 'dns.a.b'},  {'ip' => {:from => 10, :to => 20, :step => 5}}, Connect::Xdef)
+          dsl.parse(<<-EOD)
+          foo('bar') iterate ip from 10 to 20 step 5 do 
+            ip:   '10.0.0.1', 
+            fqdn: 'dns.a.b'
+          end
+          EOD
+        end
+      end
+
+    end
+
+
   end
 
+  context 'using multiple named iterator' do
+
+    it 'defines an object with a multiple iterators' do
+      expect(dsl).to receive(:define_object).with('foo','bar', { 'ip' => '10.0.0.1', 'fqdn' => 'dns.a.b'}, 
+         {
+          'ip'   => {:from => 10, :to => 20, :step => 5},
+          'name' => {:from => 'aaa', :to => 'bbb', :step => 2}
+         }, Connect::Xdef)
+      dsl.parse(<<-EOD)
+      foo('bar') 
+        iterate ip from 10 to 20 step 5
+        iterate name from 'aaa' to 'bbb' step 2 do 
+        ip:   '10.0.0.1', 
+        fqdn: 'dns.a.b'
+      end
+      EOD
+    end
+
+  end
 
 
   describe 'object references' do

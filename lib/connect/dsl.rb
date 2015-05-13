@@ -8,6 +8,7 @@ require 'connect/includer'
 require 'connect/entries/value'
 require 'connect/entries/reference'
 require 'connect/datasources/base'
+require 'string_extension'
 begin
   require 'byebug'
   require 'pry'
@@ -183,22 +184,26 @@ module Connect
     # Define an object. If the values is empty, this method returns just the values.
     # It the values parameter is set, a new entry will be added to the objects table
     #
-    def define_object(type, name, values = nil, iterator = nil, xdef = nil)
-      fail ArgumentError, 'Iterator only allowed with block definition' if values.nil? && !iterator.nil?
-      validate_iterator(iterator) unless iterator.nil?
-      if iterator
-        add_objects_with_iterator(type, name, values, xdef, iterator)
+    def define_object(type, name, values = nil, iterators = nil, xdef = nil)
+      fail ArgumentError, 'Iterators only allowed with block definition' if values.nil? && !iterators.nil?
+      validate_iterators(iterators) unless iterators.nil?
+      if iterators
+        add_objects_with_iterators(type, name, values, xdef, iterators)
       else
         add_object(type, name, values, xdef) if values
       end
       Entry::ObjectReference.new(type, name, nil, xdef)
     end
 
-    def add_objects_with_iterator(type, name, values, xdef, iterator)
-      range = range_from_iterator(iterator)
-      range.each do | value|
-        object_name   = name % value
-        object_values = substitute_values(values, value)
+    def add_objects_with_iterators(type, name, values, xdef, iterators)
+      iterator_values = {}
+      iterators.each_pair {|k,v| iterator_values[k] = values_from_iterator(v,k)}
+      max_size  = iterator_values.collect{|k,v| v.size}.max
+      iterator_values.each_pair {|k,v| iterator_values[k] = v * ((max_size/v.size) + (max_size % v.size))}
+      (0..max_size).each do | index|
+        value_hash = iterator_values.keys.reduce({}) {|v,k| v.merge!({k.to_sym => iterator_values[k][index]})}
+        object_name   = name % value_hash
+        object_values = substitute_values(values, value_hash)
         add_object(type, object_name, object_values, xdef)
       end
     end
@@ -251,17 +256,23 @@ module Connect
 
     private
 
-    def substitute_values(hash, value)
+    def substitute_values(hash, values_hash)
       hash.extend(HashExtensions)
       hash.transform_hash do |hash, key, content|
-        hash[key] = content % value
+        hash[key] = content % values_hash
       end
     end
 
-    def range_from_iterator(iterator)
-      Range.new( as_value(iterator[:from]),  as_value(iterator[:to]))
+    def values_from_iterator(iterator, name)
+      range = Range.new( as_value(iterator[:from]),  as_value(iterator[:to])).step(as_value(iterator[:step])).to_a
     rescue ArgumentError
-      raise 'Invalid arguments for Object iterator'
+      raise "Invalid arguments for Object iterator, around line #{lineno} of config file '#{current_file}'"
+    ensure
+      elements = range.count
+      if elements > 500
+        raise "Iterator #{name} is #{elements} elements long, but maximum size is 500, around line #{lineno} of config file '#{current_file}'" 
+      end
+      range
     end
 
     def as_value(iterator_value)
@@ -305,11 +316,16 @@ module Connect
       name.scan(/\:\:/).length > 0
     end
 
+    def validate_iterators(iterators)
+      iterators.each_value {| iterator| validate_iterator(iterator)}
+    end
+
     def validate_iterator(iterator)
-      invalid_keys = iterator.keys - [:from, :to]
-      fail ArgumentError, 'from value missing from iterator' if iterator[:from].nil?
-      fail ArgumentError, 'to value missing from iterator' if iterator[:to].nil?
-      fail ArgumentError, "iterator contains unknown key(s): #{invalid_keys}" unless invalid_keys.empty?
+      invalid_keys = iterator.keys - [:from, :to, :step]
+      fail ArgumentError, "from value missing from iterator, around line #{lineno} of config file '#{current_file}'"  if iterator[:from].nil?
+      fail ArgumentError, "to value missing from iterator, around line #{lineno} of config file '#{current_file}'" if iterator[:to].nil?
+      fail ArgumentError, "to value missing from iterator, error around line #{lineno} of config file '#{current_file}'" if iterator[:step].nil?
+      fail ArgumentError, "iterator contains unknown key(s): #{invalid_keys}, error around line #{lineno} of config file '#{current_file}'" unless invalid_keys.empty?
     end
 
     def empty_definition?(string)

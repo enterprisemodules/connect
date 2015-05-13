@@ -1,10 +1,18 @@
-require 'rspec/core/rake_task'
+require 'puppetlabs_spec_helper/rake_tasks'
+require 'puppet-lint/tasks/puppet-lint'
+require 'puppet-syntax/tasks/puppet-syntax'
+
+# These two gems aren't always present, for instance
+# on Travis with --without development
 begin
-  require 'puppet_blacksmith/rake_tasks'
-  require 'puppetlabs_spec_helper/rake_tasks'
+  require 'rspec-system/rake_task'
 rescue LoadError
 end
 
+begin
+  require 'puppet_blacksmith/rake_tasks'
+rescue LoadError
+end
  
 task :default => [:lexer, :parser]
 

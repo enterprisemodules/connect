@@ -66,6 +66,7 @@ rule
     | reference
   ;
 
+
   value
     : scalar
     | array
@@ -238,9 +239,9 @@ rule
   # Define object definitions syntax
   #
   object_definition
-    : IDENTIFIER '(' string ')' iterator definition_block 
+    : IDENTIFIER '(' string ')' iterators definition_block 
                                                     { result = define_object(val[0], val[2], val[5], val[4], xdef)}
-    | IDENTIFIER '(' literal ')' iterator definition_block 
+    | IDENTIFIER '(' literal ')' iterators definition_block 
                                                     { result = define_object(val[0], lookup_value(val[2]), val[5], val[4], xdef)}
   ;
 
@@ -256,11 +257,24 @@ rule
                                                     { result = val[1]}
   ;
 
+  iterators
+    :
+    | iterators iterator                            { result = val[0].nil? ? val[1] : val[0].merge!(val[1])}
+    ;
+
   iterator
     :
-    | FROM string_number_reference TO string_number_reference
-                                                    { result = {:from => val[1], :to => val[3]}}
+    | FROM string_number_reference TO string_number_reference step
+                                                    { result = {'iterator' => {:from => val[1], :to => val[3], :step => val[4]}}}
+    | ITERATE IDENTIFIER FROM string_number_reference TO string_number_reference step
+                                                    { result = {val[1] => {:from => val[3], :to => val[5], :step => val[6]}}}
   ;
+
+  step
+    :                                               { result = 1 }
+    | STEP INTEGER                                  { result = val[1]}
+    | STEP reference                                { result = val[1]}
+    ;
 
 end
 

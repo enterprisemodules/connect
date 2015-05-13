@@ -29,6 +29,8 @@ RSpec.describe 'Lexer' do
     'into',
     'with',
     'do',
+    'iterate',
+    'step',
     'end',
     'from',
     'import',

@@ -19,6 +19,8 @@ macro
   UNDEF               undefined|undef|nil
   HASH_ROCKET         \=\>
   DOUBLE_COLON        ::
+  STEP                step\s
+  ITERATE             iterate\s
   DO                  do\s
   IMPORT              import\s
   END                 end\s
@@ -35,6 +37,8 @@ rule
   {NEWLINE}
   {COMMENT_LINE}          { @lineno += 1; nil}
   {COMMENT}
+  {ITERATE}               { [:ITERATE, text]}
+  {STEP}                  { [:STEP, text]}
   {OR}                    { [:OR, text]}
   {AND}                   { [:AND, text]}
   {DO}                    { [:DO, text]}

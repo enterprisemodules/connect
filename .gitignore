@@ -6,3 +6,4 @@ lib/connect/parser.output
 coverage/.last_run.json
 coverage/.resultset.json
 pkg
+spec/fixtures
