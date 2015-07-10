@@ -8,6 +8,7 @@ module Connect
   #
   class Selector
     TO_RESOURCE_REGEX = /\.to_resource\('([a-zA-Z]+)'\)/
+    SLICE_REGEX       = /\.slice\(\s*(['|"]\w*['|"],*\s*)+\)/
 
     def initialize(value, selector)
       @value = value
@@ -24,13 +25,18 @@ module Connect
     def run
       if @selector && @selection_value
         begin
-          if @selector =~ TO_RESOURCE_REGEX && @value.is_a?(Connect::ObjectRepresentation)
+          case
+          when @selector =~ TO_RESOURCE_REGEX && @value.is_a?(Connect::ObjectRepresentation)
             #
             # The to_resource is a special selector when operating on an object. It will transform the
             # object into a valid resource hash and filter all attributes not available in the selected
             # object.
             #
             convert_to_resource
+          when @selector =~ SLICE_REGEX && @value.is_a?(Connect::ObjectRepresentation)
+            slice_object
+          when @selector =~ SLICE_REGEX && @value.is_a?(Hash)
+            slice_hash
           else
             instance_eval("@selection_value#{@selector}")
           end
@@ -100,5 +106,40 @@ module Connect
       cleaned_value = @value.value.collect { |k, v| all_attributes.include?(k) ? [k, v] : nil }.compact
       { @value.keys.first => Hash[cleaned_value] }
     end
+    ##
+    #
+    # remove all attributes thar do not belong to the specified resource
+    #
+    # @return [Hash] Resource like hash containing only valid attributes
+    #
+    def slice_hash
+      items = @selector.scan(/['|"](\w+)['|"]/).flatten
+      return {} if items.empty?
+      if items.size == 1
+        items[0] = items[0].to_s if items[0].is_a?(Symbol)
+        @value.select {|key| key.to_s.match(items.first) }
+      else
+        @value.select {|key| items.include?(key)}
+      end
+    end
+    ##
+    #
+    # remove all attributes thar do not belong to the specified resource
+    #
+    # @return [Hash] Resource like hash containing only valid attributes
+    #
+    def slice_object
+      object_name = @value.keys.first
+      values = @value.values.first
+      items = @selector.scan(/['|"](\w+)['|"]/).flatten
+      return {object_name => {}} if items.empty?
+      if items.size == 1
+        items[0] = items[0].to_s if items[0].is_a?(Symbol)
+        { object_name => values.select {|key| key.to_s.match(items.first) }}
+      else
+        { object_name => values.select {|key| items.include?(key)}}
+      end
+    end
+
   end
 end
