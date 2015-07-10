@@ -22,13 +22,13 @@ module Connect
         value = case @value
         when Array
           #
-          # Because we've defined some convinieance methods for Array's, we
+          # Because we've defined some convenience methods for Array's, we
           # force the return value to be of type ExtendedArray
           #
           convert_array(@value)
         when Hash
           #
-          # Because we've defined some conveniance methods for Hashes, we force
+          # Because we've defined some convenience methods for Hashes, we force
           # the type to be a MathodHash
           #
           convert_hash(@value)
@@ -38,11 +38,6 @@ module Connect
         Selector.run(value, selector)
       end
       # rubocop:enable CaseEquality, ElseAlignment, EndAlignment, IndentationWidth
-
-
-
-
     end
-
   end
 end
