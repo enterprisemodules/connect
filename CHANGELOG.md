@@ -1,6 +1,10 @@
 History
 ========
 
+10-06-2015  version 0.0.13
+-------------------------
+- Added Object and Hash conveniance function slice.
+
 10-06-2015  version 0.0.12
 -------------------------
 - Fixed a bug when using a object reference in a hash inside an array

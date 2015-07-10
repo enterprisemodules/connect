@@ -19,6 +19,7 @@ This file contains an overview of the connect language. It contains short snippe
     * [Special selectors](#special-selectors)
       * [extract](#extract)
       * [to_resource](#to_resource)
+      * [slice](#slice)
 12. [importing data](#importing-data)
 13. [Ordering](#ordering)
 
@@ -501,6 +502,20 @@ my_raw_host = host('db.domain.com') {
 
 my_host = my_raw_host.to_resource('host') # can be used as a parameter for create_resource
 ```
+
+#### slice
+
+Sometimes your object contains values, the original puppet type doesn't support. To filter out all nonsupported attributes, you can use the `slice`  selector on an object. The slice selector must called with the attributes as values.
+
+```ruby
+my_raw_host = host('db.domain.com') {
+  ip: '10.0.0.100',
+  just_a_random_attribute: 10,
+}  # Contains more then an ip. I need just a hash with the name and an ip.
+my_host = my_raw_host.slice('ip') # can be used just get hte ip into the hash.
+```
+`slice`  can be used on objects and hashes.
+
 
 ###importing data
 
