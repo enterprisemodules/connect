@@ -119,7 +119,7 @@ module Connect
         items[0] = items[0].to_s if items[0].is_a?(Symbol)
         @value.select {|key| key.to_s.match(items.first) }
       else
-        @value.select {|key| items.include?(key)}
+        Hash[@value.select {|key, value| items.include?(key)}]
       end
     end
     ##
@@ -135,9 +135,9 @@ module Connect
       return {object_name => {}} if items.empty?
       if items.size == 1
         items[0] = items[0].to_s if items[0].is_a?(Symbol)
-        { object_name => values.select {|key| key.to_s.match(items.first) }}
+        { object_name => Hash[values.select {|key, value| key.to_s.match(items.first) }]}
       else
-        { object_name => values.select {|key| items.include?(key)}}
+        { object_name => Hash[values.select {|key, value| items.include?(key)}]}
       end
     end
 
