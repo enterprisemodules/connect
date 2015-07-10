@@ -10,7 +10,7 @@ module Connect
     end
 
     def convert_array(array)
-      Connect::ExtendedArray.new(array.map { |e| e.respond_to?(:final) ? e.final : e })
+      Connect::ExtendedArray.new(array.map { |e| convert_array_entry(e)})
     end
 
     def convert_hash_entry(k, v)
@@ -31,5 +31,17 @@ module Connect
         v.respond_to?(:final) ? [k, v.final] : [k, v]
       end
     end
+
+    def convert_array_entry(v)
+      case v
+      when Hash
+        convert_hash(v)
+      when Array
+        convert_array(v)
+      else
+        v.respond_to?(:final) ? v.final : v
+      end
+    end
+
   end
 end
