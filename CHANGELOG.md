@@ -1,6 +1,10 @@
 History
 ========
 
+10-06-2015  version 0.0.12
+-------------------------
+- Fixed a bug when using a object reference in a hash inside an array
+
 13-05-2015  version 0.0.11
 -------------------------
 - Added support for multiple named iterators
