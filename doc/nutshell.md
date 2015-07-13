@@ -512,9 +512,32 @@ my_raw_host = host('db.domain.com') {
   ip: '10.0.0.100',
   just_a_random_attribute: 10,
 }  # Contains more then an ip. I need just a hash with the name and an ip.
-my_host = my_raw_host.slice('ip') # can be used just get hte ip into the hash.
+my_host = my_raw_host.slice('ip') # can be used just get the ip into the hash.
+#
+# It returns 
+# {'db.domain.com' => { 'ip' => '10.0.0.100'}}
+#
 ```
 `slice`  can be used on objects and hashes.
+
+
+#### slice_content
+
+Sometimes your object contains values, your puppet code doesn't support. To filter out all nonsupported attributes, you can use the `slice_content`  selector on an object. The `slice_content` selector must called with the attributes as values. The difference between the `slice` selector and the `slice_content` selector when called on an object, is that `slice` returns the name of the object as key, while `slice_content` only returns the content of the object.
+
+```ruby
+my_raw_host = host('db.domain.com') {
+  ip: '10.0.0.100',
+  just_a_random_attribute: 10,
+}  # Contains more then an ip. I need just a hash with the name and an ip.
+my_host = my_raw_host.slice_content('ip') # can be used just get the ip into the hash.
+#
+# It returns 
+# { 'ip' => '10.0.0.100'}
+#
+```
+
+`slice_content`  can be only be used on objects.
 
 
 ###importing data

@@ -331,6 +331,7 @@ RSpec.describe 'selectors' do
     context 'Slice entries' do
 
       context'on an object' do
+
         it 'returns hash with only selected items' do
           dsl.parse(<<-EOD)
             a = something('file') {ensure: 'present', invalid_attr: 'true', checksum: 10}
@@ -338,6 +339,19 @@ RSpec.describe 'selectors' do
           EOD
           expect(dsl.lookup_value('b')).to eq({'file' => {'ensure' => 'present', 'checksum' => 10}})
         end
+
+      end
+
+      context'on an object content' do
+
+        it 'returns hash with only selected items' do
+          dsl.parse(<<-EOD)
+            a = something('file') {ensure: 'present', invalid_attr: 'true', checksum: 10}
+            b = a.slice_content('ensure', 'checksum')
+          EOD
+          expect(dsl.lookup_value('b')).to eq({'ensure' => 'present', 'checksum' => 10})
+        end
+
       end
 
       context'on a hash' do

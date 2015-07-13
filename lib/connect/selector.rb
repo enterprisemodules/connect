@@ -7,8 +7,9 @@ module Connect
   #
   #
   class Selector
-    TO_RESOURCE_REGEX = /\.to_resource\('([a-zA-Z]+)'\)/
-    SLICE_REGEX       = /\.slice\(\s*(['|"]\w*['|"],*\s*)+\)/
+    TO_RESOURCE_REGEX   = /^\.to_resource\('([a-zA-Z]+)'\)/
+    SLICE_REGEX         = /^\.slice\(\s*(['|"]\w*['|"],*\s*)+\)/
+    SLICE_CONTENT_REGEX = /^\.slice_content\(\s*(['|"]\w*['|"],*\s*)+\)/
 
     def initialize(value, selector)
       @value = value
@@ -35,6 +36,8 @@ module Connect
             convert_to_resource
           when @selector =~ SLICE_REGEX && @value.is_a?(Connect::ObjectRepresentation)
             slice_object
+          when @selector =~ SLICE_CONTENT_REGEX && @value.is_a?(Connect::ObjectRepresentation)
+            slice_content
           when @selector =~ SLICE_REGEX && @value.is_a?(Hash)
             slice_hash
           else
@@ -124,7 +127,7 @@ module Connect
     end
     ##
     #
-    # remove all attributes thar do not belong to the specified resource
+    # filter attributes specified in the arguments.
     #
     # @return [Hash] Resource like hash containing only valid attributes
     #
@@ -135,9 +138,22 @@ module Connect
       return {object_name => {}} if items.empty?
       if items.size == 1
         items[0] = items[0].to_s if items[0].is_a?(Symbol)
-        { object_name => Hash[values.select {|key, value| key.to_s.match(items.first) }]}
+        ObjectRepresentation[object_name, Hash[values.select {|key, value| key.to_s.match(items.first) }]]
       else
-        { object_name => Hash[values.select {|key, value| items.include?(key)}]}
+        ObjectRepresentation[object_name, Hash[values.select {|key, value| items.include?(key)}]]
+      end
+    end
+
+
+    def slice_content
+      values = @value.values.first
+      items = @selector.scan(/['|"](\w+)['|"]/).flatten
+      return {} if items.empty?
+      if items.size == 1
+        items[0] = items[0].to_s if items[0].is_a?(Symbol)
+        Hash[values.select {|key, value| key.to_s.match(items.first) }]
+      else
+        Hash[values.select {|key, value| items.include?(key)}]
       end
     end
 
