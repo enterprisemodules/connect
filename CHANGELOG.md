@@ -1,9 +1,13 @@
 History
 ========
 
+11-06-2015  version 0.0.14
+-------------------------
+- Added slice-content selector
+
 10-06-2015  version 0.0.13
 -------------------------
-- Added Object and Hash conveniance function slice.
+- Added Object and Hash convenience function slice.
 
 10-06-2015  version 0.0.12
 -------------------------
