@@ -543,7 +543,7 @@ RSpec.describe 'Parser' do
       context 'using an integer iterator' do
  
         it 'defines an object with an iterator' do
-          expect(dsl).to receive(:define_object).with('foo','bar', { 'ip' => '10.0.0.1', 'fqdn' => 'dns.a.b'},  {'unnamed' => {:from => 10, :to => 20, :step =>1}}, Connect::Xdef)
+          expect(dsl).to receive(:define_object).with('foo','bar', { 'ip' => '10.0.0.1', 'fqdn' => 'dns.a.b'},  {'iterator' => {:from => 10, :to => 20, :step =>1}}, Connect::Xdef)
           dsl.parse(<<-EOD)
           foo('bar') from 10 to 20 do 
             ip:   '10.0.0.1', 
@@ -556,7 +556,7 @@ RSpec.describe 'Parser' do
       context 'using a string iterator' do
  
         it 'defines an object with an iterator' do
-          expect(dsl).to receive(:define_object).with('foo','bar', { 'ip' => '10.0.0.1', 'fqdn' => 'dns.a.b'},  {'unnamed' => {:from => 'aaa', :to => 'bbb', :step => 1}}, Connect::Xdef)
+          expect(dsl).to receive(:define_object).with('foo','bar', { 'ip' => '10.0.0.1', 'fqdn' => 'dns.a.b'},  {'iterator' => {:from => 'aaa', :to => 'bbb', :step => 1}}, Connect::Xdef)
           dsl.parse(<<-EOD)
           foo('bar') from 'aaa' to 'bbb' do 
             ip:   '10.0.0.1', 
@@ -569,7 +569,7 @@ RSpec.describe 'Parser' do
       context 'using an identifier iterator' do
  
         it 'defines an object with an iterator' do
-          expect(dsl).to receive(:define_object).with('foo','bar', { 'ip' => '10.0.0.1', 'fqdn' => 'dns.a.b'},  {'unnamed' => {:from => Connect::Entry::Reference, :to => Connect::Entry::Reference, :step => 1}}, Connect::Xdef)
+          expect(dsl).to receive(:define_object).with('foo','bar', { 'ip' => '10.0.0.1', 'fqdn' => 'dns.a.b'},  {'iterator' => {:from => Connect::Entry::Reference, :to => Connect::Entry::Reference, :step => 1}}, Connect::Xdef)
           dsl.parse(<<-EOD)
           foo('bar') from aaa to bbb do 
             ip:   '10.0.0.1', 
@@ -586,7 +586,7 @@ RSpec.describe 'Parser' do
       context 'using an integer iterator' do
  
         it 'defines an object with an iterator and step' do
-          expect(dsl).to receive(:define_object).with('foo','bar', { 'ip' => '10.0.0.1', 'fqdn' => 'dns.a.b'},  {'unnamed' => {:from => 10, :to => 20, :step => 5}}, Connect::Xdef)
+          expect(dsl).to receive(:define_object).with('foo','bar', { 'ip' => '10.0.0.1', 'fqdn' => 'dns.a.b'},  {'iterator' => {:from => 10, :to => 20, :step => 5}}, Connect::Xdef)
           dsl.parse(<<-EOD)
           foo('bar') from 10 to 20 step 5 do 
             ip:   '10.0.0.1', 
@@ -599,7 +599,7 @@ RSpec.describe 'Parser' do
       context 'using an reference iterator' do
  
         it 'defines an object with an iterator and step' do
-          expect(dsl).to receive(:define_object).with('foo','bar', { 'ip' => '10.0.0.1', 'fqdn' => 'dns.a.b'},  {'unnamed' => {:from => 10, :to => 20, :step =>Connect::Entry::Reference }}, Connect::Xdef)
+          expect(dsl).to receive(:define_object).with('foo','bar', { 'ip' => '10.0.0.1', 'fqdn' => 'dns.a.b'},  {'iterator' => {:from => 10, :to => 20, :step =>Connect::Entry::Reference }}, Connect::Xdef)
           dsl.parse(<<-EOD)
           foo('bar') from 10 to 20 step step_value do 
             ip:   '10.0.0.1', 
@@ -852,8 +852,6 @@ RSpec.describe 'Parser' do
 
     end
 
-
-
     context 'using multiple mixed selectors' do
       it "passes to selector" do
         expect(dsl).to receive(:selector).with(Connect::Entry::Reference, ".first[10,11,12,'hallo'][1,2,3.5,'hallo'].last(1,2,3)")
@@ -861,8 +859,28 @@ RSpec.describe 'Parser' do
         a = b.first[10,11,12,'hallo'][1,2,3.5,'hallo'].last(1,2,3)
         EOD
       end
+    end
+
+    context 'using a selector in a Array' do
+      it "passes to selector" do
+        expect(dsl).to receive(:selector).with(Connect::Entry::Reference, ".slice('item')")
+        dsl.parse(<<-EOD)   
+        a = [b.slice('item')]
+        EOD
+      end
 
     end
+
+    context 'using a selector in a Hash' do
+      it "passes to selector" do
+        expect(dsl).to receive(:selector).with(Connect::Entry::ObjectReference, ".slice('a')")
+        dsl.parse(<<-EOD)   
+        a = {b(object).slice('a')}
+        EOD
+      end
+
+    end
+
 
 
   end

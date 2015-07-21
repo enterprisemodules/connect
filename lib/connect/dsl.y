@@ -184,6 +184,7 @@ rule
   hashpair
     : hashkey hash_seperator expression             { result = MethodHash[val[0], val[2]] }
     | object_reference                              { result = MethodHash[val[0].object_id, val[0]]}
+    | object_reference selectors                    { selector(val[0], val[1])}
   ;
 
   #
@@ -263,8 +264,7 @@ rule
     ;
 
   iterator
-    :
-    | FROM string_number_reference TO string_number_reference step
+    : FROM string_number_reference TO string_number_reference step
                                                     { result = {'iterator' => {:from => val[1], :to => val[3], :step => val[4]}}}
     | ITERATE IDENTIFIER FROM string_number_reference TO string_number_reference step
                                                     { result = {val[1] => {:from => val[3], :to => val[5], :step => val[6]}}}
