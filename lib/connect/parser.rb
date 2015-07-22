@@ -847,7 +847,7 @@ module_eval(<<'.,.,', 'dsl.y', 185)
 
 module_eval(<<'.,.,', 'dsl.y', 186)
   def _reduce_77(val, _values, result)
-     selector(val[0], val[1])
+     result = MethodHash[val[0].object_id, selector(val[0], val[1])]
     result
   end
 .,.,

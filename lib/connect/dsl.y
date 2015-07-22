@@ -184,7 +184,7 @@ rule
   hashpair
     : hashkey hash_seperator expression             { result = MethodHash[val[0], val[2]] }
     | object_reference                              { result = MethodHash[val[0].object_id, val[0]]}
-    | object_reference selectors                    { selector(val[0], val[1])}
+    | object_reference selectors                    { result = MethodHash[val[0].object_id, selector(val[0], val[1])]}
   ;
 
   #

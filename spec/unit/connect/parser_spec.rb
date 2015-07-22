@@ -673,6 +673,45 @@ RSpec.describe 'Parser' do
       end
     end
 
+    context 'single one in an Array' do
+      it 'refereces an object' do
+        expect(dsl).to receive(:assign).with('a', [Connect::Entry::ObjectReference], Connect::Xdef)
+        dsl.parse(<<-EOD)
+        a = [foo(bar)]
+        EOD
+      end
+    end
+
+
+    context 'multiple ones in an Array' do
+      it 'refereces an object' do
+        expect(dsl).to receive(:assign).with('a', [Connect::Entry::ObjectReference, Connect::Entry::ObjectReference], Connect::Xdef)
+        dsl.parse(<<-EOD)
+        a = [foo(bar), bee(brave)]
+        EOD
+      end
+    end
+
+
+    context 'single one in a Hash' do
+      it 'refereces an object' do
+        expect(dsl).to receive(:assign).with('a', Hash, Connect::Xdef)
+        dsl.parse(<<-EOD)
+        a = {foo(bar)}
+        EOD
+      end
+    end
+
+
+    context 'multiple ones in an Hash' do
+      it 'refereces an object' do
+        expect(dsl).to receive(:assign).with('a', Hash, Connect::Xdef)
+        dsl.parse(<<-EOD)
+        a = {foo(bar), bee(brave)}
+        EOD
+      end
+    end
+
 
   end
 
@@ -861,7 +900,7 @@ RSpec.describe 'Parser' do
       end
     end
 
-    context 'using a selector in a Array' do
+    context 'using a selector on an single object in an Array' do
       it "passes to selector" do
         expect(dsl).to receive(:selector).with(Connect::Entry::Reference, ".slice('item')")
         dsl.parse(<<-EOD)   
@@ -871,11 +910,42 @@ RSpec.describe 'Parser' do
 
     end
 
-    context 'using a selector in a Hash' do
+
+    context 'using a selector on multiple objects in an Array' do
+      it "passes to selector" do
+        expect(dsl).to receive(:selector).with(Connect::Entry::Reference, ".slice('item1')")
+        expect(dsl).to receive(:selector).with(Connect::Entry::Reference, ".slice('item2')")
+        dsl.parse(<<-EOD)   
+        a = [
+          b.slice('item1'),
+          c.slice('item2')
+        ]
+        EOD
+      end
+
+    end
+
+    context 'using a selector on a single object in a Hash' do
       it "passes to selector" do
         expect(dsl).to receive(:selector).with(Connect::Entry::ObjectReference, ".slice('a')")
         dsl.parse(<<-EOD)   
-        a = {b(object).slice('a')}
+        a = {
+          b(object).slice('a')
+        }
+        EOD
+      end
+
+    end
+
+    context 'using selectors on a multiple objects in a Hash' do
+      it "passes to selector" do
+        expect(dsl).to receive(:selector).with(Connect::Entry::ObjectReference, ".slice('x')")
+        expect(dsl).to receive(:selector).with(Connect::Entry::ObjectReference, ".slice('y')")
+        dsl.parse(<<-EOD)   
+        a = {
+          b(object).slice('x'),
+          c(object).slice('y'),
+        }
         EOD
       end
 
