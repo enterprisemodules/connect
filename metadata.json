@@ -1,6 +1,6 @@
 {
   "name": "hajee-connect",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "author": "Bert Hajee",
   "summary": "A replacement for YAML in hiera",
   "license": "Apache-2.0",

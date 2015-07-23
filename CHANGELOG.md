@@ -1,6 +1,10 @@
 History
 ========
 
+23-07-2015  version 0.0.14
+-------------------------
+- Fixed some bugs in selectors on objects
+
 11-06-2015  version 0.0.14
 -------------------------
 - Added slice-content selector
