@@ -68,6 +68,18 @@ RSpec.describe 'dsl features' do
         }.to raise_error(ParseError, /error_after_include\.config/)
       end
 
+      it 'is processes statemens before,in and after include' do
+        dsl.parse(<<-EOD)
+          before_include = 0
+          include 'base'
+          after_include = 20
+        EOD
+        expect(dsl.lookup_value("before_include")).to eq(0)
+        expect(dsl.lookup_value("in_include")).to eq(10)
+        expect(dsl.lookup_value("after_include")).to eq(20)
+      end
+
+
     end
 
   end

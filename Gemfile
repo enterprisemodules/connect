@@ -1,6 +1,18 @@
 source 'https://rubygems.org'
 
 group :development, :test do
+  unless RUBY_PLATFORM == 'java'
+    gem 'pry'
+    gem 'pry-byebug'
+    gem 'pry-stack_explorer'
+    gem 'guard-rspec'   , :require => false
+    gem 'guard-bundler' , :require => false
+    gem 'ruby_gntp'
+    gem 'byebug'
+  else
+    gem 'pry'
+    gem 'ruby-debug'    
+  end
   gem "codeclimate-test-reporter",  require: nil
   gem 'rake'
   gem 'rspec'
@@ -8,23 +20,13 @@ group :development, :test do
   gem 'rspec-its'
   gem 'rexical'
   gem 'racc'
-  gem 'pry'
-  gem 'pry-byebug'
-  gem 'pry-stack_explorer'
-  gem 'guard-rspec'   , :require => false
-  gem 'guard-bundler' , :require => false
-  gem 'ruby_gntp'
   gem 'bogus'
-  gem 'byebug'
   gem 'rubocop'       , :require => false
   gem 'yard'          , :require => false
   gem 'coveralls'     , :require => false
   gem "puppet-blacksmith"
   gem "puppetlabs_spec_helper"
 end
-
-
-
 gem 'hiera'
 gem 'awesome_print'
 
