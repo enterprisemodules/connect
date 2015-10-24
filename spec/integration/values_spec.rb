@@ -126,7 +126,7 @@ RSpec.describe 'setting and retrieving values' do
 
       end
 
-      context 'with sclar values' do
+      context 'with scalar values' do
 
         it 'is settable and retrievable' do
           dsl.parse(<<-EOD)
