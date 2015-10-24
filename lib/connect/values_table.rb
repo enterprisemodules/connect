@@ -112,7 +112,14 @@ module Connect
     def internal_lookup(name)
       name = name.to_s
       # TODO: Check if name is a valid name
-      @values_table.fetch(name) { Entry::Value.new(nil) }
+      if Gem::Version.new(Hiera.version) > Gem::Version.new('2.0.0')
+        @values_table.fetch(name) do
+          Connect.debug("looked up '#{name}' but found nothing")
+          throw :no_such_key  
+        end
+      else
+        @values_table.fetch(name) { Entry::Value.new(nil) }
+      end
     end
 
     ##

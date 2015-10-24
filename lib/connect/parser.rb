@@ -6,9 +6,9 @@
 
 require 'racc/parser.rb'
 
-  require 'connect/extended_array'
-  require 'connect/dsl'
-  require 'connect/lexer'
+require 'connect/extended_array'
+require 'connect/dsl'
+require 'connect/lexer'
 
 module Connect
   class Dsl < Racc::Parser

@@ -28,5 +28,5 @@ end
 
 desc "Generate Parser"
 task :parser do
-  `racc lib/connect/dsl.y -v -o lib/connect/parser.rb`
+  `racc lib/connect/dsl.y -o lib/connect/parser.rb`
 end

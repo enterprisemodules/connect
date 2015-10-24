@@ -279,9 +279,9 @@ rule
 end
 
 ---- header
-  require 'connect/extended_array'
-  require 'connect/dsl'
-  require 'connect/lexer'
+require 'connect/extended_array'
+require 'connect/dsl'
+require 'connect/lexer'
 
 ---- inner
 

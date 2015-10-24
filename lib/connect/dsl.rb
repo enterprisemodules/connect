@@ -1,5 +1,9 @@
+#
+# Because of incompatibilities with the parser delivers default,
+# puts us at the top of the lopad path
+#
+$LOAD_PATH.unshift Pathname.new(__FILE__).parent.parent.to_s
 require 'ostruct'
-require 'connect/parser'
 require 'connect/values_table'
 require 'connect/objects_table'
 require 'connect/selector'
@@ -9,15 +13,15 @@ require 'connect/entries/value'
 require 'connect/entries/reference'
 require 'connect/datasources/base'
 require 'string_extension'
+require 'racc/parser'
+require 'connect/parser'
+
 
 # Ignore error's in loading these files
-optional_files = [
-  'byebug',
+[ 'byebug',
   'pry',
   'ruby-debug',
-]
-
-optional_files.each {|f| begin; require f; rescue LoadError; end}
+].each {|f| begin; require f; rescue LoadError; end}
 
 module Connect
   ##
@@ -25,6 +29,18 @@ module Connect
   # This is a placeholder for configuration
   #
   class Config < OpenStruct
+  end
+
+  class << self
+    attr_accessor :logger
+  end
+
+  def self.debug(message)
+    @logger.debug "CONNECT: #{message}" if @logger && @logger.respond_to?(:debug)
+  end
+
+  def self.warn(message)
+    @logger.warn "CONNECT: #{message}" if @logger && @logger.respond_to?(:warn)
   end
 
   ##
@@ -100,6 +116,7 @@ module Connect
     # @param value [Any] the value of the assignment
     #
     def assign(name, value, xdef = nil)
+      Connect.debug "Assign #{value} to #{name}."
       name = scoped_name_for(name)
       entry = ValuesTable.value_entry(name, value, nil, xdef)
       add_value(entry)
@@ -143,6 +160,7 @@ module Connect
         @includer.include(names) do |content, file_name|
           push_current_parse_state
           @current_file = file_name
+          Connect.debug "parsing Connect config file #{file_name}."
           scan_str(content) unless empty_definition?(content)
           pop_current_parse_state
         end
@@ -161,6 +179,7 @@ module Connect
     # @param parameters [Array] an arry of parameters to pass to the datasource
     #
     def datasource(name, *parameters)
+      Connect.debug "Loading datasource #{name}"
       source_name = name.to_s.split('_').collect(&:capitalize).join # Camelize
       klass_name = "Connect::Datasources::#{source_name}"
       klass = Puppet::Pops::Types::ClassLoader.provide_from_string(klass_name)
@@ -176,6 +195,7 @@ module Connect
     # Import the specified data into the values list
     #
     def import(variable_name, lookup)
+      Connect.debug "Importing variable #{variable_name}."
       fail 'no current importer' unless @current_importer
       value = @current_importer.lookup(lookup)
       assign(variable_name, value)
@@ -187,6 +207,7 @@ module Connect
     # It the values parameter is set, a new entry will be added to the objects table
     #
     def define_object(type, name, values = nil, iterators = nil, xdef = nil)
+      Connect.debug("Defining object #{name} as type #{type}.")
       fail ArgumentError, 'Iterators only allowed with block definition' if values.nil? && !iterators.nil?
       validate_iterators(iterators) unless iterators.nil?
       if iterators

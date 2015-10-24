@@ -24,15 +24,12 @@ class Hiera
 
       def initialize
         fail 'Connect section not filled in hiera.yaml' if Config[:connect].nil?
-        Hiera.debug('DSL Backend initialized')
-        configs_dir   = Config[:connect].fetch(:datadir) { '/etc/puppet/config' }
-        Hiera.debug("datadir is set to #{configs_dir}")
-        @dump_values  = Config[:connect].fetch(:dump_values) { false }
-        @dump_objects = Config[:connect].fetch(:dump_objects) { false }
-        Hiera.debug "dump_values is #{@dump_values}"
-        Hiera.debug "dump_objects is #{@dump_objects}"
-        @connect      = Connect::Dsl.instance(configs_dir)
-        @parsed       = false
+        Hiera.debug('CONNECT: Backend initialized')
+        configs_dir    = Config[:connect].fetch(:datadir) { '/etc/puppet/config' }
+        Hiera.debug("CONNECT: datadir is set to #{configs_dir}")
+        @connect       = Connect::Dsl.instance(configs_dir)
+        Connect.logger = Hiera.logger
+        @parsed        = false
       end
 
       ##
@@ -45,13 +42,12 @@ class Hiera
       # @param _resolution_type [?]
       # @return [Any] the value of the specfied key.
       #
-      def lookup(key, scope, order_override, _resolution_type)
+      def lookup(key, scope, order_override, _resolution_type, context = nil)
         setup_context(scope, order_override)
         value = @connect.lookup_value(key)
-        Hiera.debug("looked up #{key} in connect backend and found #{value}")
+        Hiera.debug("CONNECT: looked up '#{key}' found '#{value}'")
         value
       end
-
 
       ##
       #
@@ -113,7 +109,6 @@ class Hiera
       end
 
       def parse_file(file)
-        Hiera.debug "parsing config file #{file}."
         @connect.include_file(file)
       end
     end
