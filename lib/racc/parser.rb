@@ -1,5 +1,5 @@
 #
-# $Id: a7af944d201a32a63d2536cdd589d8e9910848e0 $
+# $Id$
 #
 # Copyright (c) 1999-2006 Minero Aoki
 #
@@ -187,12 +187,12 @@ module Racc
   class Parser
 
     Racc_Runtime_Version = ::Racc::VERSION
-    Racc_Runtime_Revision = '$Id: a7af944d201a32a63d2536cdd589d8e9910848e0 $'
+    Racc_Runtime_Revision = '$Id$'
 
     Racc_Runtime_Core_Version_R = ::Racc::VERSION
-    Racc_Runtime_Core_Revision_R = '$Id: a7af944d201a32a63d2536cdd589d8e9910848e0 $'.split[1]
+    Racc_Runtime_Core_Revision_R = '$Id$'.split[1]
     begin
-      if RUBY_ENGINE == 'jruby'
+      if Object.const_defined?(:RUBY_ENGINE) and RUBY_ENGINE == 'jruby'
         require 'racc/cparse-jruby.jar'
         com.headius.racc.Cparse.new.load(JRuby.runtime, false)
       else
