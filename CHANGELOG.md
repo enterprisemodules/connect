@@ -1,6 +1,10 @@
 History
 ========
 
+25-10-2015  version 0.0.18
+-------------------------
+- Still support ruby 1.8.7
+
 25-10-2015  version 0.0.17
 -------------------------
 - Added support for Hiera 2.0
