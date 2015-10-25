@@ -51,6 +51,20 @@ module Connect
   class Dsl < Racc::Parser
     extend Forwardable
 
+    #
+    # This instance variables are saved when pushing and popping parser state
+    # The parser is popped and pushed on includes
+    #
+    STATE_VARIABLES = [
+      :ss,
+      :lineno,
+      :current_file,
+      :racc_state,
+      :racc_t,
+      :racc_val,
+      :racc_read_next,
+    ]
+
     attr_reader :interpolator, :current_file, :config
 
     #
@@ -303,22 +317,14 @@ module Connect
     end
 
     def push_current_parse_state
-      state = {
-        :ss            => @ss,
-        :lineno        => @lineno,
-        :current_file  => @current_file,
-        :state         => @racc_state
-      }
+      state = pusher(STATE_VARIABLES)
       @include_stack << state
     end
 
     def pop_current_parse_state
       fail 'include stack poped beyond end' if @include_stack.empty?
       state = @include_stack.pop
-      @ss           = state[:ss]
-      @lineno       = state[:lineno]
-      @current_file = state[:current_file]
-      @racc_state   = state[:state]
+      popper(state, STATE_VARIABLES)
     end
 
     #
@@ -348,6 +354,21 @@ module Connect
     def empty_definition?(string)
       (string =~ /\A(\s|\n)*\Z/) == 0
     end
+
+    def pusher( entries)
+      state = {}
+      entries.each do |entry|
+        state[entry] = instance_variable_get("@#{entry}".to_sym)
+      end
+      state
+    end
+
+    def popper (state, entries)
+      entries.each do |entry|
+        instance_variable_set("@#{entry}".to_sym, state[entry])
+      end
+    end
+
   end
   # rubocop:enable ClassLength
 end
