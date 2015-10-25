@@ -4,7 +4,7 @@
 # from Racc grammer file "".
 #
 
-require 'racc/parser.rb'
+# require 'racc/parser.rb'
 
 require 'connect/extended_array'
 require 'connect/dsl'

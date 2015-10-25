@@ -1,8 +1,3 @@
-#
-# Because of incompatibilities with the parser delivers default,
-# puts us at the top of the lopad path
-#
-$LOAD_PATH.unshift Pathname.new(__FILE__).parent.parent.to_s
 require 'ostruct'
 require 'connect/values_table'
 require 'connect/objects_table'
@@ -13,7 +8,6 @@ require 'connect/entries/value'
 require 'connect/entries/reference'
 require 'connect/datasources/base'
 require 'string_extension'
-require 'racc/parser'
 require 'connect/parser'
 
 
@@ -313,7 +307,7 @@ module Connect
         :ss            => @ss,
         :lineno        => @lineno,
         :current_file  => @current_file,
-        :state         => @state
+        :state         => @racc_state
       }
       @include_stack << state
     end
@@ -324,7 +318,7 @@ module Connect
       @ss           = state[:ss]
       @lineno       = state[:lineno]
       @current_file = state[:current_file]
-      @state        = state[:state]
+      @racc_state   = state[:state]
     end
 
     #
