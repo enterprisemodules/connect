@@ -1,6 +1,18 @@
 History
 ========
 
+25-10-2015  version 0.0.17
+-------------------------
+- Added support for Hiera 2.0
+
+25-10-2015  version 0.0.16
+-------------------------
+- Added support for building a GEM
+
+24-10-2015  version 0.0.15
+-------------------------
+- Added support for jruby
+
 23-07-2015  version 0.0.14
 -------------------------
 - Fixed some bugs in selectors on objects
