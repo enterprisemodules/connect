@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'connect/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "connect"
+  spec.name          = "puppet-connect"
   spec.version       = Connect::VERSION
   spec.authors       = ["Bert Hajee"]
   spec.email         = ["bert.hajee@enterprisemodules.com"]
