@@ -27,9 +27,9 @@ class Hiera
         Hiera.debug('CONNECT: Backend initialized')
         configs_dir    = Config[:connect].fetch(:datadir) { '/etc/puppet/config' }
         Hiera.debug("CONNECT: datadir is set to #{configs_dir}")
-        @connect       = Connect::Dsl.instance(configs_dir)
         Connect.logger = Hiera.logger
-        @parsed        = false
+        @connect       = Connect::Dsl.instance(configs_dir)
+        @files         = {}
       end
 
       ##
@@ -86,18 +86,17 @@ class Hiera
 
       def setup_context(scope, order_override)
         Connect::Dsl.config.scope = scope  # Pass the scope to connect
-        parse_config(scope, order_override) unless @parsed
+        if any_file_changed?(scope, order_override)
+          @connect = Connect::Dsl.instance(configs_dir)
+          parse_config(scope, order_override) 
+        end
       end
-
 
       def parse_config(scope, order_override)
         reversed_hierarchy(scope, order_override).each do |source|
           file = Backend.datafile(:connect, scope, source, 'config')
           parse_file(file) if file
         end
-        @parsed = true
-        @connect.dump_values if @dump_values
-        @connect.dump_objects if @dump_objects
       end
 
       def reversed_hierarchy(scope, order_override)
@@ -106,6 +105,32 @@ class Hiera
           hierarchy.unshift(source)
         end
         hierarchy
+      end
+
+      def any_file_changed?(scope, order_override)
+        reversed_hierarchy(scope, order_override).each do | file_name|
+          return true if file_changed?(file_name, scope)
+        end
+        false
+      end
+
+      def file_changed?(source, scope)
+        file_name = Backend.datafile(:connect, scope, source, 'config')
+        if file_name && File.exists?(file_name)
+          size = File.size(file_name)
+          date = File.mtime(file_name)
+        else
+          size = -1
+          date = ''
+        end
+        file_info = @files.fetch('file_name') {{ size:-1, date:''}}
+        if file_info[:size] == size and file_info[:date] == date
+          false
+        else
+          true
+          @files[file_name][:size] = size
+          @files[file_name][:date] = date
+        end
       end
 
       def parse_file(file)
