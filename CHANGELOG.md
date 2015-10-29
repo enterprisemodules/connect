@@ -1,6 +1,10 @@
 History
 ========
 
+29-10-2015  version 0.0.19
+-------------------------
+- Refresh lookups if a config file has changed
+
 25-10-2015  version 0.0.18
 -------------------------
 - Still support ruby 1.8.7
