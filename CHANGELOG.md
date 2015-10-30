@@ -1,6 +1,10 @@
 History
 ========
 
+30-10-2015  version 0.0.20
+-------------------------
+- Refresh lookupsif search order changes
+
 29-10-2015  version 0.0.19
 -------------------------
 - Refresh lookups if a config file has changed
