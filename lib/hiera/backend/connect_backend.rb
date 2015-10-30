@@ -25,10 +25,10 @@ class Hiera
       def initialize
         fail 'Connect section not filled in hiera.yaml' if Config[:connect].nil?
         Hiera.debug('CONNECT: Backend initialized')
-        configs_dir    = Config[:connect].fetch(:datadir) { '/etc/puppet/config' }
-        Hiera.debug("CONNECT: datadir is set to #{configs_dir}")
+        @configs_dir    = Config[:connect].fetch(:datadir) { '/etc/puppet/config' }
+        Hiera.debug("CONNECT: datadir is set to #{@configs_dir}")
         Connect.logger = Hiera.logger
-        @connect       = Connect::Dsl.instance(configs_dir)
+        @connect       = Connect::Dsl.instance(@configs_dir)
         @files         = {}
       end
 
@@ -86,8 +86,8 @@ class Hiera
 
       def setup_context(scope, order_override)
         Connect::Dsl.config.scope = scope  # Pass the scope to connect
-        if any_file_changed?(scope, order_override)
-          @connect = Connect::Dsl.instance(configs_dir)
+        if any_file_changed?(scope, order_override) || lookup_changed?(scope, order_override)
+          @connect = Connect::Dsl.instance(@configs_dir)
           parse_config(scope, order_override) 
         end
       end
@@ -106,6 +106,17 @@ class Hiera
         end
         hierarchy
       end
+
+      def lookup_changed?(scope, order_override)
+        current_lookup = reversed_hierarchy(scope, order_override).collect{|e| e}
+        if @last_lookup && @last_lookup == current_lookup
+          false
+        else
+          @last_lookup = current_lookup
+          true
+        end
+      end
+
 
       def any_file_changed?(scope, order_override)
         reversed_hierarchy(scope, order_override).each do | file_name|
@@ -127,9 +138,9 @@ class Hiera
         if file_info[:size] == size and file_info[:date] == date
           false
         else
-          true
           @files[file_name][:size] = size
           @files[file_name][:date] = date
+          true
         end
       end
 
