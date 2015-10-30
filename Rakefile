@@ -12,7 +12,6 @@ begin
   require 'puppet_blacksmith/rake_tasks'
 rescue LoadError
 end
-require 'bundler/gem_tasks'
  
 task :default => [:lexer, :parser]
 

@@ -1,9 +1,14 @@
 History
 ========
 
+30-10-2015  version 0.0.21
+-------------------------
+- Fixes to run on Puppet Enterprise 2015.2
+- No more GEM distributions
+
 30-10-2015  version 0.0.20
 -------------------------
-- Refresh lookupsif search order changes
+- Refresh lookups if search order changes
 
 29-10-2015  version 0.0.19
 -------------------------
