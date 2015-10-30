@@ -134,10 +134,11 @@ class Hiera
           size = -1
           date = ''
         end
-        file_info = @files.fetch('file_name') {{ size:-1, date:''}}
+        file_info = @files.fetch('file_name') {{ :size => -1, :date => ''}}
         if file_info[:size] == size and file_info[:date] == date
           false
         else
+          @files[file_name]        = {}
           @files[file_name][:size] = size
           @files[file_name][:date] = date
           true

@@ -34,6 +34,34 @@ RSpec.describe Hiera::Backend::Connect_backend do
       end
     end
 
+    context 'multiple #lookups' do
+
+      describe 'with same hierarchy' do
+
+        it 'uses parsed data' do
+          Hiera::Config.load({:connect => {}, :hierarchy => ['common1']})
+          expect(subject).to receive(:parse_config).once
+          subject.lookup('a::b', {}, nil, 0)
+          subject.lookup('a::c', {}, nil, 0)
+        end
+
+      end
+
+
+      describe 'with differents hierarchy' do
+
+        it 'reparses the data' do
+          expect(subject).to receive(:parse_config).twice
+          Hiera::Config.load({:connect => {}, :hierarchy => ['common1']})
+          subject.lookup('a::b', {}, nil, 0)
+          Hiera::Config.load({:connect => {}, :hierarchy => ['common2']})
+          subject.lookup('a::c', {}, nil, 0)
+        end
+
+      end
+
+    end
+
     describe '#lookup_values' do
       it 'calls the DSL lookup_values' do
         expect_any_instance_of(Connect::Dsl).to receive(:lookup_values).with('a::b')
@@ -48,6 +76,9 @@ RSpec.describe Hiera::Backend::Connect_backend do
         subject.lookup_objects('www.nu.nl', 'host', {}, nil, 0)
       end
     end
+
+
+
   end
 
 
