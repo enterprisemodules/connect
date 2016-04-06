@@ -41,8 +41,15 @@ RSpec.describe Hiera::Backend::Connect_backend do
         it 'uses parsed data' do
           Hiera::Config.load({:connect => {}, :hierarchy => ['common1']})
           expect(subject).to receive(:parse_config).once
-          subject.lookup('a::b', {}, nil, 0)
-          subject.lookup('a::c', {}, nil, 0)
+
+          if Gem::Version.new(::Hiera.version) <= Gem::Version.new('2.0.0')
+            subject.lookup('a::b', {}, nil, 0)
+            subject.lookup('a::c', {}, nil, 0)
+          else
+            expect{subject.lookup('a::b', {}, nil, 0)}.to throw_symbol(:no_such_key)
+            expect{subject.lookup('a::c', {}, nil, 0)}.to throw_symbol(:no_such_key)
+          end
+
         end
 
       end
@@ -51,11 +58,21 @@ RSpec.describe Hiera::Backend::Connect_backend do
       describe 'with differents hierarchy' do
 
         it 'reparses the data' do
-          expect(subject).to receive(:parse_config).twice
-          Hiera::Config.load({:connect => {}, :hierarchy => ['common1']})
-          subject.lookup('a::b', {}, nil, 0)
-          Hiera::Config.load({:connect => {}, :hierarchy => ['common2']})
-          subject.lookup('a::c', {}, nil, 0)
+
+          if Gem::Version.new(::Hiera.version) <= Gem::Version.new('2.0.0')
+            expect(subject).to receive(:parse_config).twice
+            Hiera::Config.load({:connect => {}, :hierarchy => ['common1']})
+            subject.lookup('a::b', {}, nil, 0)
+            Hiera::Config.load({:connect => {}, :hierarchy => ['common2']})
+            subject.lookup('a::c', {}, nil, 0)
+          else
+            expect(subject).to receive(:parse_config).twice
+            Hiera::Config.load({:connect => {}, :hierarchy => ['common1']})
+            expect{subject.lookup('a::b', {}, nil, 0)}.to throw_symbol(:no_such_key)
+            Hiera::Config.load({:connect => {}, :hierarchy => ['common2']})
+            expect{subject.lookup('a::c', {}, nil, 0)}.to throw_symbol(:no_such_key)
+          end
+
         end
 
       end

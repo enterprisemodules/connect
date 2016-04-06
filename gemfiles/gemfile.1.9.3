@@ -1,19 +1,20 @@
 source 'https://rubygems.org'
 
-group :development, :test do
-  gem "codeclimate-test-reporter",  require: nil
-  gem 'rake'
-  gem 'rspec' 
-  gem 'rspec-its'
-  gem 'rspec-collection_matchers'
-  gem 'bogus'
-  gem 'coveralls', :require => false
-  gem "puppetlabs_spec_helper"
-end
-
-
-gem 'hiera'
+gem "codeclimate-test-reporter",  require: nil
+gem 'rake', '10.5.0'
+gem 'rspec' 
+gem 'rspec-its'
+gem 'rspec-collection_matchers'
+gem 'bogus'
+gem 'coveralls', :require => false
+gem "puppetlabs_spec_helper"
 gem 'awesome_print'
+
+if hieraversion = ENV['HIERA_GEM_VERSION']
+  gem 'hiera', hieraversion, :require => false
+else
+  gem 'hiera', :require => false
+end
 
 if puppetversion = ENV['PUPPET_GEM_VERSION']
   gem 'puppet', puppetversion, :require => false

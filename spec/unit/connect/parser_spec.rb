@@ -659,7 +659,7 @@ RSpec.describe 'Parser' do
       it 'refereces an object' do
         expect(dsl).to receive(:assign).with('a', Connect::Entry::ObjectReference, Connect::Xdef)
         dsl.parse(<<-EOD)
-        a = foo(bar)
+        a = foo('bar')
         EOD
       end
     end
@@ -668,7 +668,7 @@ RSpec.describe 'Parser' do
       it 'refereces an object' do
         expect(dsl).to receive(:assign).with('a', Connect::Entry::ObjectReference, Connect::Xdef)
         dsl.parse(<<-EOD)
-        a = foo(bar)
+        a = foo('bar')
         EOD
       end
     end
@@ -677,7 +677,7 @@ RSpec.describe 'Parser' do
       it 'refereces an object' do
         expect(dsl).to receive(:assign).with('a', [Connect::Entry::ObjectReference], Connect::Xdef)
         dsl.parse(<<-EOD)
-        a = [foo(bar)]
+        a = [foo('bar')]
         EOD
       end
     end
@@ -687,7 +687,7 @@ RSpec.describe 'Parser' do
       it 'refereces an object' do
         expect(dsl).to receive(:assign).with('a', [Connect::Entry::ObjectReference, Connect::Entry::ObjectReference], Connect::Xdef)
         dsl.parse(<<-EOD)
-        a = [foo(bar), bee(brave)]
+        a = [foo('bar'), bee('brave')]
         EOD
       end
     end
@@ -697,7 +697,7 @@ RSpec.describe 'Parser' do
       it 'refereces an object' do
         expect(dsl).to receive(:assign).with('a', Hash, Connect::Xdef)
         dsl.parse(<<-EOD)
-        a = {foo(bar)}
+        a = {foo('bar')}
         EOD
       end
     end
@@ -707,7 +707,7 @@ RSpec.describe 'Parser' do
       it 'refereces an object' do
         expect(dsl).to receive(:assign).with('a', Hash, Connect::Xdef)
         dsl.parse(<<-EOD)
-        a = {foo(bar), bee(brave)}
+        a = {foo('bar'), bee('brave')}
         EOD
       end
     end
@@ -930,7 +930,7 @@ RSpec.describe 'Parser' do
         expect(dsl).to receive(:selector).with(Connect::Entry::ObjectReference, ".slice('a')")
         dsl.parse(<<-EOD)   
         a = {
-          b(object).slice('a')
+          b('object').slice('a')
         }
         EOD
       end
@@ -943,8 +943,8 @@ RSpec.describe 'Parser' do
         expect(dsl).to receive(:selector).with(Connect::Entry::ObjectReference, ".slice('y')")
         dsl.parse(<<-EOD)   
         a = {
-          b(object).slice('x'),
-          c(object).slice('y'),
+          b('object').slice('x'),
+          c('object').slice('y'),
         }
         EOD
       end

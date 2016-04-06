@@ -27,7 +27,13 @@ group :development, :test do
   gem "puppet-blacksmith"
   gem "puppetlabs_spec_helper"
 end
-gem 'hiera'
+
+if hieraversion = ENV['HIERA_GEM_VERSION']
+  gem 'hiera', hieraversion, :require => false
+else
+  gem 'puppet', :require => false
+end
+
 gem 'awesome_print'
 
 if puppetversion = ENV['PUPPET_GEM_VERSION']

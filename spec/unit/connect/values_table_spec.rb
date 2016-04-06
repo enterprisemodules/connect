@@ -134,8 +134,18 @@ RSpec.describe Connect::ValuesTable  do
 		context 'without selector' do
 			context 'for an entry not in table' do
 
-				it 'returns nil' do
-					expect(values_table.lookup('non_existing_name')).to be_nil
+	      if Gem::Version.new(::Hiera.version) <= Gem::Version.new('2.0.0')
+
+					it 'returns nil' do
+						expect(values_table.lookup('non_existing_name')).to be_nil
+					end
+
+				else
+
+					it 'throws :no_such_key' do
+						expect{values_table.lookup('non_existing_name')}.to throw_symbol(:no_such_key)
+					end
+
 				end
 
 			end
@@ -171,8 +181,18 @@ RSpec.describe Connect::ValuesTable  do
 
 				context 'linking value, doesn\'t exists' do
 
-					it 'returns nil' do
-						expect(values_table.lookup('connection')).to be_nil
+		      if Gem::Version.new(::Hiera.version) <= Gem::Version.new('2.0.0')
+
+						it 'returns nil' do
+							expect(values_table.lookup('connection')).to be_nil
+						end
+
+					else
+
+						it 'throws :no_such_key' do
+							expect{values_table.lookup('connection')}.to throw_symbol(:no_such_key)
+						end
+
 					end
 
 				end
@@ -196,8 +216,18 @@ RSpec.describe Connect::ValuesTable  do
 
 				context 'object value, doesn\'t exists' do
 
-					it 'returns nil' do
-						expect(values_table.lookup('object_reference')).to be_nil
+
+		      if Gem::Version.new(::Hiera.version) <= Gem::Version.new('2.0.0')
+
+						it 'returns nil' do
+							expect(values_table.lookup('object_reference')).to be_nil
+						end
+
+					else
+
+						it 'throws :no_such_key' do
+							expect{values_table.lookup('object_reference')}.to throw_symbol(:no_such_key)
+						end
 					end
 
 				end

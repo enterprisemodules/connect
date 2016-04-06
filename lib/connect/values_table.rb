@@ -3,6 +3,7 @@ require 'connect/entries/value'
 require 'connect/entries/object_reference'
 require 'connect/entries/reference'
 require 'method_hash'
+require 'hiera'
 
 module Connect
   ##
@@ -112,7 +113,7 @@ module Connect
     def internal_lookup(name)
       name = name.to_s
       # TODO: Check if name is a valid name
-      if Gem::Version.new(Hiera.version) > Gem::Version.new('2.0.0')
+      if Gem::Version.new(::Hiera.version) > Gem::Version.new('2.0.0')
         @values_table.fetch(name) do
           Connect.debug("looked up '#{name}' but found nothing")
           throw :no_such_key  
