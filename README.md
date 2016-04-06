@@ -27,7 +27,7 @@ Connect is a replacement for YAML in hiera. When you start with Puppet, using hi
 
 If you recognize any of these problems, Connect might be for you! If you haven't run into these problems, Connect is probably like taking a sledgehammer to crack a nut, and it is best to stay with YAML.
 
-Want to know the details, Check [the Connect Language, in a Nutshell](https://github.com/hajee/connect/blob/master/doc/nutshell.md), for more intro into the language.
+Want to know the details, Check [the Connect Language, in a Nutshell](https://github.com/enterprisemodules/connect/blob/master/doc/nutshell.md), for more intro into the language.
 
 ##Module Description
 
@@ -61,7 +61,7 @@ include 'generic_settings/*'        # include all settings
 include "${domain_name}/settings"   # include specific setting for domain
 ```
 
-Check [the Connect Language, in a Nutshell](https://github.com/hajee/connect/blob/master/doc/nutshell.md), for more intro into the language.
+Check [the Connect Language, in a Nutshell](https://github.com/enterprisemodules/connect/blob/master/doc/nutshell.md), for more intro into the language.
 
 ##Setup
 
@@ -107,14 +107,14 @@ If you have configured connect, like specified in the `hiera.yaml` **ALL** hiera
 
 Because connect is based on hiera and puppet, you need to have both the hiera and puppet gem installed.
 
-Some of the [data sources](https://github.com/hajee/connect/blob/master/datasources.md) require extra Ruby gems or other components. Check their documentation for details
+Some of the [data sources](https://github.com/enterprisemodules/connect/blob/master/datasources.md) require extra Ruby gems or other components. Check their documentation for details
 
 ###Beginning with connect module
 
 To test if everything works, ue the next steps:
-- add connect to the `hiera.yaml`. You can find an example [here](https://github.com/hajee/connect/blob/master/setup/hiera.yaml)
-- Create a `common.config` in the folder `/etc/puppet/config`. You can find [an example here](https://github.com/hajee/connect/blob/master/setup/common.config).
-- Create a `test.pp` with [this content](https://github.com/hajee/connect/blob/master/tests/test.pp)
+- add connect to the `hiera.yaml`. You can find an example [here](https://github.com/enterprisemodules/connect/blob/master/setup/hiera.yaml)
+- Create a `common.config` in the folder `/etc/puppet/config`. You can find [an example here](https://github.com/enterprisemodules/connect/blob/master/setup/common.config).
+- Create a `test.pp` with [this content](https://github.com/enterprisemodules/connect/blob/master/tests/test.pp)
 - Run the small test manifest and check the output
 ```
 $ puppet apply test.pp
@@ -206,7 +206,7 @@ On your host os, you can edit the `examples/default.config' file to experiment w
 
 ##detailed description
 
-Check [the Connect Language, in a Nutshell](https://github.com/hajee/connect/blob/master/doc/nutshell.md), for more intro into the language.
+Check [the Connect Language, in a Nutshell](https://github.com/enterprisemodules/connect/blob/master/doc/nutshell.md), for more intro into the language.
 
 ##Troubleshooting
 
