@@ -36,9 +36,17 @@ class MethodHash < Hash
   include MethodHashMethods
 
   #
-  # To make ruby 1.8.7 compatible with ruby 1.9 and higer
+  # To make ruby 1.8.7 compatible with ruby 1.9 and higher
   #
   def to_s
     inspect
   end
+
+  #
+  # To make ruby 1.8.7 compatible with ruby 1.9 and higher
+  #
+  def to_str
+    inspect
+  end
+
 end
