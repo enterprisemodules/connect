@@ -19,6 +19,12 @@ module Connect
         # TODO: What if we have multiple references
         Connect::Selector.run(value, @selector)
       end
+
+      def inspect
+        "reference to #{@value}#{@selector}"
+      end
+
+
     end
   end
 end

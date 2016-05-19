@@ -16,6 +16,10 @@ module Connect
         @xref     = xref
       end
 
+      def inspect
+        "reference to #{@type}(#{@name})#{@selector}"
+      end
+
       ##
       #
       # Translate the object for external representation

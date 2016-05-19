@@ -124,7 +124,11 @@ module Connect
     # @param value [Any] the value of the assignment
     #
     def assign(name, value, xdef = nil)
-      Connect.debug "Assign #{value} to #{name}."
+      if value.is_a?(Connect::Entry::Base)
+        Connect.debug "Assign #{value.inspect} to #{name}."
+      else
+        Connect.debug "Assign #{value} to #{name}."
+      end
       name = scoped_name_for(name)
       entry = ValuesTable.value_entry(name, value, nil, xdef)
       add_value(entry)

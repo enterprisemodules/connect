@@ -11,6 +11,11 @@ module Connect
     class Value < Base
       include Connect::Conversions
 
+      def inspect
+        to_ext
+      end
+
+
       ##
       #
       # Translate the object for external representation
