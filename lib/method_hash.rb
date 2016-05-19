@@ -49,4 +49,8 @@ class MethodHash < Hash
     inspect
   end
 
+  def to_ary
+    nil
+  end
+
 end
