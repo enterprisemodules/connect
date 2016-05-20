@@ -5,6 +5,7 @@ group :development, :test do
     gem 'pry'
     gem 'pry-byebug'
     gem 'pry-stack_explorer'
+    gem 'listen', '~> 3.0.0' # newer version require ruby 2.2 or higher
     gem 'guard-rspec'   , :require => false
     gem 'guard-bundler' , :require => false
     gem 'ruby_gntp'
@@ -31,7 +32,7 @@ end
 if hieraversion = ENV['HIERA_GEM_VERSION']
   gem 'hiera', hieraversion, :require => false
 else
-  gem 'puppet', :require => false
+  gem 'hiera', :require => false
 end
 
 gem 'awesome_print'
