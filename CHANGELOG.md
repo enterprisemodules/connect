@@ -1,6 +1,11 @@
 History
 ========
 
+20-5-2016  version 0.0.22
+-------------------------
+- Better debugging messages on assign
+- Fixed some issue's with ruby incompatibility
+
 30-10-2015  version 0.0.21
 -------------------------
 - Fixes to run on Puppet Enterprise 2015.2
