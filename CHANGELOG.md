@@ -1,6 +1,11 @@
 History
 ========
 
+25-5-2016  version 0.0.23
+-------------------------
+- Fix errors when config file contains only comments
+- Fix reporting of line numbers when using multi line assignments
+
 20-5-2016  version 0.0.22
 -------------------------
 - Better debugging messages on assign
