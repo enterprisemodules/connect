@@ -124,6 +124,7 @@ module Connect
     # @param value [Any] the value of the assignment
     #
     def assign(name, value, xdef = nil)
+      process_multiline_value(value)
       if value.is_a?(Connect::Entry::Base)
         Connect.debug "Assign #{value.inspect} to #{name}."
       else
@@ -366,6 +367,12 @@ module Connect
       end
       state
     end
+
+    def process_multiline_value(value)
+      @lineno ||= 0
+      @lineno+= value.lines.count if value.is_a?(String)
+    end
+
 
     def popper (state, entries)
       entries.each do |entry|

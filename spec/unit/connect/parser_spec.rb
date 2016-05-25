@@ -987,6 +987,20 @@ RSpec.describe 'Parser' do
       }.to raise_error(ParseError, /config file '#{error_config}'/)
     end
 
+    context 'with multiline assignements in config' do
+      let(:error_config)     { Pathname.new('./examples/error_with_multiline_assignment.config').expand_path.to_s}
+
+      it ' reports errors with corrent line numbers when strings contain newlines' do
+        expect{
+          dsl.include_file(error_config)
+        }.to raise_error(ParseError, /Syntax error around line 5/)
+      end
+
+
+    end
+
+
+
   end
 
   describe 'cross referencing' do
