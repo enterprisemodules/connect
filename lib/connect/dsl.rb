@@ -356,7 +356,7 @@ module Connect
     end
 
     def empty_definition?(string)
-      (string =~ /\A(\s|\n)*\Z/) == 0
+      (string =~ /\A(\s|\n|#.*)*\Z/) == 0
     end
 
     def pusher( entries)

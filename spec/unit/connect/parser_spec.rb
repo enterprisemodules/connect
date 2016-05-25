@@ -19,6 +19,20 @@ RSpec.describe 'Parser' do
       end
     end
 
+    describe 'With only comments' do
+      it 'is parsed' do
+        expect {
+          dsl.parse(<<-EOD)
+#
+# Just comments
+#
+
+          EOD
+          }.not_to raise_error
+      end
+    end
+
+
     describe 'On the first lines' do
       it 'is parsed' do
         expect(dsl).to receive(:assign).with('a', {'a'=>1,'b'=>2}, Connect::Xdef)
