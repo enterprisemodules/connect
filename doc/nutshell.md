@@ -477,17 +477,17 @@ The `extract`  helper allows you to extract an array of values from an array of 
  
 ```ruby
 all_nodes = [
-  host('node1.domein.com'){
+  host('node1.domain.com'){
     ip : '10.0.0.1'
   },
-  host('node2.domein.com'){
+  host('node2.domain.com'){
     ip : '10.0.0.2'
-  }
-  host('node3.domein.com'){
+  },
+  host('node3.domain.com'){
     ip : '10.0.0.3'
   }
 ]
-ip_adresses = all_nodes.extract('ip')  # will be ['10.0.0.1','10.0.0.2','10.0.0.3']
+ip_addresses = all_nodes.extract('ip')  # will be ['10.0.0.1','10.0.0.2','10.0.0.3']
 ```
 
 #### to_resource
