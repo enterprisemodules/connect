@@ -6,6 +6,7 @@ require 'connect/interpolator'
 require 'connect/includer'
 require 'connect/entries/value'
 require 'connect/entries/reference'
+require 'connect/entries/interpolator'
 require 'connect/datasources/base'
 require 'string_extension'
 require 'connect/parser'
@@ -85,8 +86,8 @@ module Connect
     def_delegator :@values_table,  :definitions,          :value_definitions
     def_delegator :@values_table,  :references,           :value_references
     def_delegator :@values_table,  :register_reference,   :value_reference
- 
-    def_delegator :@interpolator,  :translate, :interpolate
+
+    def_delegator :@interpolator,  :contains_interpolation?, :contains_interpolation?
 
     class << self
       def config
@@ -111,7 +112,7 @@ module Connect
       @objects_table = objects_table || ObjectsTable.new
       Connect::Entry::Base.values_table  = @values_table
       Connect::Entry::Base.objects_table = @objects_table
-      @interpolator  = interpolator || Interpolator.new(self)
+      @interpolator  = interpolator || Interpolator.new(@values_table)
       @includer      = includer || Includer.new
       @include_stack = []
       @current_scope = []
@@ -124,6 +125,7 @@ module Connect
     # @param value [Any] the value of the assignment
     #
     def assign(name, value, xdef = nil)
+      interpolator_not_allowed(name, 'lvar in assignment')
       process_multiline_value(value)
       if value.is_a?(Connect::Entry::Base)
         Connect.debug "Assign #{value.inspect} to #{name}."
@@ -135,8 +137,16 @@ module Connect
       add_value(entry)
     end
 
+    def double_quoted(value, xref = nil)
+      if contains_interpolation?(value)
+        interpolate(value, xref)
+      else
+        value
+      end
+    end
+
     def lookup_objects(type, keys)
-      @objects_table.entries(type, keys).reduce([]) do | c, v | 
+      @objects_table.entries(type, keys).reduce([]) do | c, v |
         type = v[0]
         name = v[1]
         c << [type, lookup_object(type, name).full_representation]
@@ -156,6 +166,15 @@ module Connect
       value
     end
 
+
+    ##
+    #
+    # Connect the variable to an other variable in the value table
+    #
+    def interpolate(value, xref = nil)
+      Entry::Interpolator.new(value, nil, xref)
+    end
+
     ##
     #
     # Connect the variable to an other variable in the value table
@@ -170,6 +189,7 @@ module Connect
     #
     def include_file(names, scope = nil)
       in_scope(scope) do
+        names = interpolated_value(names)
         @includer.include(names) do |content, file_name|
           push_current_parse_state
           @current_file = file_name
@@ -192,6 +212,7 @@ module Connect
     # @param parameters [Array] an arry of parameters to pass to the datasource
     #
     def datasource(name, *parameters)
+      name = interpolated_value(name)
       Connect.debug "Loading datasource #{name}"
       source_name = name.to_s.split('_').collect(&:capitalize).join # Camelize
       klass_name = "Connect::Datasources::#{source_name}"
@@ -208,6 +229,7 @@ module Connect
     # Import the specified data into the values list
     #
     def import(variable_name, lookup)
+      name = interpolated_value(name)
       Connect.debug "Importing variable #{variable_name}."
       fail 'no current importer' unless @current_importer
       value = @current_importer.lookup(lookup)
@@ -220,6 +242,7 @@ module Connect
     # It the values parameter is set, a new entry will be added to the objects table
     #
     def define_object(type, name, values = nil, iterators = nil, xdef = nil)
+      name = interpolated_value(name)
       Connect.debug("Defining object #{name} as type #{type}.")
       fail ArgumentError, 'Iterators only allowed with block definition' if values.nil? && !iterators.nil?
       validate_iterators(iterators) unless iterators.nil?
@@ -232,6 +255,7 @@ module Connect
     end
 
     def add_objects_with_iterators(type, name, values, xdef, iterators)
+      name = interpolated_value(name)
       iterator_values = {}
       iterators.each_pair {|k,v| iterator_values[k] = values_from_iterator(v,k)}
       max_size  = iterator_values.collect{|k,v| v.size}.max
@@ -250,6 +274,7 @@ module Connect
     # Create an object reference.
     #
     def reference_object(type, name, xref = nil)
+      name = interpolated_value(name)
       object_reference(type,name, xref)
       Entry::ObjectReference.new(type, name, nil, xref)
     end
@@ -292,6 +317,15 @@ module Connect
 
     private
 
+    def interpolator_not_allowed(name, type)
+      fail "#{name.value} is not allowd as a #{type}" if name.is_a?(Connect::Entry::Base)
+    end
+
+    def interpolated_value(name)
+      name.is_a?(Connect::Entry::Base) ? name.to_ext : name
+    end
+
+
     def substitute_values(hash, values_hash)
       hash.extend(HashExtensions)
       hash.transform_hash do |hash, key, content|
@@ -306,7 +340,7 @@ module Connect
     ensure
       elements = range.count
       if elements > 500
-        raise "Iterator #{name} is #{elements} elements long, but maximum size is 500, around line #{lineno} of config file '#{current_file}'" 
+        raise "Iterator #{name} is #{elements} elements long, but maximum size is 500, around line #{lineno} of config file '#{current_file}'"
       end
       range
     end

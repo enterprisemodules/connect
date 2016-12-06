@@ -98,7 +98,7 @@ RSpec.describe 'objects' do
       dsl.parse(<<-EOD)
       start  = '20.0.0.1'
       finish = '20.0.0.9'
-      foo('%{name}.connect.com') 
+      foo('%{name}.connect.com')
         iterate ip from start to finish
         iterate name from 'bar1' to 'bar9'
         iterate interface from 'eth0' to 'eth1' {
@@ -179,11 +179,11 @@ RSpec.describe 'objects' do
     it 'is setable and retrievable' do
       dsl.parse(<<-EOD)
       b = 'bar.nl'
-      foo("foo.${b}") {
+      foo("foo.bar.nl") {
         ip:   '10.0.0.100',
         alias: 'foo'
       }
-      a = foo('foo.bar.nl')
+      a = foo("foo.${b}")
       EOD
       expect(dsl.lookup_value('a')).to eql({ 'foo.bar.nl' => {'ip' => '10.0.0.100', 'alias' =>'foo'}})
     end
@@ -303,7 +303,7 @@ RSpec.describe 'objects' do
     end
   end
 
-  describe 'autloading an object' do    
+  describe 'autloading an object' do
     it 'exposes the methods' do
       dsl.parse(<<-EOD)
       host('foo.bar.nl') {
@@ -321,4 +321,3 @@ RSpec.describe 'objects' do
   end
 
 end
-

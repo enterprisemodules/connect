@@ -74,6 +74,7 @@ module Connect
     # @param name [String] the name of the object to lookup
     # @return [ObjectDefinition] the object definition
     def lookup(type, name)
+      name = name.to_ext if name.is_a?(Connect::Entry::Base)
       from_table(type, name)
     end
 

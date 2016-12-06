@@ -26,7 +26,25 @@ module Connect
       interpolate_puppet_variables(string)
     end
 
+    ##
+    #
+    # Return true if the string contains interpolation
+    #
+    # @param string [String] the string to be interpolated
+    #
+    def contains_interpolation?(string)
+      contains_connect_variables?(string) || contains_puppet_variables?(string)
+    end
+
     private
+
+    def contains_connect_variables?(string)
+      string.scan(CONNECT_REGEXP).flatten != []
+    end
+
+    def contains_puppet_variables?(string)
+      string.scan(PUPPET_REGEXP).flatten != []
+    end
 
     def interpolate_connect_variables(string, xref)
       variable_strings = string.scan(CONNECT_REGEXP).flatten
@@ -48,12 +66,10 @@ module Connect
       string
     end
 
-    private
-
     def connect_interpolate(variable, xref)
       variable, selector = variable.split(/([\[\.].*)/)
-      value = @resolver.lookup_value(variable)
-      @resolver.value_reference(variable, xref)
+      value = @resolver.lookup(variable)
+      @resolver.register_reference(variable, xref)
       Selector.run(value, selector).to_s
     end
 

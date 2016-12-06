@@ -24,7 +24,7 @@ RSpec.describe Connect::Interpolator do
 				end
 			end
 
-			context 'a string with valid connect interpolation of a refrence' do
+			context 'a string with valid connect interpolation of a reference' do
 				it 'returns an interpolated string' do
 					expect(interpolator.translate('Hello ${name_reference}, see you in ${scope::number} days')).to eql('Hello James, see you in 10 days')
 				end
@@ -47,6 +47,16 @@ RSpec.describe Connect::Interpolator do
 		end
 	end
 
+  describe "Late binding of interpolated values" do
+    it 'retrieve returns the late bound value' do
+      dsl.parse(<<-EOD)
+      x = 'initial'
+      y = "${x}"
+      x = 'override'
+      EOD
+      expect(dsl.lookup_value('y')).to eql('override')
+    end
+  end
 
 	context 'a string with invalid connect interpolation' do
 		it 'returns an interpolated string' do

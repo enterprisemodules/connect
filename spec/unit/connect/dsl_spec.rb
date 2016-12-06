@@ -3,17 +3,10 @@ require 'connect/dsl'
 
 RSpec.describe Connect::Dsl do
 
-  if defined?(Bogus)
-    fake(:values_table) {Connect::ValuesTable}
-    fake(:objects_table){Connect::ObjectsTable}
-    fake(:interpolator) {Connect::Interpolator}
-    fake(:includer)     {Connect::Includer}
-  else
-    let(:values_table) {Connect::ValuesTable.new}
-    let(:objects_table){Connect::ObjectsTable.new}
-    let(:interpolator) {Connect::Interpolator.new(values_table)}
-    let(:includer)     {Connect::Includer.new}
-  end
+  let(:values_table) {Connect::ValuesTable.new}
+  let(:objects_table){Connect::ObjectsTable.new}
+  let(:interpolator) {Connect::Interpolator.new(values_table)}
+  let(:includer)     {Connect::Includer.new}
 
 
   let(:dsl) {Connect::Dsl.new( values_table, objects_table, interpolator, includer)}
@@ -157,11 +150,19 @@ RSpec.describe Connect::Dsl do
     end
   end
 
-  describe '#interpolate' do
+  describe '#double_quoted' do
 
-    it 'replaces the variable with their values at compile time' do
-      expect(interpolator).to receive(:translate).with('${foo::bar} is ${value}')
-      dsl.interpolate('${foo::bar} is ${value}')
+    context 'no interpolator in string' do
+      it 'returns the string' do
+        expect(dsl.double_quoted('normal string')).to eq('normal string')
+      end
+    end
+
+    context 'an interpolator in string' do
+      it 'returns an interprolator reference' do
+        expect(dsl).to receive(:interpolate).with('${a}',nil)
+        dsl.double_quoted('${a}')
+      end
     end
 
   end
