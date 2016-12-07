@@ -1,11 +1,6 @@
 require 'puppet'
-if RUBY_VERSION[0,3] != '1.8'
-  require "codeclimate-test-reporter"
-  CodeClimate::TestReporter.start
-  require 'bogus/rspec'
-  require 'coveralls'
-  Coveralls.wear!
-else
+if RUBY_VERSION[0,3] == '1.8'
+  require 'backports'
   #
   # Fix a problem introduced by monky patching in Puppet
   # See https://github.com/rspec/rspec-core/issues/1864 for more information

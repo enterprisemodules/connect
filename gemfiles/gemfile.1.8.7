@@ -1,11 +1,13 @@
 source 'https://rubygems.org'
 
 gem 'rake', '10.5.0'
+gem 'backports'
 gem 'rspec', '3.3.0'
-gem 'rspec-its'
+gem 'rspec-its', '1.2.0'
 gem 'rspec-collection_matchers'
 gem "puppetlabs_spec_helper"
 gem 'awesome_print'
+gem 'json_pure', '1.8.3' # This is the last versions to support ruby pre 2.0 versions
 
 if hieraversion = ENV['HIERA_GEM_VERSION']
   gem 'hiera', hieraversion, :require => false
@@ -18,4 +20,3 @@ if puppetversion = ENV['PUPPET_GEM_VERSION']
 else
   gem 'puppet', :require => false
 end
-
