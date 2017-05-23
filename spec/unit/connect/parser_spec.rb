@@ -12,7 +12,7 @@ RSpec.describe 'Parser' do
       it 'is parsed' do
         expect {
           dsl.parse(<<-EOD)
-                       
+
 
           EOD
           }.not_to raise_error
@@ -127,7 +127,7 @@ RSpec.describe 'Parser' do
 
 
     context 'with an Object and selector' do
-      it 'is parsed' do 
+      it 'is parsed' do
         expect(dsl).to receive(:selector).with(Connect::Entry::ObjectReference, '.ip').and_call_original
         expect(dsl).to receive(:assign).with('a', Connect::Entry::ObjectReference, Connect::Xdef)
         dsl.parse(<<-EOD)
@@ -287,7 +287,7 @@ RSpec.describe 'Parser' do
     it 'using a multiple objects' do
       expect(dsl).to receive(:assign).with('a', Hash, Connect::Xdef)
       dsl.parse(<<-EOD)
-      a = { 
+      a = {
         something('else'),
         x: 10,
         obj('test')
@@ -389,12 +389,12 @@ RSpec.describe 'Parser' do
 
     context 'without a scope' do
       it 'doesn\'t manage the scope' do
-        allow(dsl).to receive(:datasource) 
-        allow(dsl).to receive(:import) 
+        allow(dsl).to receive(:datasource)
+        allow(dsl).to receive(:import)
         expect(dsl).not_to receive(:push_scope).with('scope::')
         expect(dsl).not_to receive(:pop_scope)
         dsl.parse(<<-EOD)
-        import from puppetdb { 
+        import from puppetdb {
           a = 'hallo'
         }
         EOD
@@ -403,10 +403,10 @@ RSpec.describe 'Parser' do
 
     context 'datasource without parameters' do
       it 'call\'s the datasource initialize without parameters'  do
-        allow(dsl).to receive(:import) 
+        allow(dsl).to receive(:import)
         expect(dsl).to receive(:datasource).with('puppetdb')
         dsl.parse(<<-EOD)
-        import from puppetdb { 
+        import from puppetdb {
           a = 'hallo'
         }
         EOD
@@ -415,10 +415,10 @@ RSpec.describe 'Parser' do
 
     context 'datasource with parameters' do
       it 'call\'s the datasource initialize with parameters'  do
-        allow(dsl).to receive(:import) 
+        allow(dsl).to receive(:import)
         expect(dsl).to receive(:datasource).with('puppetdb',10, 'hello')
         dsl.parse(<<-EOD)
-        import from puppetdb(10,'hello') { 
+        import from puppetdb(10,'hello') {
           a = 'hallo'
         }
         EOD
@@ -427,7 +427,7 @@ RSpec.describe 'Parser' do
 
     context 'single import statement' do
       it 'call\'s the datasource initialize with parameters'  do
-        allow(dsl).to receive(:datasource) 
+        allow(dsl).to receive(:datasource)
         expect(dsl).to receive(:import).with('a', 'hallo')
         dsl.parse(<<-EOD)
         import from puppetdb(10,'hello') {
@@ -439,8 +439,8 @@ RSpec.describe 'Parser' do
 
     context 'multiple import statement' do
       it 'call\'s the datasource initialize with parameters'  do
-        allow(dsl).to receive(:datasource) 
-        allow(dsl).to receive(:import) 
+        allow(dsl).to receive(:datasource)
+        allow(dsl).to receive(:import)
         expect(dsl).to receive(:import).with('a', 'hallo').ordered
         expect(dsl).to receive(:import).with('b', 'anything').ordered
         dsl.parse(<<-EOD)
@@ -555,12 +555,12 @@ RSpec.describe 'Parser' do
     context 'without an step clause' do
 
       context 'using an integer iterator' do
- 
+
         it 'defines an object with an iterator' do
           expect(dsl).to receive(:define_object).with('foo','bar', { 'ip' => '10.0.0.1', 'fqdn' => 'dns.a.b'},  {'iterator' => {:from => 10, :to => 20, :step =>1}}, Connect::Xdef)
           dsl.parse(<<-EOD)
-          foo('bar') from 10 to 20 do 
-            ip:   '10.0.0.1', 
+          foo('bar') from 10 to 20 do
+            ip:   '10.0.0.1',
             fqdn: 'dns.a.b'
           end
           EOD
@@ -568,12 +568,12 @@ RSpec.describe 'Parser' do
       end
 
       context 'using a string iterator' do
- 
+
         it 'defines an object with an iterator' do
           expect(dsl).to receive(:define_object).with('foo','bar', { 'ip' => '10.0.0.1', 'fqdn' => 'dns.a.b'},  {'iterator' => {:from => 'aaa', :to => 'bbb', :step => 1}}, Connect::Xdef)
           dsl.parse(<<-EOD)
-          foo('bar') from 'aaa' to 'bbb' do 
-            ip:   '10.0.0.1', 
+          foo('bar') from 'aaa' to 'bbb' do
+            ip:   '10.0.0.1',
             fqdn: 'dns.a.b'
           end
           EOD
@@ -581,12 +581,12 @@ RSpec.describe 'Parser' do
       end
 
       context 'using an identifier iterator' do
- 
+
         it 'defines an object with an iterator' do
           expect(dsl).to receive(:define_object).with('foo','bar', { 'ip' => '10.0.0.1', 'fqdn' => 'dns.a.b'},  {'iterator' => {:from => Connect::Entry::Reference, :to => Connect::Entry::Reference, :step => 1}}, Connect::Xdef)
           dsl.parse(<<-EOD)
-          foo('bar') from aaa to bbb do 
-            ip:   '10.0.0.1', 
+          foo('bar') from aaa to bbb do
+            ip:   '10.0.0.1',
             fqdn: 'dns.a.b'
           end
           EOD
@@ -598,12 +598,12 @@ RSpec.describe 'Parser' do
     context 'with a step clause' do
 
       context 'using an integer iterator' do
- 
+
         it 'defines an object with an iterator and step' do
           expect(dsl).to receive(:define_object).with('foo','bar', { 'ip' => '10.0.0.1', 'fqdn' => 'dns.a.b'},  {'iterator' => {:from => 10, :to => 20, :step => 5}}, Connect::Xdef)
           dsl.parse(<<-EOD)
-          foo('bar') from 10 to 20 step 5 do 
-            ip:   '10.0.0.1', 
+          foo('bar') from 10 to 20 step 5 do
+            ip:   '10.0.0.1',
             fqdn: 'dns.a.b'
           end
           EOD
@@ -611,12 +611,12 @@ RSpec.describe 'Parser' do
       end
 
       context 'using an reference iterator' do
- 
+
         it 'defines an object with an iterator and step' do
           expect(dsl).to receive(:define_object).with('foo','bar', { 'ip' => '10.0.0.1', 'fqdn' => 'dns.a.b'},  {'iterator' => {:from => 10, :to => 20, :step =>Connect::Entry::Reference }}, Connect::Xdef)
           dsl.parse(<<-EOD)
-          foo('bar') from 10 to 20 step step_value do 
-            ip:   '10.0.0.1', 
+          foo('bar') from 10 to 20 step step_value do
+            ip:   '10.0.0.1',
             fqdn: 'dns.a.b'
           end
           EOD
@@ -629,12 +629,12 @@ RSpec.describe 'Parser' do
     context 'with a named iterator' do
 
       context 'using an integer iterator' do
- 
+
         it 'defines an object with a named iterator' do
           expect(dsl).to receive(:define_object).with('foo','bar', { 'ip' => '10.0.0.1', 'fqdn' => 'dns.a.b'},  {'ip' => {:from => 10, :to => 20, :step => 5}}, Connect::Xdef)
           dsl.parse(<<-EOD)
-          foo('bar') iterate ip from 10 to 20 step 5 do 
-            ip:   '10.0.0.1', 
+          foo('bar') iterate ip from 10 to 20 step 5 do
+            ip:   '10.0.0.1',
             fqdn: 'dns.a.b'
           end
           EOD
@@ -649,16 +649,16 @@ RSpec.describe 'Parser' do
   context 'using multiple named iterator' do
 
     it 'defines an object with a multiple iterators' do
-      expect(dsl).to receive(:define_object).with('foo','bar', { 'ip' => '10.0.0.1', 'fqdn' => 'dns.a.b'}, 
+      expect(dsl).to receive(:define_object).with('foo','bar', { 'ip' => '10.0.0.1', 'fqdn' => 'dns.a.b'},
          {
           'ip'   => {:from => 10, :to => 20, :step => 5},
           'name' => {:from => 'aaa', :to => 'bbb', :step => 2}
          }, Connect::Xdef)
       dsl.parse(<<-EOD)
-      foo('bar') 
+      foo('bar')
         iterate ip from 10 to 20 step 5
-        iterate name from 'aaa' to 'bbb' step 2 do 
-        ip:   '10.0.0.1', 
+        iterate name from 'aaa' to 'bbb' step 2 do
+        ip:   '10.0.0.1',
         fqdn: 'dns.a.b'
       end
       EOD
@@ -683,6 +683,15 @@ RSpec.describe 'Parser' do
         expect(dsl).to receive(:assign).with('a', Connect::Entry::ObjectReference, Connect::Xdef)
         dsl.parse(<<-EOD)
         a = foo('bar')
+        EOD
+      end
+    end
+
+    context 'using regexp syntax' do
+      it 'references an suite of objects' do
+        expect(dsl).to receive(:assign).with('a', Connect::Entry::ObjectReference, Connect::Xdef)
+        dsl.parse(<<-EOD)
+        a = foo(/bar.*/)
         EOD
       end
     end
@@ -820,7 +829,7 @@ RSpec.describe 'Parser' do
     context 'using single selector function syntax without parameters' do
       it "passes to selector" do
         expect(dsl).to receive(:selector).with(Connect::Entry::Reference,'.single')
-        dsl.parse(<<-EOD)   
+        dsl.parse(<<-EOD)
         a = b.single
         EOD
       end
@@ -829,7 +838,7 @@ RSpec.describe 'Parser' do
     context 'using multiple selector function syntax' do
       it "passes to selector" do
         expect(dsl).to receive(:selector).with(Connect::Entry::Reference,'.first.second')
-        dsl.parse(<<-EOD)   
+        dsl.parse(<<-EOD)
         a = b.first.second
         EOD
       end
@@ -838,7 +847,7 @@ RSpec.describe 'Parser' do
     context 'using selector with &' do
       it "passes to selector" do
         expect(dsl).to receive(:selector).with(Connect::Entry::Reference,'.inject(&:ip)')
-        dsl.parse(<<-EOD)   
+        dsl.parse(<<-EOD)
         a = b.inject(&:ip)
         EOD
       end
@@ -848,7 +857,7 @@ RSpec.describe 'Parser' do
     context 'using single selector function syntax with parameters' do
       it "passes to selector" do
         expect(dsl).to receive(:selector).with(Connect::Entry::Reference,'.first(10,\'foo\')')
-        dsl.parse(<<-EOD)   
+        dsl.parse(<<-EOD)
         a = b.first(10,'foo')
         EOD
       end
@@ -857,7 +866,7 @@ RSpec.describe 'Parser' do
     context 'using multiple selector function syntax with parameters' do
       it "passes to selector" do
         expect(dsl).to receive(:selector).with(Connect::Entry::Reference, ".first(10,'foo').second(1,2,3.4,'hello')")
-        dsl.parse(<<-EOD)   
+        dsl.parse(<<-EOD)
         a = b.first(10,'foo').second(1,2,3.4,'hello')
         EOD
       end
@@ -866,7 +875,7 @@ RSpec.describe 'Parser' do
     context 'using single selector Array syntax' do
       it "passes to selector" do
         expect(dsl).to receive(:selector).with(Connect::Entry::Reference, '[10]')
-        dsl.parse(<<-EOD)   
+        dsl.parse(<<-EOD)
         a = b[10]
         EOD
       end
@@ -876,7 +885,7 @@ RSpec.describe 'Parser' do
     context 'using single selector Array syntax with more indexes' do
       it "passes to selector" do
         expect(dsl).to receive(:selector).with(Connect::Entry::Reference, "[10,11,12,'hallo']")
-        dsl.parse(<<-EOD)   
+        dsl.parse(<<-EOD)
         a = b[10,11,12,'hallo']
         EOD
       end
@@ -887,7 +896,7 @@ RSpec.describe 'Parser' do
     context 'using multiple selector Array syntax with more indexes' do
       it "passes to selector" do
         expect(dsl).to receive(:selector).with(Connect::Entry::Reference, "[10,11,12,'hallo'][1,2,3.5,'hallo']")
-        dsl.parse(<<-EOD)   
+        dsl.parse(<<-EOD)
         a = b[10,11,12,'hallo'][1,2,3.5,'hallo']
         EOD
       end
@@ -898,7 +907,7 @@ RSpec.describe 'Parser' do
     context 'using multiple selector Array syntax with range syntax' do
       it "passes to selector" do
         expect(dsl).to receive(:selector).with(Connect::Entry::Reference, "[1..10]")
-        dsl.parse(<<-EOD)   
+        dsl.parse(<<-EOD)
         a = b[1..10]
         EOD
       end
@@ -908,7 +917,7 @@ RSpec.describe 'Parser' do
     context 'using multiple mixed selectors' do
       it "passes to selector" do
         expect(dsl).to receive(:selector).with(Connect::Entry::Reference, ".first[10,11,12,'hallo'][1,2,3.5,'hallo'].last(1,2,3)")
-        dsl.parse(<<-EOD)   
+        dsl.parse(<<-EOD)
         a = b.first[10,11,12,'hallo'][1,2,3.5,'hallo'].last(1,2,3)
         EOD
       end
@@ -917,7 +926,7 @@ RSpec.describe 'Parser' do
     context 'using a selector on an single object in an Array' do
       it "passes to selector" do
         expect(dsl).to receive(:selector).with(Connect::Entry::Reference, ".slice('item')")
-        dsl.parse(<<-EOD)   
+        dsl.parse(<<-EOD)
         a = [b.slice('item')]
         EOD
       end
@@ -929,7 +938,7 @@ RSpec.describe 'Parser' do
       it "passes to selector" do
         expect(dsl).to receive(:selector).with(Connect::Entry::Reference, ".slice('item1')")
         expect(dsl).to receive(:selector).with(Connect::Entry::Reference, ".slice('item2')")
-        dsl.parse(<<-EOD)   
+        dsl.parse(<<-EOD)
         a = [
           b.slice('item1'),
           c.slice('item2')
@@ -942,7 +951,7 @@ RSpec.describe 'Parser' do
     context 'using a selector on a single object in a Hash' do
       it "passes to selector" do
         expect(dsl).to receive(:selector).with(Connect::Entry::ObjectReference, ".slice('a')")
-        dsl.parse(<<-EOD)   
+        dsl.parse(<<-EOD)
         a = {
           b('object').slice('a')
         }
@@ -955,7 +964,7 @@ RSpec.describe 'Parser' do
       it "passes to selector" do
         expect(dsl).to receive(:selector).with(Connect::Entry::ObjectReference, ".slice('x')")
         expect(dsl).to receive(:selector).with(Connect::Entry::ObjectReference, ".slice('y')")
-        dsl.parse(<<-EOD)   
+        dsl.parse(<<-EOD)
         a = {
           b('object').slice('x'),
           c('object').slice('y'),
@@ -984,7 +993,7 @@ RSpec.describe 'Parser' do
     it ' reports errors with file names' do
       expect{
         dsl.include_file(error_config)
-      }.to raise_error(ParseError, /config file '#{error_config}'/)
+      }.to raise_error(ParseError, /config file/)
     end
 
     context 'with multiline assignements in config' do
@@ -1026,9 +1035,9 @@ RSpec.describe 'Parser' do
     #     dsl.parse(<<-EOD)
 
 
-    #     a = b 
+    #     a = b
 
-    #     a = c 
+    #     a = c
 
     #     EOD
     #   end

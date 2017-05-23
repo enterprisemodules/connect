@@ -11,7 +11,7 @@ rule
     : config
     | dsl config
   ;
-  
+
   number
     : INTEGER
     | FLOAT
@@ -51,6 +51,10 @@ rule
   string
     : DOUBLE_QUOTED                            { result = interpolate(val[0], xref)}
     | SINGLE_QUOTED
+  ;
+
+  regexp
+    : REGEXP
   ;
 
   scalar
@@ -95,7 +99,7 @@ rule
     ;
 
   expression
-    : value '^' value                         { result = power(val[0],val[2])} 
+    : value '^' value                         { result = power(val[0],val[2])}
     | value '*' value                         { result = multiply(val[0],val[2])}
     | value '/' value                         { result = divide(val[0],val[2])}
     | value '+' value                         { result = add(val[0],val[2])}
@@ -158,7 +162,7 @@ rule
   #
   hash
     : '{' hashpairs optional_comma '}'              { result = val[1]}
-    | '{' '}'                                       { result = MethodHash.new} 
+    | '{' '}'                                       { result = MethodHash.new}
   ;
 
   optional_comma:
@@ -167,7 +171,7 @@ rule
   ;
 
   hashpairs
-    : hashpair                                      
+    : hashpair
     | hashpairs ',' hashpair                        { result.merge!(val[2])}
   ;
 
@@ -207,23 +211,23 @@ rule
   # Define the import syntax
   #
   import
-    : import_with_scope_begin import_with_scope_end 
+    : import_with_scope_begin import_with_scope_end
     | IMPORT FROM datasource import_block
     ;
 
   import_with_scope_begin
-    : IMPORT FROM datasource INTO SCOPE block_begin { push_scope(val[4])} 
+    : IMPORT FROM datasource INTO SCOPE block_begin { push_scope(val[4])}
     ;
 
   import_with_scope_end
-    :  import_statements block_end                  { pop_scope} 
+    :  import_statements block_end                  { pop_scope}
     ;
 
   import_block
     : block_begin import_statements block_end
 
   datasource
-    : literal '(' parameters ')'                     { datasource( val[0], *val[2])} 
+    : literal '(' parameters ')'                     { datasource( val[0], *val[2])}
     | literal                                        { datasource( val[0], *[])}
     ;
 
@@ -240,18 +244,18 @@ rule
   # Define object definitions syntax
   #
   object_definition
-    : IDENTIFIER '(' string ')' iterators definition_block 
+    : IDENTIFIER '(' string ')' iterators definition_block
                                                     { result = define_object(val[0], val[2], val[5], val[4], xdef)}
-    | IDENTIFIER '(' literal ')' iterators definition_block 
+    | IDENTIFIER '(' literal ')' iterators definition_block
                                                     { result = define_object(val[0], lookup_value(val[2]), val[5], val[4], xdef)}
   ;
 
 
   object_reference
     : IDENTIFIER '(' literal ')'                    { result = reference_object(val[0], lookup_value(val[2]), xref)}
-    | IDENTIFIER '(' string ')'                     { result = reference_object(val[0], val[2], xref)} 
+    | IDENTIFIER '(' string ')'                     { result = reference_object(val[0], val[2], xref)}
+    | IDENTIFIER '(' regexp ')'                     { result = reference_object(val[0], val[2], xref)}
   ;
-
 
   definition_block
     : block_begin hashpairs optional_comma block_end
@@ -330,4 +334,3 @@ require 'connect/lexer'
     end
     raise ParseError, msg
   end
-
