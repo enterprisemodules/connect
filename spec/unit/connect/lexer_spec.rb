@@ -160,6 +160,15 @@ RSpec.describe 'Lexer' do
       end
     end
 
+    describe 'regular expression' do
+      it 'is recognised' do
+        content = <<-EOD
+        /regexp 1.*/
+        EOD
+        expect(dsl.tokenize(content)).to eql([[:REGEXP, 'regexp 1.*']])
+      end
+    end
+
     describe 'strings' do
 
       context 'double quoted strings' do

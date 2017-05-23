@@ -12,6 +12,7 @@ macro
   FLOAT               {DIGIT}+\.{DIGIT}+
   COMMENT_LINE        \#.*\n
   COMMENT             \#.*$
+  REGEXP              \/.*\/
   DOUBLE_QUOTED       \"(\\.|[^\\"])*\"
   SINGLE_QUOTED       \'(\\.|[^\\'])*\'
   TRUE                TRUE|true
@@ -59,6 +60,7 @@ rule
   {INT}                   { [:INTEGER, text.to_i] }
   {DOUBLE_QUOTED}         { [:DOUBLE_QUOTED, dequote(text)]}
   {SINGLE_QUOTED}         { [:SINGLE_QUOTED, dequote(text)]}
+  {REGEXP}                { [:REGEXP, dequote(text)]}
   {DOUBLE_DOTS}           { [:DOUBLE_DOTS, text]}
   {WHITESPACE}
   .                       { [text, text] }
