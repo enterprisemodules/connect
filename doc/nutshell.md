@@ -46,11 +46,11 @@ Variable names can also contain a scope. Scopes are specified by using double co
 
 ```ruby
 scope1::scope2::name = 10
-``` 
+```
 
 A qualified name including two scopes, namely `scope1::` and `scope2::`
 
-Puppet automatic parameter binding, maps directly to this use of scope. If you are using `hiera(...)` calls to lookup values, you have to make sure, you use the same double colon system. 
+Puppet automatic parameter binding, maps directly to this use of scope. If you are using `hiera(...)` calls to lookup values, you have to make sure, you use the same double colon system.
 
 If you use something else, you might run into trouble. This, for example, will cause problems:
 
@@ -73,7 +73,7 @@ Like regular programming languages, you can assign a variable multiple times. Th
 
 ```ruby
 my_value = 10   # Now my_value is 10
-my_value = 20   # And now it is 20. Any connections to my_value, will also be 20 
+my_value = 20   # And now it is 20. Any connections to my_value, will also be 20
 ```
 
 ##Connecting variables
@@ -164,7 +164,7 @@ my_hash = do
 end # This translates in to Ruby {'a' => 10, 'b' => 'a string'}
 ```
 
-Within a hash pair, you can use colon's (e.g. `:`) or the traditional ruby hash rocket (e.g. `=>`). Whatever suits you best. 
+Within a hash pair, you can use colon's (e.g. `:`) or the traditional ruby hash rocket (e.g. `=>`). Whatever suits you best.
 
 ```ruby
 # A Hash using hash rockets
@@ -181,7 +181,7 @@ You can use trailing `,` if you like.
 my_hash_with_trailing_comma = {
   a => 10,
   b => 'a string',
-} 
+}
 ```
  Just like in array's, hashes can reference other variables.
 
@@ -190,12 +190,12 @@ my_value = 10
 my_hash_with_reference = {
   a => my_value,
   b => 'a string',
-} 
+}
 ```
 
 ##include statement
 
-Sometimes you would like to split your configuration files into multiple files and include them. 
+Sometimes you would like to split your configuration files into multiple files and include them.
 
 ```ruby
 include 'settings'            # Includes a single file in the default
@@ -223,15 +223,15 @@ This statement means the file `settings.config` is included, and all non-scoped 
 
 ##with statement
 
-One of the mechanisms to ensure variables are not overwritten by accident is scoping. In Connect, scopes are specified using double colons (`::`). When you are providing a set of variables in a specified scope, you can use the scope features of Connect. The `include` and `with` keywords manage scope. 
+One of the mechanisms to ensure variables are not overwritten by accident is scoping. In Connect, scopes are specified using double colons (`::`). When you are providing a set of variables in a specified scope, you can use the scope features of Connect. The `include` and `with` keywords manage scope.
 
-Using these keywords, you can make sure any unscoped variables are put into the specified scope. When a scope is specified, it will be preferred over the specified default scope. 
+Using these keywords, you can make sure any unscoped variables are put into the specified scope. When a scope is specified, it will be preferred over the specified default scope.
 
 ```ruby
 with my_scope:: do
   variable_1             = 10   # my_scope::variable_1 = 10
   with_scope::variable_2 = 20   # with_scope::variable_2 = 20
-end 
+end
 ```
 
 You can stack defaults scopes:
@@ -325,7 +325,7 @@ This behavior can be useful when you want to override standard settings included
 
 ###Multiple Objects with iterator
 
-Sometimes you want to define a set of objects. Like, for example, a set of dns servers. Besides some specific attributes, these object definitions are the same. It would be a waste if we had to define them all. Connect has a solution for this. It's called iterators. 
+Sometimes you want to define a set of objects. Like, for example, a set of dns servers. Besides some specific attributes, these object definitions are the same. It would be a waste if we had to define them all. Connect has a solution for this. It's called iterators.
 
  With an iterator, you can define similar objects and replace specific values. That 's a little bit abstract. Let show an example:
 
@@ -346,7 +346,7 @@ users('user%{postfix}') iterate postfix from 'aa' to 'bb' do
 end
 ```
 
-You can use references in the definition of the iterator. 
+You can use references in the definition of the iterator.
 
 ```ruby
 start  = 'aa'
@@ -360,7 +360,7 @@ end
 And last but not least, you can use multiple iterators:
 
 ```ruby
-route('%{ipaddress}') 
+route('%{ipaddress}')
   iterate ipaddress from '10.0.0.1' to '10.0.0.9'
   iterate adapter from 'eth0' to 'eth2'
   do
@@ -388,11 +388,11 @@ You can stack as many iterators as you want. The largest iterator is leading for
 You can use these objects in regular assignments:
 
 ```ruby
-value = an_object('my_object_name') 
+value = an_object('my_object_name')
 # value will be:
-# {'my_object_name' => 
+# {'my_object_name' =>
 #    {
-#    'property_1' => 10, 
+#    'property_1' => 10,
 #    'property_2' => 20
 #     }
 #  }
@@ -423,6 +423,17 @@ big_hash = {
 }
 ```
 
+###Combining objects
+
+The use case of merging a set of objects into a big hash for use in `create_resources` Is so common, that connect has support for collecting a set of objects. To do this, you can use a regular expression in the title of an object reference.
+
+
+```ruby
+big_hash = an_object(/object_\d/)
+```
+
+This will create a big hash with all objects of type `an_object` whose title matches the specified regular expression.   
+
 ###Selectors
 
 All these big data structures are easy to define, but sometimes you want just 1 entry in the Array or one piece of the Hash. Selectors help you do this.
@@ -446,13 +457,13 @@ Selectors are passed to the underlying ruby system. So you can use any method th
 
 ```ruby
 array  = [1,2,3,4,5]
-string = array.join(',')   # "1,2,3,4,5" 
+string = array.join(',')   # "1,2,3,4,5"
 hostname = 'DMACHINE1'     # Development machine 1
 type     = hostname[0,1]   # type is 'O'
-host     = hostname[1..-1] # host is MACHINE1 
+host     = hostname[1..-1] # host is MACHINE1
 ```
 
-You can also use selectors when interpolating strings. 
+You can also use selectors when interpolating strings.
 
 ```ruby
 presidents = ['Clinton', 'Bush', 'Obama']
@@ -474,7 +485,7 @@ The standard Array, Hash and String functions in ruby are already quite powerful
 #### extract
 
 The `extract`  helper allows you to extract an array of values from an array of objects. An example clarifies this:
- 
+
 ```ruby
 all_nodes = [
   host('node1.domain.com'){
@@ -514,7 +525,7 @@ my_raw_host = host('db.domain.com') {
 }  # Contains more then an ip. I need just a hash with the name and an ip.
 my_host = my_raw_host.slice('ip') # can be used just get the ip into the hash.
 #
-# It returns 
+# It returns
 # {'db.domain.com' => { 'ip' => '10.0.0.100'}}
 #
 ```
@@ -532,7 +543,7 @@ my_raw_host = host('db.domain.com') {
 }  # Contains more then an ip. I need just a hash with the name and an ip.
 my_host = my_raw_host.slice_content('ip') # can be used just get the ip into the hash.
 #
-# It returns 
+# It returns
 # { 'ip' => '10.0.0.100'}
 #
 ```
@@ -556,15 +567,15 @@ import from datasource(param1, param2) into scope:: {
 }
 ```
 
-Check [the list of available datasources](datasources.md) to see if the datasource you need, exists. Check [how to make your own datasource](building-a-datasource.md) if you need to access other data. 
+Check [the list of available datasources](datasources.md) to see if the datasource you need, exists. Check [how to make your own datasource](building-a-datasource.md) if you need to access other data.
 
 
 ```ruby
 import from puppetdb into datacenter:: {
-  ntp_servers = 'Class[Ntp::Server]'  # Fetches all NTP nodes from puppetdb 
+  ntp_servers = 'Class[Ntp::Server]'  # Fetches all NTP nodes from puppetdb
                                       # into the array datacenter::ntp_servers
 
-  dns_servers = 'Class[Dns::Server]'  # Fetches all DNS nodes from puppetdb 
+  dns_servers = 'Class[Dns::Server]'  # Fetches all DNS nodes from puppetdb
                                       # into the array datacenter::dns_servers
 }
 ```
@@ -581,7 +592,7 @@ end
 ```
 
 
-Alternatively, using the ` yaml`  importer: 
+Alternatively, using the ` yaml`  importer:
 
 ```ruby
 import from yaml('/aaa/a.yaml') do
@@ -627,6 +638,3 @@ second_string = "the value is ${value}"   # results in "the value is 20
 include 'an_include_file                      # defining value to 10
 third_string = "the value is ${value}"   # results in "the value is still 20
 ```
-
-
-
