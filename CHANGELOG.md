@@ -1,6 +1,15 @@
 History
 ========
 
+28-5-2017  version 0.0.24
+-------------------------
+- [docs] Added collection of objects to documentation
+- [objects] Fix wildcard reference
+- [core] Implement regexp object support
+- [parser] Add support for regexp object titles
+- [lexer] add support for regexp
+- [core] Add late binding to interpolator
+
 25-5-2016  version 0.0.23
 -------------------------
 - Fix errors when config file contains only comments
@@ -97,7 +106,7 @@ History
 
 02-04-2015  version 0.0.4
 --------------------------
-- Added cross referencing output to Puppetconnect values. 
+- Added cross referencing output to Puppetconnect values.
 
 
 29-03-2015  version 0.0.3
