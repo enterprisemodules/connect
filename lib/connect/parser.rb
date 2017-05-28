@@ -961,7 +961,7 @@ module_eval(<<'.,.,', 'dsl.y', 255)
 
 module_eval(<<'.,.,', 'dsl.y', 256)
   def _reduce_96(val, _values, result)
-     result = reference_object(val[0], val[2], xref)
+     result = reference_objects(val[0], val[2], xref)
     result
   end
 .,.,

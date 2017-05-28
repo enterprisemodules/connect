@@ -166,7 +166,6 @@ module Connect
       value
     end
 
-
     ##
     #
     # Connect the variable to an other variable in the value table
@@ -268,15 +267,24 @@ module Connect
       end
     end
 
-
     ##
     #
     # Create an object reference.
     #
     def reference_object(type, name, xref = nil)
       name = interpolated_value(name)
-      object_reference(type,name, xref)
+      object_reference(type, name, xref)
       Entry::ObjectReference.new(type, name, nil, xref)
+    end
+
+    ##
+    #
+    # Create an regexp object reference.
+    #
+    def reference_objects(type, regexp_str, xref = nil)
+      regexp = Regexp.new(regexp_str)
+      object_reference(type, regexp, xref)
+      Entry::RegexpObjectReference.new(type, regexp, nil, xref)
     end
 
     ##
@@ -318,7 +326,7 @@ module Connect
     private
 
     def interpolator_not_allowed(name, type)
-      fail "#{name.value} is not allowd as a #{type}" if name.is_a?(Connect::Entry::Base)
+      fail "#{name.value} is not allowed as a #{type}" if name.is_a?(Connect::Entry::Base)
     end
 
     def interpolated_value(name)

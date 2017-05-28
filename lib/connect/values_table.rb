@@ -1,6 +1,7 @@
 require 'connect/selector'
 require 'connect/entries/value'
 require 'connect/entries/object_reference'
+require 'connect/entries/regexp_object_reference'
 require 'connect/entries/reference'
 require 'method_hash'
 require 'hiera'

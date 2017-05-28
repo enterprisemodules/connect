@@ -145,7 +145,7 @@ RSpec.describe 'objects' do
   end
 
 
-  context 'with a refrence in the attribute' do
+  context 'with a reference in the attribute' do
 
     it 'is setable and retrievable' do
       dsl.parse(<<-EOD)
@@ -158,6 +158,49 @@ RSpec.describe 'objects' do
     end
   end
 
+  context 'with a wildcard in the name' do
+
+    context 'without a selector' do
+      it 'fetches a set of objects' do
+        dsl.parse(<<-EOD)
+        foo("a1") { value: 'a1' }
+        foo("a2") { value: 'a2' }
+        foo("a3") { value: 'a3' }
+        foo("b1") { value: 'b1' }
+        foo("b2") { value: 'b2' }
+        foo("b3") { value: 'b3' }
+        bar("a1") { value: 'b3' }
+        a = foo(/a./)
+        EOD
+        expect(dsl.lookup_value('a')).to eql({
+          'a1' => {'value' => 'a1'},
+          'a2' => {'value' => 'a2'},
+          'a3' => {'value' => 'a3'},
+        })
+      end
+    end
+
+    context 'with a selector' do
+      it 'fetches a set of objects and applies selector to all' do
+        dsl.parse(<<-EOD)
+        foo("a1") { value: 'a1' }
+        foo("a2") { value: 'a2' }
+        foo("a3") { value: 'a3' }
+        foo("b1") { value: 'b1' }
+        foo("b2") { value: 'b2' }
+        foo("b3") { value: 'b3' }
+        bar("a1") { value: 'b3' }
+        a = foo(/a./)['value']
+        EOD
+        expect(dsl.lookup_value('a')).to eql({
+          'a1' => 'a1',
+          'a2' => 'a2',
+          'a3' => 'a3'
+        })
+      end
+    end
+
+  end
 
   context 'with an interpolation in the name of the definition' do
 

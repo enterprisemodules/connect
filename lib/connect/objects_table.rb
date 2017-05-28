@@ -60,7 +60,7 @@ module Connect
       add_values_to_existing!(object, values)
     end
 
-    def register_reference(type,name, xref)
+    def register_reference(type, name, xref)
       object = from_table(type, name)
       object.add_reference(xref)
       object
@@ -76,6 +76,21 @@ module Connect
     def lookup(type, name)
       name = name.to_ext if name.is_a?(Connect::Entry::Base)
       from_table(type, name)
+    end
+
+    ##
+    #
+    # Lookup multile objects with a specfied type and a regexp name in the object table
+    #
+    # @param type [String] the type of object to lookup
+    # @param name [Regexp] the name of the object to lookup
+    # @return [Hash] the object definition
+    def lookup_regexp(type, regexp)
+      return_value = {}
+      entries(type, regexp).each do |t, name|
+        return_value.merge!(from_table(t, name).full_representation)
+      end
+      return_value
     end
 
     ##
@@ -126,7 +141,6 @@ module Connect
       match.shift
       match.reverse
     end
-
 
     def add_new_object(type, name, values)
       object = ObjectsTable.entry(type, name, values)

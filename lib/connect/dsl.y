@@ -254,7 +254,7 @@ rule
   object_reference
     : IDENTIFIER '(' literal ')'                    { result = reference_object(val[0], lookup_value(val[2]), xref)}
     | IDENTIFIER '(' string ')'                     { result = reference_object(val[0], val[2], xref)}
-    | IDENTIFIER '(' regexp ')'                     { result = reference_object(val[0], val[2], xref)}
+    | IDENTIFIER '(' regexp ')'                     { result = reference_objects(val[0], val[2], xref)}
   ;
 
   definition_block
