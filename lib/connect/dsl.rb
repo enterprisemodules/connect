@@ -283,7 +283,6 @@ module Connect
     #
     def reference_objects(type, regexp_str, xref = nil)
       regexp = Regexp.new(regexp_str)
-      object_reference(type, regexp, xref)
       Entry::RegexpObjectReference.new(type, regexp, nil, xref)
     end
 

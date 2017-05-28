@@ -180,6 +180,24 @@ RSpec.describe 'objects' do
       end
     end
 
+    context 'with an all matching wildcard in the name' do
+
+      it 'fetches a set of objects' do
+        dsl.parse(<<-EOD)
+        foo("a1") { value: 'a1' }
+        foo("a2") { value: 'a2' }
+        foo("a3") { value: 'a3' }
+        a = foo(/.*/)
+        EOD
+        expect(dsl.lookup_value('a')).to eql({
+          'a1' => {'value' => 'a1'},
+          'a2' => {'value' => 'a2'},
+          'a3' => {'value' => 'a3'},
+        })
+      end
+    end
+
+
     context 'with a selector' do
       it 'fetches a set of objects and applies selector to all' do
         dsl.parse(<<-EOD)
