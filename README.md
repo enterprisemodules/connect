@@ -18,7 +18,7 @@
     * [OS support](#os-support)
     * [Tests - Testing your configuration](#testing)
 
-##O verview
+## Overview
 
 Connect is a replacement for YAML in hiera. When you start with Puppet, using hiera with YAML is an excellent way to split code and configuration data. But when your configuration grows, you start to notice some troubles with this combination:
 
