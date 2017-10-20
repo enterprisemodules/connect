@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/hajee/connect.png?branch=master)](https://travis-ci.org/hajee/connect) [![Coverage Status](https://coveralls.io/repos/hajee/connect/badge.svg)](https://coveralls.io/r/hajee/connect)[![Code Climate](https://codeclimate.com/github/hajee/connect/badges/gpa.svg)](https://codeclimate.com/github/hajee/connect)
 
-####Table of Contents
+#### Table of Contents
 
 1. [Overview](#overview)
 2. [Module Description - What Connect does and why it is useful](#module-description)
@@ -18,9 +18,10 @@
     * [OS support](#os-support)
     * [Tests - Testing your configuration](#testing)
 
-##Overview
+## Overview
 
 Connect is a replacement for YAML in hiera. When you start with Puppet, using hiera with YAML is an excellent way to split code and configuration data. But when your configuration grows, you start to notice some troubles with this combination:
+
 - Your YAML files start to become bigger and bigger and bigger and slowly but surely become incomprehensible.
 - You would like to reference other values. YAML supports this..... but not between different files. Besides the `&` and `*` anchor syntax becomes a hassle, when you use it much.
 - You have found the yaml interpolation using `"%{hiera('lookup_value')"` to lookup values over you whole YAML structure..... but noticed, you can only use this for strings, and not for other data types.
@@ -29,7 +30,7 @@ If you recognize any of these problems, Connect might be for you! If you haven't
 
 Want to know the details, Check [the Connect Language, in a Nutshell](https://github.com/enterprisemodules/connect/blob/master/doc/nutshell.md), for more intro into the language.
 
-##Module Description
+## Module Description
 
 Connect is a `hiera` backend. Using the Connect language, you can describe your Puppet parameters in an simple and concise way. You can:
 - separate your config files into separate files and include them when you need them.
@@ -39,15 +40,15 @@ Connect is a `hiera` backend. Using the Connect language, you can describe your 
 
 ...and much more.
 
-##Example
+## Example
 
 ```ruby
 domain_name = 'example.com'
 import from puppetdb into datacenter:: {
-  ntp_servers = 'Class[Ntp::Server]'  # Fetches all NTP nodes from puppetdb 
+  ntp_servers = 'Class[Ntp::Server]'  # Fetches all NTP nodes from puppetdb
                                       # into the array datacenter::ntp_servers
 
-  dns_servers = 'Class[Dns::Server]'  # Fetches all DNS nodes from puppetdb 
+  dns_servers = 'Class[Dns::Server]'  # Fetches all DNS nodes from puppetdb
                                       # into the array datacenter::dns_servers
 }
 ftp_node    = "ftp.${domain_name}"
@@ -63,9 +64,9 @@ include "${domain_name}/settings"   # include specific setting for domain
 
 Check [the Connect Language, in a Nutshell](https://github.com/enterprisemodules/connect/blob/master/doc/nutshell.md), for more intro into the language.
 
-##Setup
+## Setup
 
-###Installing the module
+### Installing the module
 
 To use the connect hiera module, you first have to make sure it is installed.
 
@@ -79,9 +80,9 @@ If you are using a Puppetfile, you need the following lines:
 mod 'hajee-connect'
 ```
 
-###Enabling Connect in hiera
+### Enabling Connect in hiera
 
-To start using the connect hiera backend, you have to enable it in the hiera config file. Add the `connect` line to the `:backends:` array. The order of the entries in the array, is the order hiera will use to resolve the lookups. 
+To start using the connect hiera backend, you have to enable it in the hiera config file. Add the `connect` line to the `:backends:` array. The order of the entries in the array, is the order hiera will use to resolve the lookups.
 
 ```yaml
 ---
@@ -99,17 +100,17 @@ To start using the connect hiera backend, you have to enable it in the hiera con
 
 Add a `:datadir:` entry for the connect backend. The default is `/etc/puppet/config`.
 
-###What connect affects
+### What connect affects
 
-If you have configured connect, like specified in the `hiera.yaml` **ALL** hiera lookups will be passed to the Connect backend. 
+If you have configured connect, like specified in the `hiera.yaml` **ALL** hiera lookups will be passed to the Connect backend.
 
-###Setup Requirements
+### Setup Requirements
 
 Because connect is based on hiera and puppet, you need to have both the hiera and puppet gem installed.
 
 Some of the [data sources](https://github.com/enterprisemodules/connect/blob/master/datasources.md) require extra Ruby gems or other components. Check their documentation for details
 
-###Beginning with connect module
+### Beginning with connect module
 
 To test if everything works, ue the next steps:
 - add connect to the `hiera.yaml`. You can find an example [here](https://github.com/enterprisemodules/connect/blob/master/setup/hiera.yaml)
@@ -129,7 +130,7 @@ You can also use the values inpsector to check the value:
 $ puppet connect values test::parameter
 ```
 
-###Tools
+### Tools
 
 #### The values inspector
 
@@ -177,7 +178,7 @@ Will show you all just starting with `my_`
 `puppet connect objects`  will also show you where your objects are defined and referenced. This is a tremendous help when debugging or just understand a complex set of connect configuration files.
 
 
-###Using the accompanying Vagrant box
+### Using the accompanying Vagrant box
 
 You can also get started with a Vagrant box that is preconfigured.
 
@@ -200,27 +201,27 @@ $ puppet apply test.pp    # Apply it.
 Notice: Scope(Class[Test]): it works localhost
 Notice: Compiled catalog for localhost.localdomain in environment production in 0.39 seconds
 Notice: Finished catalog run in 0.03 seconds
-$ 
+$
 ```
 On your host os, you can edit the `examples/default.config' file to experiment with the Connect language.
 
-##detailed description
+## Detailed description
 
 Check [the Connect Language, in a Nutshell](https://github.com/enterprisemodules/connect/blob/master/doc/nutshell.md), for more intro into the language.
 
-##Troubleshooting
+## Troubleshooting
 
 If you make mistakes in the config files, Connect will show you a parse error. The parse error shows the file and the  line number of the parse error. This should help you pinpoint any errors. The parsing of the connect files will be done once before the real puppet run starts. This ensures's Puppet can only start after it has made certain the Connect configs are syntactically correct
 
-##Limitations
+## Limitations
 
-This module is tested CentOS and Redhat. It will probably work on other Linux distributions. 
+This module is tested CentOS and Redhat. It will probably work on other Linux distributions.
 
-##Development
+## Development
 
 This is an open source project, and contributions are welcome.
 
-###OS support
+### OS support
 
 Currently we have tested:
 
@@ -228,7 +229,7 @@ Currently we have tested:
 * Redhat 5
 
 
-###Testing
+### Testing
 
 Make sure you have:
 
