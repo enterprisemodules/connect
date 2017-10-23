@@ -10,25 +10,20 @@ def unitTest(String rubyVersion = '1.9.3', String puppetVersion = '3.7.3') {
       rvm use ${rubyVersion} && ruby --version && \
       mkdir -p spec/fixtures && \
       gem install bundler && \
-      bundle install
-      '"""
-      sh setup
-      def String test = """/bin/bash -lc 'echo Unit test start && \
-      export PUPPET_GEM_VERSION=${puppetVersion} && \
-      export BUNDLE_GEMFILE=./gemfiles/gemfile.1.9.3 && \
-      export GIT_SSH_COMMAND=(ssh -i /home/jenkins/.ssh/id_rsa) && \
-      export BUNDLE_GITHUB__COM=$GIT_USERNAME:$GIT_PASSWORD && \
-      rvm use ${rubyVersion} && ruby --version && \
-      ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+      bundle install && \
+      ssh-keyscan -H github.com >> ~/.ssh/known_hosts && \
       echo unit test start && \
       bundle exec rake spec'"""
-      sh test
+      sh setup
     }
   }
 }
 
 pipeline {
   agent none
+  triggers {
+    cron('H H * * *')
+  }
   stages {
     stage('Unit tests') {
       steps {
