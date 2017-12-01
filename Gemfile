@@ -1,45 +1,44 @@
 source 'https://rubygems.org'
 
-group :development, :test do
-  unless RUBY_PLATFORM == 'java'
-    gem 'pry'
-    gem 'pry-byebug'
-    gem 'pry-stack_explorer'
-    gem 'listen', '~> 3.0.0' # newer version require ruby 2.2 or higher
-    gem 'guard-rspec'   , :require => false
-    gem 'guard-bundler' , :require => false
-    gem 'ruby_gntp'
-    gem 'byebug'
-  else
-    gem 'pry'
-    gem 'ruby-debug'    
-  end
-  gem "codeclimate-test-reporter",  require: nil
-  gem 'rake'
-  gem 'rspec'
-  gem 'rspec-collection_matchers'
+puppetversion = ENV.key?('PUPPET_GEM_VERSION') ? "= #{ENV['PUPPET_GEM_VERSION']}" : ['>= 4.0']
+
+gem 'puppet', puppetversion
+
+group :unit_test do
   gem 'rspec-its'
-  gem 'rexical'
-  gem 'racc'
-  gem 'bogus'
-  gem 'rubocop'       , :require => false
-  gem 'yard'          , :require => false
-  gem 'coveralls'     , :require => false
-  gem "puppet-blacksmith"
-  gem "puppetlabs_spec_helper"
+  gem 'rspec-collection_matchers'
+  gem 'rspec-puppet-utils'
+  gem 'hiera-puppet-helper'
+  gem 'rspec-puppet'
 end
 
-if hieraversion = ENV['HIERA_GEM_VERSION']
-  gem 'hiera', hieraversion, :require => false
-else
-  gem 'hiera', :require => false
+group :acceptance_test do
+  gem 'beaker-rspec'
+  gem 'beaker-hiera'
+  gem 'beaker-docker', git: 'https://github.com/enterprisemodules/beaker-docker.git',
+                       ref: '52a5fc118e699e01679e02d25e346e92142fead9'
+  gem 'beaker-pe'
+  gem 'beaker-module_install_helper'
+  gem 'beaker-puppet_install_helper'
+  gem 'beaker'
 end
 
-gem 'awesome_print'
-
-if puppetversion = ENV['PUPPET_GEM_VERSION']
-  gem 'puppet', puppetversion, :require => false
-else
-  gem 'puppet', :require => false
+group :release do
+  gem 'puppet-blacksmith'
 end
 
+group :quality do
+  gem 'puppet-lint'
+  gem 'rubocop',      :require => false
+  gem 'overcommit'
+  gem 'fasterer'
+  gem 'bundler-audit'
+  gem 'reek'
+  gem 'brakeman'
+  gem 'metadata-json-lint'
+end
+
+group :unit_test, :acceptance_test do
+  gem 'puppetlabs_spec_helper'
+  gem 'easy_type_helpers', :git => 'https://github.com/enterprisemodules/easy_type_helpers.git'
+end
