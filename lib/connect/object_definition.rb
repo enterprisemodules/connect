@@ -32,12 +32,12 @@ module Connect
       #
       data.extend(HashExtensions)
       data = data.stringify_keys
-      self.merge!(data)
+      merge!(data)
     end
 
     ##
     #
-    # merge the specfied data with the data already available in the object.
+    # merge the specified data with the data already available in the object.
     # Attributes already avialble, will be overwritten.
     #
     # @param data [Hash] the data to be merged

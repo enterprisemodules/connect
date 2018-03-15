@@ -6,14 +6,16 @@ module MethodHashMethods
   #
   # Implements the lookup of hash entries based on the method call
   #
+  # rubocop:disable Style/MethodMissing
+  #
   def method_missing(method_sym, *_arguments, &_block)
     key = method_sym.to_s
-    if self.key?(key)
-      self[key]
-    else
-      fail ArgumentError, "requested unassigned attribute #{key} from #{self}"
-    end
+    return self[key] if key?(key)
+    raise ArgumentError, "requested unassigned attribute #{key} from #{self}"
   end
+  #
+  # rubocop:enable Style/MethodMissing
+  #
 
   ##
   #
@@ -23,7 +25,7 @@ module MethodHashMethods
   # @return [Any] the content of the attribute
   #
   def [](index)
-    fail "#{index} not found" unless self.key?(index)
+    raise "#{index} not found" unless key?(index)
     super
   end
 end
@@ -52,5 +54,4 @@ class MethodHash < Hash
   def to_ary
     nil
   end
-
 end

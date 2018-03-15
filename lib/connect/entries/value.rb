@@ -15,14 +15,13 @@ module Connect
         to_ext
       end
 
-
       ##
       #
       # Translate the object for external representation
       #
       # @return [Hash] a hash containing the name as key and the data as a [Hash]
       #
-      # rubocop:disable CaseIndentation, EndAlignment, IndentationWidth
+      # rubocop:disable CaseIndentation, EndAlignment
       def to_ext
         value = case @value
         when Array
@@ -42,7 +41,8 @@ module Connect
         end
         Selector.run(value, selector)
       end
-      # rubocop:enable CaseEquality, ElseAlignment, EndAlignment, IndentationWidth
+      # rubocop:enable, EndAlignment, IndentationWidth
+      # rubocop:enable CaseIndentation, EndAlignment
     end
   end
 end

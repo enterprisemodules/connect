@@ -19,7 +19,7 @@ module Connect
           self['hostname'] = name.split('.').first
           self['domain']   = name.split('.')[-2..-1].join('.')
           self['fqdn']     = name
-        rescue
+        rescue StandardError
           raise ArgumentError, 'Invalid host object definition'
         end
       end

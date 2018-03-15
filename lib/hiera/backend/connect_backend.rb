@@ -23,9 +23,9 @@ class Hiera
       attr_reader :parsed
 
       def initialize
-        fail 'Connect section not filled in hiera.yaml' if Config[:connect].nil?
+        raise 'Connect section not filled in hiera.yaml' if Config[:connect].nil?
         Hiera.debug('CONNECT: Backend initialized')
-        @configs_dir    = Config[:connect].fetch(:datadir) { '/etc/puppet/config' }
+        @configs_dir = Config[:connect].fetch(:datadir) { '/etc/puppet/config' }
         Hiera.debug("CONNECT: datadir is set to #{@configs_dir}")
         Connect.logger = Hiera.logger
         @connect       = Connect::Dsl.instance(@configs_dir)
@@ -40,9 +40,9 @@ class Hiera
       # @param scope [Scope] the Puppet scope.
       # @param order_override [Bool] ?
       # @param _resolution_type [?]
-      # @return [Any] the value of the specfied key.
+      # @return [Any] the value of the specified key.
       #
-      def lookup(key, scope, order_override, _resolution_type, context = nil)
+      def lookup(key, scope, order_override, _resolution_type, _context = nil)
         setup_context(scope, order_override)
         value = @connect.lookup_value(key)
         Hiera.debug("CONNECT: looked up '#{key}' found '#{value}'")
@@ -57,39 +57,36 @@ class Hiera
       # @param scope [Scope] the Puppet scope.
       # @param order_override [Bool] ?
       # @param _resolution_type [?]
-      # @return [Any] the value of the specfied key.
+      # @return [Any] the value of the specified key.
       #
       def lookup_values(keys, scope, order_override, _resolution_type)
         setup_context(scope, order_override)
         @connect.lookup_values(keys)
       end
 
-
       ##
       #
-      # Lookup specfied objects in the connect configuration
+      # Lookup specified objects in the connect configuration
       #
       # @param name [Regexp] the object(s) to be looked up.
-      # @param type [String] the object type to be looked up. 
+      # @param type [String] the object type to be looked up.
       # @param scope [Scope] the Puppet scope.
       # @param order_override [Bool] ?
       # @param _resolution_type [?]
-      # @return [Any] the value of the specfied key.
+      # @return [Any] the value of the specified key.
       #
       def lookup_objects(keys, type, scope, order_override, _resolution_type)
         setup_context(scope, order_override)
         @connect.lookup_objects(keys, type)
       end
 
-
       private
 
       def setup_context(scope, order_override)
-        Connect::Dsl.config.scope = scope  # Pass the scope to connect
-        if any_file_changed?(scope, order_override) || lookup_changed?(scope, order_override)
-          @connect = Connect::Dsl.instance(@configs_dir)
-          parse_config(scope, order_override) 
-        end
+        Connect::Dsl.config.scope = scope # Pass the scope to connect
+        return nil unless any_file_changed?(scope, order_override) || lookup_changed?(scope, order_override)
+        @connect = Connect::Dsl.instance(@configs_dir)
+        parse_config(scope, order_override)
       end
 
       def parse_config(scope, order_override)
@@ -108,7 +105,7 @@ class Hiera
       end
 
       def lookup_changed?(scope, order_override)
-        current_lookup = reversed_hierarchy(scope, order_override).collect{|e| e}
+        current_lookup = reversed_hierarchy(scope, order_override).collect { |e| e }
         if @last_lookup && @last_lookup == current_lookup
           false
         else
@@ -117,9 +114,8 @@ class Hiera
         end
       end
 
-
       def any_file_changed?(scope, order_override)
-        reversed_hierarchy(scope, order_override).each do | file_name|
+        reversed_hierarchy(scope, order_override).each do |file_name|
           return true if file_changed?(file_name, scope)
         end
         false
@@ -127,15 +123,15 @@ class Hiera
 
       def file_changed?(source, scope)
         file_name = Backend.datafile(:connect, scope, source, 'config')
-        if file_name && File.exists?(file_name)
+        if file_name && File.exist?(file_name)
           size = File.size(file_name)
           date = File.mtime(file_name)
         else
           size = -1
           date = ''
         end
-        file_info = @files.fetch('file_name') {{ :size => -1, :date => ''}}
-        if file_info[:size] == size and file_info[:date] == date
+        file_info = @files.fetch('file_name') { { :size => -1, :date => '' } }
+        if (file_info[:size] == size) && (file_info[:date] == date)
           false
         else
           @files[file_name]        = {}

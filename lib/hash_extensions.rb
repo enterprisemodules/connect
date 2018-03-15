@@ -19,7 +19,7 @@ module HashExtensions
       else
         value
       end
-      block.call(result, key, value)
+      yield(result, key, value)
       result
     end
   end

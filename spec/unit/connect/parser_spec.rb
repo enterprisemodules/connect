@@ -346,7 +346,7 @@ RSpec.describe 'Parser' do
 
   describe 'include' do
 
-    context 'without a specfied scope' do
+    context 'without a specified scope' do
 
       it 'includes a config' do
         expect(dsl).to receive(:include_file).with('a.a')
@@ -357,7 +357,7 @@ RSpec.describe 'Parser' do
 
     end
 
-    context 'with a specfied scope' do
+    context 'with a specified scope' do
 
       it 'includes a config in a pecified scope' do
         expect(dsl).to receive(:include_file).with('a.a', 'test::')
@@ -1015,7 +1015,7 @@ RSpec.describe 'Parser' do
   describe 'cross referencing' do
 
     context 'a single assignment' do
-      it 'registers a defintion at the specfied file and line' do
+      it 'registers a defintion at the specified file and line' do
         reference = Connect::Xdef.new(nil, 3)
         expect(dsl).to receive(:assign).with('a', Connect::Entry::Reference, reference)
         dsl.parse(<<-EOD)
@@ -1026,7 +1026,7 @@ RSpec.describe 'Parser' do
     end
 
     # context 'a double assignment' do
-    #   it 'registers two defintion at the specfied file and line' do
+    #   it 'registers two defintion at the specified file and line' do
     #     reference_1 = Connect::Xdef.new(nil, 3)
     #     reference_2 = Connect::Xdef.new(nil, 5)
     #     expect(dsl).to receive(:assign).with('a', Connect::Entry::Reference, reference_1).ordered

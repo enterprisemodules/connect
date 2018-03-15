@@ -23,8 +23,6 @@ module Connect
       def inspect
         "reference to #{@value}#{@selector}"
       end
-
-
     end
   end
 end

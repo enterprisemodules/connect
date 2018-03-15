@@ -25,8 +25,7 @@ module Connect
       # @param _arguments [Array] The arguments passed by the parser.
       # @return [Datasource::Base] An initalized datasource, ready for doing a lookup
       #
-      def initialize(_name, *_arguments)
-      end
+      def initialize(_name, *_arguments); end
 
       ##
       #
@@ -42,7 +41,7 @@ module Connect
       # @return  The value of the key in the external datasource
       #
       def lookup(_key)
-        fail ArgumentError, 'lookup method needs to be overridden in datasource'
+        raise ArgumentError, 'lookup method needs to be overridden in datasource'
       end
     end
   end
