@@ -1,4 +1,12 @@
 GIT
+  remote: https://github.com/brigade/overcommit.git
+  revision: c96cf0bdae19a28eee0f9871a983c529a2a086ae
+  specs:
+    overcommit (0.44.0)
+      childprocess (~> 0.6, >= 0.6.3)
+      iniparse (~> 1.4)
+
+GIT
   remote: https://github.com/enterprisemodules/beaker-docker.git
   revision: 52a5fc118e699e01679e02d25e346e92142fead9
   ref: 52a5fc118e699e01679e02d25e346e92142fead9
@@ -8,27 +16,10 @@ GIT
       stringify-hash (~> 0.0.0)
 
 GIT
-  remote: https://github.com/enterprisemodules/easy_type_helpers.git
-  revision: 489952e63a3ef7cec0584f5a7387fc92baf48a2a
+  remote: https://github.com/enterprisemodules/beaker.git
+  revision: ced1a91b73b46a9d3a2d3586b84d12b8e2354f05
   specs:
-    easy_type_helpers (0.1.0)
-
-GEM
-  remote: https://rubygems.org/
-  specs:
-    CFPropertyList (2.3.6)
-    addressable (2.5.2)
-      public_suffix (>= 2.0.2, < 4.0)
-    ansi (1.5.0)
-    ast (2.4.0)
-    aws-sdk-v1 (1.67.0)
-      json (~> 1.4)
-      nokogiri (~> 1)
-    axiom-types (0.1.1)
-      descendants_tracker (~> 0.0.4)
-      ice_nine (~> 0.11.0)
-      thread_safe (~> 0.3, >= 0.3.1)
-    beaker (3.33.0)
+    beaker (3.29.0)
       beaker-abs (~> 0.4)
       beaker-aws (~> 0.1)
       beaker-docker (~> 0.1)
@@ -54,6 +45,28 @@ GEM
       rsync (~> 1.0.9)
       stringify-hash (~> 0.0)
       thor (~> 0.19)
+
+GIT
+  remote: https://github.com/enterprisemodules/easy_type_helpers.git
+  revision: 489952e63a3ef7cec0584f5a7387fc92baf48a2a
+  specs:
+    easy_type_helpers (0.1.0)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    CFPropertyList (2.3.6)
+    addressable (2.5.2)
+      public_suffix (>= 2.0.2, < 4.0)
+    ansi (1.5.0)
+    ast (2.4.0)
+    aws-sdk-v1 (1.67.0)
+      json (~> 1.4)
+      nokogiri (~> 1)
+    axiom-types (0.1.1)
+      descendants_tracker (~> 0.0.4)
+      ice_nine (~> 0.11.0)
+      thread_safe (~> 0.3, >= 0.3.1)
     beaker-abs (0.5.0)
     beaker-answers (0.22.0)
       hocon (~> 1.0)
@@ -105,6 +118,8 @@ GEM
       stringify-hash (~> 0.0.0)
     brakeman (4.2.0)
     builder (3.2.3)
+    bundle-audit (0.1.0)
+      bundler-audit
     bundler-audit (0.6.0)
       bundler (~> 1.2)
       thor (~> 0.18)
@@ -215,9 +230,6 @@ GEM
       ruby-ll (~> 2.1)
     open_uri_redirections (0.2.1)
     os (0.9.6)
-    overcommit (0.44.0)
-      childprocess (~> 0.6, >= 0.6.3)
-      iniparse (~> 1.4)
     parallel (1.12.1)
     parser (2.5.0.4)
       ast (~> 2.4.0)
@@ -343,7 +355,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  beaker
+  beaker!
   beaker-docker!
   beaker-hiera
   beaker-module_install_helper
@@ -351,12 +363,12 @@ DEPENDENCIES
   beaker-puppet_install_helper
   beaker-rspec
   brakeman
-  bundler-audit
+  bundle-audit
   easy_type_helpers!
   fasterer
   hiera-puppet-helper
   metadata-json-lint
-  overcommit
+  overcommit!
   puppet (>= 4.0)
   puppet-blacksmith
   puppet-lint

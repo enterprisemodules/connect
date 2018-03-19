@@ -1,5 +1,5 @@
---fail-on-warning
---no-140chars-chec
---no-quoted_boolean
+--fail-on-warnings
+--no-140chars-check
+--no-quoted_booleans
 --no-variable_is_lowercase
 --relative

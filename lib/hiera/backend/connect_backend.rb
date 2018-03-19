@@ -11,7 +11,6 @@ class Hiera
     # The hiera backend uses the Connect language to express your data. You can use
     # regular hiera functionality to lookup the data
     #
-    # rubocop:disable ClassAndModuleCamelCase
     class Connect_backend
       extend Forwardable
 
@@ -145,6 +144,5 @@ class Hiera
         @connect.include_file(file)
       end
     end
-    # rubocop:enable ClassAndModuleCamelCase
   end
 end

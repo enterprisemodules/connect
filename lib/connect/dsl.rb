@@ -433,14 +433,10 @@ module Connect
     #
     # Checks whenever the regexp matches to the 0 and not nil
     #
-    # rubocop:disable Style/NumericPredicate
     #
     def empty_definition?(string)
       (string =~ /\A(\s|\n|#.*)*\Z/) == 0
     end
-    #
-    # rubocop:enable Style/NumericPredicate
-    #
 
     def pusher(entries)
       state = {}

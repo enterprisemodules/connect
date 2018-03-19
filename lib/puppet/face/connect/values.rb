@@ -13,9 +13,6 @@ rescue LoadError
   "Ignore error's in loading these files"
 end
 
-#
-# rubocop:disable Metrics/BlockLength
-#
 Puppet::Face.define(:connect, '0.0.1') do
   self.class.include Scope
   self.class.include DefinitionReader
@@ -73,6 +70,3 @@ Puppet::Face.define(:connect, '0.0.1') do
     end
   end
 end
-#
-# rubocop:enable Metrics/BlockLength
-#

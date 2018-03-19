@@ -3,9 +3,6 @@ require_relative './../../../inspector.rb'
 
 require 'puppet/face'
 
-#
-# rubocop:disable Metrics/BlockLength
-#
 Puppet::Face.define(:connect, '0.0.1') do
   self.class.include Scope
   self.class.include Inspector
@@ -90,6 +87,3 @@ Puppet::Face.define(:connect, '0.0.1') do
     output
   end
 end
-#
-# rubocop:enable Metrics/BlockLength
-#
