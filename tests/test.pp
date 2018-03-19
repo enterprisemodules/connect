@@ -1,7 +1,7 @@
 # This is class used for test
 class test(
   $parameter,
-){
+) {
   notice $parameter
 }
 
