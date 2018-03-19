@@ -1,3 +1,4 @@
+# This is class used for test
 class test(
   $parameter,
 ){
@@ -5,4 +6,3 @@ class test(
 }
 
 require test
-

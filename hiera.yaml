@@ -1,7 +1,8 @@
 ---
 :backends:
-#  - yaml
-   - connect
+  # - yaml
+  - connect
+
 :hierarchy:
   - defaults
   - %{clientcert}
