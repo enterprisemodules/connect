@@ -1,4 +1,6 @@
-[![Build Status](https://travis-ci.org/hajee/connect.png?branch=master)](https://travis-ci.org/hajee/connect) [![Coverage Status](https://coveralls.io/repos/hajee/connect/badge.svg)](https://coveralls.io/r/hajee/connect)[![Code Climate](https://codeclimate.com/github/hajee/connect/badges/gpa.svg)](https://codeclimate.com/github/hajee/connect)
+[![Coverage Status](https://coveralls.io/repos/hajee/connect/badge.svg)](https://coveralls.io/r/hajee/connect)
+
+[![Enterprise Modules](https://raw.githubusercontent.com/enterprisemodules/public_images/master/banner1.jpg)](https://www.enterprisemodules.com)
 
 #### Table of Contents
 
