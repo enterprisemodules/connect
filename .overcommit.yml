@@ -1,56 +1,48 @@
 ---
-
 CommitMsg:
   CapitalizedSubject:
     enabled: false
-
   EmptyMessage:
     enabled: false
-
   TrailingPeriod:
     enabled: true
-
   TextWidth:
     enabled: false
-
 PreCommit:
   ALL:
     on_warn: fail
-
+  PuppetMetadataJsonLint:
+    enabled: true
+  RakeTarget:
+    enabled: false
+    description: Puppet lint with excludes
+    targets:
+    - lint
   AuthorEmail:
     enabled: true
-
   AuthorName:
     enabled: true
-
   MergeConflicts:
     enabled: true
-
-  PuppetLint:
-    flags: ['--relative']
-    enabled: true
-
-  YamlSyntax:
-    enabled: true
-
-  BundleCheck:
+  CaseConflicts:
     enabled: false
-
+  PuppetLint:
+    enabled: false
+  YamlSyntax:
+    enabled: false
+  BundleCheck:
+    enabled: true
   RuboCop:
     enabled: true
-
   Fasterer:
     enabled: true
-
   BundleAudit:
     enabled: true
-
   Brakeman:
     enabled: true
-
 PrePush:
   RakeTarget:
     enabled: true
     description: Run RSpec tests
     targets:
-     - 'spec'
+    - spec

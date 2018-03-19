@@ -11,13 +11,9 @@ require 'connect/datasources/base'
 require 'string_extension'
 require 'connect/parser'
 
-
-# Ignore error's in loading these files
-[ 'byebug',
-  'pry',
-  'ruby-debug',
-].each {|f| begin; require f; rescue LoadError; end}
-
+#
+# This is main module for Connect module
+#
 module Connect
   ##
   #
@@ -44,11 +40,12 @@ module Connect
   #
   Xref = Struct.new(:file_name, :lineno)
   Xdef = Struct.new(:file_name, :lineno)
+
+  # rubocop:disable ClassLength
   ##
   #
   # This class contains all methods called by the DSL parser
   #
-  # rubocop:disable ClassLength
   class Dsl < Racc::Parser
     extend Forwardable
 
@@ -56,15 +53,15 @@ module Connect
     # This instance variables are saved when pushing and popping parser state
     # The parser is popped and pushed on includes
     #
-    STATE_VARIABLES = [
-      :ss,
-      :lineno,
-      :current_file,
-      :racc_state,
-      :racc_t,
-      :racc_val,
-      :racc_read_next,
-    ]
+    STATE_VARIABLES = %i[
+      ss
+      lineno
+      current_file
+      racc_state
+      racc_t
+      racc_val
+      racc_read_next
+    ].freeze
 
     attr_reader :interpolator, :current_file, :config
 
@@ -102,11 +99,10 @@ module Connect
       new(nil, nil, nil, includer)
     end
 
-    def initialize(values_table    = nil,
-                      objects_table = nil,
-                      interpolator  = nil,
-                      includer      = nil
-                      )
+    def initialize(values_table  = nil,
+                   objects_table = nil,
+                   interpolator  = nil,
+                   includer      = nil)
       # @yydebug = true
       @values_table  = values_table || ValuesTable.new
       @objects_table = objects_table || ObjectsTable.new
@@ -117,6 +113,7 @@ module Connect
       @include_stack = []
       @current_scope = []
     end
+
     ##
     #
     # Assign the value to the name
@@ -138,15 +135,12 @@ module Connect
     end
 
     def double_quoted(value, xref = nil)
-      if contains_interpolation?(value)
-        interpolate(value, xref)
-      else
-        value
-      end
+      return interpolate(value, xref) if contains_interpolation?(value)
+      value
     end
 
     def lookup_objects(type, keys)
-      @objects_table.entries(type, keys).reduce([]) do | c, v |
+      @objects_table.entries(type, keys).reduce([]) do |c, v|
         type = v[0]
         name = v[1]
         c << [type, lookup_object(type, name).full_representation]
@@ -154,7 +148,7 @@ module Connect
     end
 
     def lookup_values(keys)
-      @values_table.entries(keys).reduce([]) {| c, v| c << [v,lookup_value(v)]}
+      @values_table.entries(keys).reduce([]) { |c, v| c << [v, lookup_value(v)] }
     end
 
     ##
@@ -182,9 +176,10 @@ module Connect
       value_reference(parameter, xref)
       Entry::Reference.new(parameter, nil, xref)
     end
+
     ##
     #
-    # include the specfied file in the parse process.
+    # include the specified file in the parse process.
     #
     def include_file(names, scope = nil)
       in_scope(scope) do
@@ -201,14 +196,14 @@ module Connect
 
     ##
     #
-    # create a datasource with the specfied name. A datasource object will be created
+    # create a datasource with the specified name. A datasource object will be created
     # who's type is Connect::Datasources::name. The Puppet autoloader will
     # try to locate this object in any of the loaded gems and modules.
     #
     # When it is found, it is initialized whit the name and the passed parameters
     #
     # @param name [String] the name of the datasource
-    # @param parameters [Array] an arry of parameters to pass to the datasource
+    # @param parameters [Array] an array of parameters to pass to the datasource
     #
     def datasource(name, *parameters)
       name = interpolated_value(name)
@@ -216,11 +211,8 @@ module Connect
       source_name = name.to_s.split('_').collect(&:capitalize).join # Camelize
       klass_name = "Connect::Datasources::#{source_name}"
       klass = Puppet::Pops::Types::ClassLoader.provide_from_string(klass_name)
-      if klass
-        @current_importer = klass.new(name, *parameters)
-      else
-        fail ArgumentError, "specfied importer '#{name}' doesn't exist"
-      end
+      return @current_importer = klass.new(name, *parameters) if klass
+      raise ArgumentError, "specified importer '#{name}' doesn't exist"
     end
 
     ##
@@ -228,9 +220,8 @@ module Connect
     # Import the specified data into the values list
     #
     def import(variable_name, lookup)
-      name = interpolated_value(name)
       Connect.debug "Importing variable #{variable_name}."
-      fail 'no current importer' unless @current_importer
+      raise 'no current importer' unless @current_importer
       value = @current_importer.lookup(lookup)
       assign(variable_name, value)
     end
@@ -241,14 +232,14 @@ module Connect
     # It the values parameter is set, a new entry will be added to the objects table
     #
     def define_object(type, name, values = nil, iterators = nil, xdef = nil)
-      name = interpolated_value(name)
-      Connect.debug("Defining object #{name} as type #{type}.")
-      fail ArgumentError, 'Iterators only allowed with block definition' if values.nil? && !iterators.nil?
+      new_name = interpolated_value(name)
+      Connect.debug("Defining object #{new_name} as type #{type}.")
+      raise ArgumentError, 'Iterators only allowed with block definition' if values.nil? && !iterators.nil?
       validate_iterators(iterators) unless iterators.nil?
       if iterators
-        add_objects_with_iterators(type, name, values, xdef, iterators)
-      else
-        add_object(type, name, values, xdef) if values
+        add_objects_with_iterators(type, new_name, values, xdef, iterators)
+      elsif values
+        add_object(type, new_name, values, xdef)
       end
       Entry::ObjectReference.new(type, name, nil, xdef)
     end
@@ -256,15 +247,29 @@ module Connect
     def add_objects_with_iterators(type, name, values, xdef, iterators)
       name = interpolated_value(name)
       iterator_values = {}
-      iterators.each_pair {|k,v| iterator_values[k] = values_from_iterator(v,k)}
-      max_size  = iterator_values.collect{|k,v| v.size}.max
-      iterator_values.each_pair {|k,v| iterator_values[k] = v * ((max_size/v.size) + (max_size % v.size))}
-      (0..max_size).each do | index|
-        value_hash = iterator_values.keys.reduce({}) {|v,k| v.merge!({k.to_sym => iterator_values[k][index]})}
+      iterators.each_pair { |k, v| iterator_values[k] = values_from_iterator(v, k) }
+      max_size = iterator_values.collect { |_k, v| v.size }.max
+      iterator_values.each_pair { |k, v| iterator_values[k] = v * ((max_size / v.size) + (max_size % v.size)) }
+      add_objects_to_space(type, iterator_values, values, max_size, name, xdef)
+    end
+
+    #
+    # rubocop:disable Metrics/ParameterLists
+    #
+    def add_objects_to_space(type, iterator_values, values, max_size, name, xdef)
+      (0..max_size).each do |index|
+        value_hash    = value_hash_output(iterator_values, index)
         object_name   = name % value_hash
         object_values = substitute_values(values, value_hash)
         add_object(type, object_name, object_values, xdef)
       end
+    end
+    #
+    # rubocop:enable Metrics/ParameterLists
+    #
+
+    def value_hash_output(iterator_values, index)
+      iterator_values.keys.reduce({}) { |v, k| v.merge!(k.to_sym => iterator_values[k][index]) }
     end
 
     ##
@@ -325,31 +330,38 @@ module Connect
     private
 
     def interpolator_not_allowed(name, type)
-      fail "#{name.value} is not allowed as a #{type}" if name.is_a?(Connect::Entry::Base)
+      raise "#{name.value} is not allowed as a #{type}" if name.is_a?(Connect::Entry::Base)
     end
 
     def interpolated_value(name)
       name.is_a?(Connect::Entry::Base) ? name.to_ext : name
     end
 
-
     def substitute_values(hash, values_hash)
       hash.extend(HashExtensions)
-      hash.transform_hash do |hash, key, content|
-        hash[key] = content % values_hash
+      hash.transform_hash do |h, k, content|
+        h[k] = content % values_hash
       end
     end
 
     def values_from_iterator(iterator, name)
-      range = Range.new( as_value(iterator[:from]),  as_value(iterator[:to])).step(as_value(iterator[:step])).to_a
+      range = Range.new(as_value(iterator[:from]), as_value(iterator[:to])).step(as_value(iterator[:step])).to_a
     rescue ArgumentError
-      raise "Invalid arguments for Object iterator, around line #{lineno} of config file '#{current_file}'"
+      invalid_arguments_error
     ensure
       elements = range.count
-      if elements > 500
-        raise "Iterator #{name} is #{elements} elements long, but maximum size is 500, around line #{lineno} of config file '#{current_file}'"
-      end
+      too_much_elements_error(name, elements) if elements > 500
       range
+    end
+
+    def invalid_arguments_error
+      raise "Invalid arguments for Object iterator, around line #{lineno} of " \
+            " config file '#{current_file}'"
+    end
+
+    def too_much_elements_error(name, elements)
+      raise "Iterator #{name} is #{elements} elements long, but maximum size " \
+            "is 500, around line #{lineno} of config file '#{current_file}'"
     end
 
     def as_value(iterator_value)
@@ -368,7 +380,7 @@ module Connect
     end
 
     def pop_current_parse_state
-      fail 'include stack poped beyond end' if @include_stack.empty?
+      raise 'include stack poped beyond end' if @include_stack.empty?
       state = @include_stack.pop
       popper(state, STATE_VARIABLES)
     end
@@ -382,26 +394,51 @@ module Connect
     end
 
     def scoped_name?(name)
-      name.scan(/\:\:/).length > 0
+      !name.scan(/\:\:/).empty?
     end
 
     def validate_iterators(iterators)
-      iterators.each_value {| iterator| validate_iterator(iterator)}
+      iterators.each_value { |iterator| validate_iterator(iterator) }
     end
 
     def validate_iterator(iterator)
-      invalid_keys = iterator.keys - [:from, :to, :step]
-      fail ArgumentError, "from value missing from iterator, around line #{lineno} of config file '#{current_file}'"  if iterator[:from].nil?
-      fail ArgumentError, "to value missing from iterator, around line #{lineno} of config file '#{current_file}'" if iterator[:to].nil?
-      fail ArgumentError, "to value missing from iterator, error around line #{lineno} of config file '#{current_file}'" if iterator[:step].nil?
-      fail ArgumentError, "iterator contains unknown key(s): #{invalid_keys}, error around line #{lineno} of config file '#{current_file}'" unless invalid_keys.empty?
+      invalid_keys = iterator.keys - %i[from to step]
+      empty_iterator_from_error if iterator[:from].nil?
+      empty_iterator_to_error if iterator[:to].nil?
+      empty_iterator_step_error if iterator[:step].nil?
+      empty_iterator_keys_error(invalid_keys) unless invalid_keys.empty?
     end
 
+    def empty_iterator_keys_error(invalid_keys)
+      raise ArgumentError, 'iterator contains unknown key(s):  ' \
+                            "#{invalid_keys}, error around line #{lineno} " \
+                            "of config file '#{current_file}'"
+    end
+
+    def empty_iterator_from_error
+      raise ArgumentError, 'from value missing from iterator, around line ' \
+                           "#{lineno} of config file '#{current_file}'"
+    end
+
+    def empty_iterator_step_error
+      raise ArgumentError, 'to value missing from iterator, error around ' \
+                           "line #{lineno} of config file '#{current_file}'"
+    end
+
+    def empty_iterator_to_error
+      raise ArgumentError, 'to value missing from iterator, error around ' \
+                           "line #{lineno} of config file '#{current_file}'"
+    end
+
+    #
+    # Checks whenever the regexp matches to the 0 and not nil
+    #
+    #
     def empty_definition?(string)
       (string =~ /\A(\s|\n|#.*)*\Z/) == 0
     end
 
-    def pusher( entries)
+    def pusher(entries)
       state = {}
       entries.each do |entry|
         state[entry] = instance_variable_get("@#{entry}".to_sym)
@@ -411,16 +448,14 @@ module Connect
 
     def process_multiline_value(value)
       @lineno ||= 0
-      @lineno+= value.lines.count if value.is_a?(String)
+      @lineno += value.lines.count if value.is_a?(String)
     end
 
-
-    def popper (state, entries)
+    def popper(state, entries)
       entries.each do |entry|
         instance_variable_set("@#{entry}".to_sym, state[entry])
       end
     end
-
   end
   # rubocop:enable ClassLength
 end

@@ -5,18 +5,18 @@ module Connect
   #
   #
   class Includer
-    DEFAULT_PATH = '/etc/puppet/config/'  # The default path where to find the config files
-    DEFAULT_TYPE = '.config'              # The default file type
+    DEFAULT_PATH = '/etc/puppet/config/'.freeze  # The default path where to find the config files
+    DEFAULT_TYPE = '.config'.freeze              # The default file type
 
     def initialize(config_path = DEFAULT_PATH)
-      @config_path  = Pathname.new(config_path)
+      @config_path = Pathname.new(config_path)
       @included_files = []
     end
 
     ##
     #
     # Check the the name of the inclusion and decide what to do. The result(s) will
-    # be yielded to the specfied closure. This routine can handle:
+    # be yielded to the specified closure. This routine can handle:
     # - absolute file names without wildcards
     # - absolute file names with a wildcard
     # - relative file names without wildcards
@@ -37,12 +37,12 @@ module Connect
       files = Dir.glob(path).each do |file|
         include_file(file, &proc)
       end
-      fail ArgumentError, "No files found for #{name}" if files.empty?
+      raise ArgumentError, "No files found for #{name}" if files.empty?
     end
 
     ##
     #
-    # Check if the specfied file is already included or not
+    # Check if the specified file is already included or not
     #
     # @param [String] name the file name to be checked
     # @return [Bool] true when the  file is already included

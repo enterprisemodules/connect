@@ -15,37 +15,37 @@ module Connect
 
     ##
     #
-    # Give all entries in the objects table based on the specfied type and name.
+    # Give all entries in the objects table based on the specified type and name.
     # As name, you can specify a regular expression.
     #
     #
-    def entries( type, name = /.*/)
-      all_keys = @objects_table.keys.select{| k| Regexp.new(key(type,name)).match(k) }.sort
-      all_keys.collect {|key| identity(key)}
+    def entries(type, name = /.*/)
+      all_keys = @objects_table.keys.select { |k| Regexp.new(key(type, name)).match(k) }.sort
+      all_keys.collect { |key| identity(key) }
     end
 
     ##
     #
-    # return the array of defintions for the specfied object
+    # return the array of defintions for the specified object
     #
     # @return defintions [Array] the Array of definitions
     #
     def definitions(type, name)
-      key = key(type,name)
-      entry = @objects_table.fetch(key) { fail "internal error. Object #{type} #{name} not found" }
-      entry.xref.collect {|e| e.class == Connect::Xdef ? [e.file_name, e.lineno] : nil}.compact
+      key = key(type, name)
+      entry = @objects_table.fetch(key) { raise "internal error. Object #{type} #{name} not found" }
+      entry.xref.collect { |e| e.class == Connect::Xdef ? [e.file_name, e.lineno] : nil }.compact
     end
 
     ##
     #
-    # return the array of references for the specfied parameter
+    # return the array of references for the specified parameter
     #
     # @return defintions [Array] the Array of references
     #
     def references(type, name)
-      key = key(type,name)
-      entry = @objects_table.fetch(key) { fail "internal error. Object #{type} #{name} not found" }
-      entry.xref.collect {|e| e.class == Connect::Xref ? [e.file_name, e.lineno] : nil}.compact
+      key = key(type, name)
+      entry = @objects_table.fetch(key) { raise "internal error. Object #{type} #{name} not found" }
+      entry.xref.collect { |e| e.class == Connect::Xref ? [e.file_name, e.lineno] : nil }.compact
     end
 
     ##
@@ -68,7 +68,7 @@ module Connect
 
     ##
     #
-    # Lookup an object with a specfied type and name in the object table
+    # Lookup an object with a specified type and name in the object table
     #
     # @param type [String] the type of object to lookup
     # @param name [String] the name of the object to lookup
@@ -80,7 +80,7 @@ module Connect
 
     ##
     #
-    # Lookup multile objects with a specfied type and a regexp name in the object table
+    # Lookup multile objects with a specified type and a regexp name in the object table
     #
     # @param type [String] the type of object to lookup
     # @param name [Regexp] the name of the object to lookup

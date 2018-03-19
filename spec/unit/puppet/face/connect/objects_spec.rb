@@ -20,15 +20,15 @@ RSpec.describe "puppet connect objects" do
 
     subject { Puppet::Face[:connect, :current].get_action :objects }
 
-    its(:summary)     { is_expected.to match(/List the objects specfied in the connect config/) }
-    its(:description) { is_expected.to match(/List the object\(s\) specfied in the connect config file\(s\). If you specfy a parameter name/) }
+    its(:summary)     { is_expected.to match(/List the objects specified in the connect config/) }
+    its(:description) { is_expected.to match(/List the object\(s\) specified in the connect config file\(s\). If you specfy a parameter name/) }
     its(:examples)    { is_expected.to match(/\$ puppet connect objects www.apache.org --type host/)}
     its(:arguments)   { is_expected.to match(/object_name/)}
   end
 
   describe 'the options' do
 
-    before do       
+    before do
       expect(Puppet).to receive(:[]).and_return(Pathname.new(File.dirname(__FILE__)).parent.parent.parent.parent.parent)
     end
 

@@ -48,7 +48,7 @@ RSpec.describe Connect::Dsl do
       it 'passes control to the importer' do
         expect {
          dsl.datasource('nonexisting', 'a.yaml')
-        }.to raise_exception(ArgumentError, 'specfied importer \'nonexisting\' doesn\'t exist' )
+        }.to raise_exception(ArgumentError, 'specified importer \'nonexisting\' doesn\'t exist' )
       end
     end
   end

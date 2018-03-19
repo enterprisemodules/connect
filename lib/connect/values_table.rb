@@ -19,45 +19,45 @@ module Connect
 
     ##
     #
-    # Give all entries in the values table based on the specfied name.
+    # Give all entries in the values table based on the specified name.
     # As name, you can specify a regular expression.
     #
     # @return [Array]
     #
-    def entries( name = /.*/)
-      @values_table.keys.select{| k| Regexp.new(name).match(k) }.sort
+    def entries(name = /.*/)
+      @values_table.keys.select { |k| Regexp.new(name).match(k) }.sort
     end
 
     ##
     #
-    # return the array of defintions for the specfied parameter
+    # return the array of defintions for the specified parameter
     #
     # @return defintions [Array] the Array of definitions
     #
     def definitions(parameter)
-      entry = @values_table.fetch(parameter) { fail "internal error. Parameter entry #{parameter} not found" }
-      entry.xref.collect {|e| e.class == Connect::Xdef ? [e.file_name, e.lineno] : nil}.compact
+      entry = @values_table.fetch(parameter) { raise "internal error. Parameter entry #{parameter} not found" }
+      entry.xref.collect { |e| e.class == Connect::Xdef ? [e.file_name, e.lineno] : nil }.compact
     end
 
     ##
     #
-    # return the array of references for the specfied parameter
+    # return the array of references for the specified parameter
     #
     # @return defintions [Array] the Array of references
     #
     def references(parameter)
-      entry = @values_table.fetch(parameter) { fail "internal error. Parameter entry #{parameter} not found" }
-      entry.xref.collect {|e| e.class == Connect::Xref ? [e.file_name, e.lineno] : nil}.compact
+      entry = @values_table.fetch(parameter) { raise "internal error. Parameter entry #{parameter} not found" }
+      entry.xref.collect { |e| e.class == Connect::Xref ? [e.file_name, e.lineno] : nil }.compact
     end
 
     ##
     #
-    # Register a cross reference in the entry for the specfied parameter
+    # Register a cross reference in the entry for the specified parameter
     #
     def register_reference(parameter, xref)
       entry = @values_table.fetch(parameter) do
         value = Entry::Value.new(nil)
-        add( parameter => value)
+        add(parameter => value)
         value
       end
       entry.add_reference(xref)

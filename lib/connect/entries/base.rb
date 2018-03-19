@@ -24,7 +24,7 @@ module Connect
       end
 
       def merge!(entry)
-        @xref     << entry.xref
+        @xref << entry.xref
         @xref     = @xref.flatten.compact
         @value    = entry.value
         @selector = entry.selector
@@ -34,6 +34,7 @@ module Connect
         @xref << reference
         @xref = @xref.flatten.compact
       end
+
       ##
       #
       # Translate the object for external representation
@@ -41,7 +42,7 @@ module Connect
       # @return [Hash] a hash containing the name as key and the data as a [Hash]
       #
       def to_ext
-        fail ArgumentError, 'Internal error. to_ext must be implemented'
+        raise ArgumentError, 'Internal error. to_ext must be implemented'
       end
 
       ##
@@ -52,7 +53,7 @@ module Connect
       #
       def final
         result = self
-        result = result.to_ext  while result.respond_to?(:to_ext)
+        result = result.to_ext while result.respond_to?(:to_ext)
         result
       end
     end

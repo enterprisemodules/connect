@@ -1,0 +1,147 @@
+---
+Jenkinsfile:
+  cron_trigger: true
+  quality_checks: true
+  unit_tests:
+  - ruby_version: 2.1.10
+    puppet_version: 4.9.4
+  - ruby_version: 2.1.10
+    puppet_version: 4.10.8
+  - ruby_version: 2.4.0
+    puppet_version: 5.0.1
+  - ruby_version: 2.4.0
+    puppet_version: 5.1.0
+  - ruby_version: 2.4.0
+    puppet_version: 5.2.0
+  - ruby_version: 2.4.0
+    puppet_version: 5.3.1
+  acceptance_tests: false
+
+.overcommit.yml:
+  CommitMsg:
+    CapitalizedSubject:
+      enabled: false
+    EmptyMessage:
+      enabled: false
+    TrailingPeriod:
+      enabled: true
+    TextWidth:
+      enabled: false
+  PreCommit:
+    ALL:
+      on_warn: fail
+    PuppetMetadataJsonLint:
+      enabled: true
+    RakeTarget:
+      enabled: false
+      description: Puppet lint with excludes
+      targets:
+      - 'lint'
+    AuthorEmail:
+      enabled: true
+    AuthorName:
+      enabled: true
+    MergeConflicts:
+      enabled: true
+    CaseConflicts:
+      enabled: false
+    PuppetLint:
+      enabled: false
+    YamlSyntax:
+      enabled: false
+    BundleCheck:
+      enabled: true
+    RuboCop:
+      enabled: true
+    Fasterer:
+      enabled: true
+    BundleAudit:
+      enabled: true
+    Brakeman:
+      enabled: true
+  PrePush:
+    RakeTarget:
+      enabled: true
+      description: Run RSpec tests
+      targets:
+      - 'spec'
+
+.fixtures.yml:
+  fixtures:
+    repositories:
+      connect_yaml: git@github.com:enterprisemodules/connect_yaml.git
+
+.rubocop.yml:
+  target_ruby_version: 1.8.7
+  include:
+    - '**/*.rb'
+  exclude:
+    - '**/.identity.rb'
+    - '**/*.rake'
+    - '**/*.task'
+    - '**/Gemfile'
+    - '**/Guardfile'
+    - '**/jwt.rb'
+    - '**/preamble.rb'
+    - '**/Rakefile'
+    - '**/Vagrantfile'
+    - 'bin/*'
+    - 'bin/**/*'
+    - 'lib/1.8.7/csv.rb'
+    - 'lib/connect/lexer.rb'
+    - 'lib/connect/parser.rb'
+    - 'lib/racc/**/*'
+    - 'pkg/**/*'
+    - 'spec/**/*.rb'
+    - 'spec/**/*'
+  indent_heredoc: false
+  dot_position: 'trailing'
+  numeric_predicate: false
+  symbol_array: false
+  percent_literal_delimiters: false
+  lambda: false
+  hash_syntax: 'hash_rockets'
+  signal_exception: false
+  eval: false
+  line_length: 200
+  accessor_method_name: false
+  method_length: 20
+  block_length: false
+
+Gemfile:
+  required:
+    ':unit_test':
+      - gem: 'hiera-puppet-helper'
+      - gem: 'rspec-collection_matchers'
+      - gem: 'rspec-its'
+      - gem: 'rspec-puppet-utils'
+      - gem: 'rspec-puppet'
+    ':acceptance_test':
+      - gem: beaker
+        require: false
+        git: https://github.com/enterprisemodules/beaker.git
+      - gem: beaker-docker
+        git: https://github.com/enterprisemodules/beaker-docker.git
+        ref: 52a5fc118e699e01679e02d25e346e92142fead9
+      - gem: beaker-hiera
+      - gem: beaker-module_install_helper
+      - gem: beaker-pe
+      - gem: beaker-puppet_install_helper
+      - gem: beaker-rspec
+    ':release':
+      - gem: puppet-blacksmith
+    ':quality':
+      - gem: brakeman
+      - gem: bundle-audit
+      - gem: fasterer
+      - gem: metadata-json-lint
+      - gem: overcommit
+        git: https://github.com/brigade/overcommit.git
+      - gem: puppet-lint
+      - gem: reek
+      - gem: rubocop
+        require: false
+    ':unit_test, :acceptance_test':
+      - gem: easy_type_helpers
+        git: https://github.com/enterprisemodules/easy_type_helpers.git
+      - gem: puppetlabs_spec_helper

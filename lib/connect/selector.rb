@@ -22,36 +22,21 @@ module Connect
     # apply the current selector on the current value
     #
     # @return the new value
-    # rubocop:disable PerceivedComplexity
     def run
-      if @selector && @selection_value
-        begin
-          case
-          when @selector =~ TO_RESOURCE_REGEX && @value.is_a?(Connect::ObjectRepresentation)
-            #
-            # The to_resource is a special selector when operating on an object. It will transform the
-            # object into a valid resource hash and filter all attributes not available in the selected
-            # object.
-            #
-            convert_to_resource
-          when @selector =~ SLICE_REGEX && @value.is_a?(Connect::ObjectRepresentation)
-            slice_object
-          when @selector =~ SLICE_CONTENT_REGEX && @value.is_a?(Connect::ObjectRepresentation)
-            slice_content
-          when @selector =~ SLICE_REGEX && @value.is_a?(Hash)
-            slice_hash
-          else
-            instance_eval("@selection_value#{@selector}")
-          end
-        rescue => e
-          raise ArgumentError, "usage of invalid selector '#{@selector}' on value '#{@selection_value}',
-            resulted in Ruby error #{e.message}"
-        end
-      else
-        @value
-      end
+      return slice_action if @selector && @selection_value
+      @value
     end
-    # rubocop:enable PerceivedComplexity
+
+    def slice_action
+      return convert_to_resource if resource?
+      return slice_object if puppet_object?
+      return slice_content if content?
+      return slice_hash if hash?
+      instance_eval("@selection_value#{@selector}", __FILE__, __LINE__)
+    rescue StandardError => e
+      raise ArgumentError, "usage of invalid selector '#{@selector}' on value '#{@selection_value}',
+        resulted in Ruby error #{e.message}"
+    end
 
     #
     # Convenience  method
@@ -65,6 +50,27 @@ module Connect
     end
 
     private
+
+    def resource?
+      #
+      # The to_resource is a special selector when operating on an object. It will transform the
+      # object into a valid resource hash and filter all attributes not available in the selected
+      # object.
+      #
+      @selector =~ TO_RESOURCE_REGEX && @value.is_a?(Connect::ObjectRepresentation)
+    end
+
+    def puppet_object?
+      @selector =~ SLICE_REGEX && @value.is_a?(Connect::ObjectRepresentation)
+    end
+
+    def content?
+      @selector =~ SLICE_CONTENT_REGEX && @value.is_a?(Connect::ObjectRepresentation)
+    end
+
+    def hash?
+      @selector =~ SLICE_REGEX && @value.is_a?(Hash)
+    end
 
     ##
     #
@@ -109,6 +115,7 @@ module Connect
       cleaned_value = @value.value.collect { |k, v| all_attributes.include?(k) ? [k, v] : nil }.compact
       { @value.keys.first => Hash[cleaned_value] }
     end
+
     ##
     #
     # remove all attributes thar do not belong to the specified resource
@@ -116,15 +123,16 @@ module Connect
     # @return [Hash] Resource like hash containing only valid attributes
     #
     def slice_hash
-      items = @selector.scan(/['|"](\w+)['|"]/).flatten
       return {} if items.empty?
-      if items.size == 1
-        items[0] = items[0].to_s if items[0].is_a?(Symbol)
-        @value.select {|key| key.to_s.match(items.first) }
-      else
-        Hash[@value.select {|key, value| items.include?(key)}]
-      end
+      return singlar_hash if items.size == 1
+      Hash[@value.select { |key, _value| items.include?(key) }]
     end
+
+    def singlar_hash
+      first_item_string if items[0].is_a?(Symbol)
+      @value.select { |key| key.to_s.match(items.first) }
+    end
+
     ##
     #
     # filter attributes specified in the arguments.
@@ -132,30 +140,45 @@ module Connect
     # @return [Hash] Resource like hash containing only valid attributes
     #
     def slice_object
-      object_name = @value.keys.first
-      values = @value.values.first
-      items = @selector.scan(/['|"](\w+)['|"]/).flatten
-      return {object_name => {}} if items.empty?
-      if items.size == 1
-        items[0] = items[0].to_s if items[0].is_a?(Symbol)
-        ObjectRepresentation[object_name, Hash[values.select {|key, value| key.to_s.match(items.first) }]]
-      else
-        ObjectRepresentation[object_name, Hash[values.select {|key, value| items.include?(key)}]]
-      end
+      return { object_name => {} } if items.empty?
+      return small_object_slice if items.size == 1
+      normal_object_slice
     end
 
+    def small_object_slice
+      first_item_string if items[0].is_a?(Symbol)
+      ObjectRepresentation[object_name, Hash[values.select { |key, _value| key.to_s.match(items.first) }]]
+    end
+
+    def first_item_string
+      items[0] = items[0].to_s
+    end
+
+    def normal_object_slice
+      ObjectRepresentation[object_name, Hash[values.select { |key, _value| items.include?(key) }]]
+    end
 
     def slice_content
-      values = @value.values.first
-      items = @selector.scan(/['|"](\w+)['|"]/).flatten
       return {} if items.empty?
-      if items.size == 1
-        items[0] = items[0].to_s if items[0].is_a?(Symbol)
-        Hash[values.select {|key, value| key.to_s.match(items.first) }]
-      else
-        Hash[values.select {|key, value| items.include?(key)}]
-      end
+      return small_content_slice if items.size == 1
+      Hash[values.select { |key, _value| items.include?(key) }]
     end
 
+    def small_content_slice
+      first_item_string if items[0].is_a?(Symbol)
+      Hash[values.select { |key, _value| key.to_s.match(items.first) }]
+    end
+
+    def values
+      @value.values.first
+    end
+
+    def items
+      @items ||= @selector.scan(/['|"](\w+)['|"]/).flatten
+    end
+
+    def object_name
+      @value.keys.first
+    end
   end
 end
