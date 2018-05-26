@@ -167,7 +167,7 @@ module Connect
     private
 
     def exists?(entry)
-      @values_table.keys.include?(entry.keys.first)
+      @values_table.key?(entry.keys.first)
     end
   end
 end
