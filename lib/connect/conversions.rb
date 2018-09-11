@@ -23,6 +23,7 @@ module Connect
       case value
       when Connect::Entry::ObjectReference
         return process_matching_value(value) if object_id_equals_key?(value, key)
+
         final_object(value, key)
       when Hash
         converted_hash(key, value)

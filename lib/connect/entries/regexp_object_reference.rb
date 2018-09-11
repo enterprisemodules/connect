@@ -20,6 +20,7 @@ module Connect
       def to_ext
         values = Connect::Entry::Base.objects_table.lookup_regexp(@type, @name)
         return values if @selector.nil?
+
         return_value = {}
         values.each do |key, hash|
           return_value.merge!(key => Connect::Selector.run(hash, @selector))

@@ -136,6 +136,7 @@ module Connect
 
     def double_quoted(value, xref = nil)
       return interpolate(value, xref) if contains_interpolation?(value)
+
       value
     end
 
@@ -212,6 +213,7 @@ module Connect
       klass_name = "Connect::Datasources::#{source_name}"
       klass = Puppet::Pops::Types::ClassLoader.provide_from_string(klass_name)
       return @current_importer = klass.new(name, *parameters) if klass
+
       raise ArgumentError, "specified importer '#{name}' doesn't exist"
     end
 
@@ -222,6 +224,7 @@ module Connect
     def import(variable_name, lookup)
       Connect.debug "Importing variable #{variable_name}."
       raise 'no current importer' unless @current_importer
+
       value = @current_importer.lookup(lookup)
       assign(variable_name, value)
     end
@@ -235,6 +238,7 @@ module Connect
       new_name = interpolated_value(name)
       Connect.debug("Defining object #{new_name} as type #{type}.")
       raise ArgumentError, 'Iterators only allowed with block definition' if values.nil? && !iterators.nil?
+
       validate_iterators(iterators) unless iterators.nil?
       if iterators
         add_objects_with_iterators(type, new_name, values, xdef, iterators)
@@ -381,6 +385,7 @@ module Connect
 
     def pop_current_parse_state
       raise 'include stack poped beyond end' if @include_stack.empty?
+
       state = @include_stack.pop
       popper(state, STATE_VARIABLES)
     end

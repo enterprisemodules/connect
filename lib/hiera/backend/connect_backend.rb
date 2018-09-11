@@ -23,6 +23,7 @@ class Hiera
 
       def initialize
         raise 'Connect section not filled in hiera.yaml' if Config[:connect].nil?
+
         Hiera.debug('CONNECT: Backend initialized')
         @configs_dir = Config[:connect].fetch(:datadir) { '/etc/puppet/config' }
         Hiera.debug("CONNECT: datadir is set to #{@configs_dir}")
@@ -84,6 +85,7 @@ class Hiera
       def setup_context(scope, order_override)
         Connect::Dsl.config.scope = scope # Pass the scope to connect
         return nil unless any_file_changed?(scope, order_override) || lookup_changed?(scope, order_override)
+
         @connect = Connect::Dsl.instance(@configs_dir)
         parse_config(scope, order_override)
       end

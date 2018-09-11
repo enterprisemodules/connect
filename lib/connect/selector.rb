@@ -24,6 +24,7 @@ module Connect
     # @return the new value
     def run
       return slice_action if @selector && @selection_value
+
       @value
     end
 
@@ -32,6 +33,7 @@ module Connect
       return slice_object if puppet_object?
       return slice_content if content?
       return slice_hash if hash?
+
       instance_eval("@selection_value#{@selector}", __FILE__, __LINE__)
     rescue StandardError => e
       raise ArgumentError, "usage of invalid selector '#{@selector}' on value '#{@selection_value}',
@@ -125,6 +127,7 @@ module Connect
     def slice_hash
       return {} if items.empty?
       return singlar_hash if items.size == 1
+
       Hash[@value.select { |key, _value| items.include?(key) }]
     end
 
@@ -142,6 +145,7 @@ module Connect
     def slice_object
       return { object_name => {} } if items.empty?
       return small_object_slice if items.size == 1
+
       normal_object_slice
     end
 
@@ -161,6 +165,7 @@ module Connect
     def slice_content
       return {} if items.empty?
       return small_content_slice if items.size == 1
+
       Hash[values.select { |key, _value| items.include?(key) }]
     end
 
