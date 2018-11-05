@@ -7,9 +7,9 @@ module Connect
   #
   #
   class Selector
-    TO_RESOURCE_REGEX   = /^\.to_resource\('([a-zA-Z]+)'\)/
-    SLICE_REGEX         = /^\.slice\(\s*(['|"]\w*['|"],*\s*)+\)/
-    SLICE_CONTENT_REGEX = /^\.slice_content\(\s*(['|"]\w*['|"],*\s*)+\)/
+    TO_RESOURCE_REGEX   = /^\.to_resource\('([a-zA-Z]+)'\)/.freeze
+    SLICE_REGEX         = /^\.slice\(\s*(['|"]\w*['|"],*\s*)+\)/.freeze
+    SLICE_CONTENT_REGEX = /^\.slice_content\(\s*(['|"]\w*['|"],*\s*)+\)/.freeze
 
     def initialize(value, selector)
       @value = value
