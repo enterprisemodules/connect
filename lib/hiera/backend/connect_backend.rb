@@ -1,6 +1,5 @@
 require 'hiera'
 require 'connect/dsl'
-
 class Hiera
   #
   # Hiera backend are the objects that implement the hiera lookups
@@ -122,6 +121,7 @@ class Hiera
         false
       end
 
+      # rubocop: disable Metrics/AbcSize
       def file_changed?(source, scope)
         file_name = Backend.datafile(:connect, scope, source, 'config')
         if file_name && File.exist?(file_name)
@@ -141,6 +141,7 @@ class Hiera
           true
         end
       end
+      # rubocop: enable Metrics/AbcSize
 
       def parse_file(file)
         @connect.include_file(file)
