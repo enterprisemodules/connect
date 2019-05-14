@@ -37,6 +37,7 @@ group :quality do
   gem 'puppet-lint'
   gem 'reek'
   gem 'rubocop', :require => false
+  gem 'rubocop-performance', :require => false
 end
 group :unit_test, :acceptance_test do
   gem 'easy_type_helpers', :git => 'https://github.com/enterprisemodules/easy_type_helpers.git'

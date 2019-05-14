@@ -1,3 +1,4 @@
+require: rubocop-performance
 # Common configuration.
 AllCops:
   # Include common Ruby source files.
@@ -25,7 +26,13 @@ AllCops:
     - 'spec/**/*.rb'
     - 'spec/**/*'
 
+Style/SafeNavigation:
+  Enabled: false
+
 Layout/IndentHeredoc:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
   Enabled: false
 
 Layout/DotPosition:
