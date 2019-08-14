@@ -1,6 +1,6 @@
 ---
 fixtures:
-  repositories:
-    connect_yaml: git@github.com:enterprisemodules/connect_yaml.git
+  forge_modules:
+    connect_yaml: hajee/connect_yaml
   symlinks:
     connect: "#{source_dir}"

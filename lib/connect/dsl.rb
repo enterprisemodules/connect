@@ -108,10 +108,12 @@ module Connect
       @objects_table = objects_table || ObjectsTable.new
       Connect::Entry::Base.values_table  = @values_table
       Connect::Entry::Base.objects_table = @objects_table
+      # rubocop: disable Layout/SpaceAroundOperators
       @interpolator  = interpolator || Interpolator.new(@values_table)
       @includer      = includer || Includer.new
       @include_stack = []
       @current_scope = []
+      # rubocop: enable Layout/SpaceAroundOperators
     end
 
     ##
