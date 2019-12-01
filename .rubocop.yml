@@ -29,7 +29,7 @@ AllCops:
 Style/SafeNavigation:
   Enabled: false
 
-Layout/IndentHeredoc:
+Layout/HeredocIndentation:
   Enabled: false
 
 Style/FrozenStringLiteralComment:
