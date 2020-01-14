@@ -8,7 +8,7 @@ if ENV.key?('PUPPET_GEM_VERSION') && Gem::Version.new(ENV['PUPPET_GEM_VERSION'])
 end
 
 gem 'puppet', puppetversion, :require => false, :groups => [:test]
-
+gem 'pdk', '>1.9.0'
 group :unit_test do
   gem 'hiera-puppet-helper'
   gem 'rspec-collection_matchers'
