@@ -109,6 +109,7 @@ Jenkinsfile:
   block_length: false
 
 Gemfile:
+  unmanaged: true #unamanged because of resource api version line 6
   required:
     ':unit_test':
       - gem: 'hiera-puppet-helper'
@@ -134,10 +135,7 @@ Gemfile:
       - gem: brakeman
       - gem: bundle-audit
       - gem: fasterer
-      - gem: metadata-json-lint
-      - gem: overcommit
-        git: https://github.com/brigade/overcommit.git
-      - gem: puppet-lint
+
       - gem: reek
       - gem: rubocop
         require: false
@@ -145,3 +143,33 @@ Gemfile:
       - gem: easy_type_helpers
         git: https://github.com/enterprisemodules/easy_type_helpers.git
       - gem: puppetlabs_spec_helper
+.rubocop.yml:
+  Style/FrozenStringLiteralComment:
+    Enabled: false
+  AllCops:
+    Exculude:
+      - 'bin/**/*'
+      - 'lib/connect/lexer.rb'
+      - 'lib/connect/parser.rb'
+      - 'lib/racc/**/*'
+      - 'pkg/**/*'
+      - 'spec/**/*.rb'
+      - 'spec/**/*'
+.rspec:
+  required:
+    - --require spec_helper
+.gitignore:
+  required:
+    - 'lib/dsl/parser.output'
+    - 'lib/connect/parser.output'
+    - '.yardoc'
+    - 'coverage/.last_run.json'
+    - 'coverage/.resultset.json'
+data/common.yaml:
+  unmanaged: true
+spec/default_facts.yml:
+  unanaged: true
+Rakefile:
+  unmanaged: true
+.gitlab-ci.yml:
+  unmanaged: true
