@@ -1,83 +1,61 @@
+---
 require: rubocop-performance
-# Common configuration.
 AllCops:
-  # Include common Ruby source files.
-
   Include:
-    - '**/*.rb'
-
+  - "**/*.rb"
   Exclude:
-    - '**/.identity.rb'
-    - '**/*.rake'
-    - '**/*.task'
-    - '**/Gemfile'
-    - '**/Guardfile'
-    - '**/jwt.rb'
-    - '**/preamble.rb'
-    - '**/Rakefile'
-    - '**/Vagrantfile'
-    - 'bin/*'
-    - 'bin/**/*'
-    - 'lib/1.8.7/csv.rb'
-    - 'lib/connect/lexer.rb'
-    - 'lib/connect/parser.rb'
-    - 'lib/racc/**/*'
-    - 'pkg/**/*'
-    - 'spec/**/*.rb'
-    - 'spec/**/*'
-
-Style/SafeNavigation:
-  Enabled: false
-
+  - "**/preamble.rb"
+  - "**/.identity.rb"
+  - "**/jwt.rb"
+  - spec/**/*.rb
+  - "**/*.rake"
+  - "**/*.task"
+  - "**/Gemfile"
+  - "**/Rakefile"
+  - "**/Guardfile"
+  - "**/Vagrantfile"
+  - lib/1.8.7/csv.rb
+  - pkg/**/*
+  - bin/*
+  Exculude:
+  - bin/**/*
+  - lib/connect/lexer.rb
+  - lib/connect/parser.rb
+  - lib/racc/**/*
+  - pkg/**/*
+  - spec/**/*.rb
+  - spec/**/*
 Layout/HeredocIndentation:
   Enabled: false
-
-Style/FrozenStringLiteralComment:
+Security/Eval:
   Enabled: false
-
+Layout/LineLength:
+  Max: 200
+Naming/AccessorMethodName:
+  Enabled: false
+Metrics/MethodLength:
+  Max: 20
 Layout/DotPosition:
   EnforcedStyle: trailing
-
 Style/NumericPredicate:
   Enabled: false
-
 Style/SymbolArray:
   Enabled: false
-
 Style/PercentLiteralDelimiters:
   Enabled: false
-
-# Ruby 1.8.7 doesn't have the -> lambda
 Style/Lambda:
   Enabled: false
-
-# Ruby 1.8.7 doesn't have 1.9 style hash syntax
 Style/HashSyntax:
   EnforcedStyle: hash_rockets
-
 Style/SignalException:
   Enabled: false
-
 Style/ClassAndModuleChildren:
   Enabled: false
-
 Naming/ClassAndModuleCamelCase:
   Enabled: false
-
-Eval:
-  Enabled: false
-
-LineLength:
-  Max: 200
-
-AccessorMethodName:
-  Enabled: false
-
-MethodLength:
-  Max: 20
-
 Metrics/BlockLength:
   Enabled: false
-
 Performance/RegexpMatch:
+  Enabled: false
+Style/FrozenStringLiteralComment:
   Enabled: false

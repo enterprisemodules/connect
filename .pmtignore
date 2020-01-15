@@ -19,7 +19,6 @@ Rakefile
 spec/
 test_env.sh
 tests/
-tests/
 tmp/
 TODO.md
 Vagrantfile

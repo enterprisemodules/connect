@@ -7,77 +7,81 @@
   "source": "https://github.com/hajee/connect",
   "project_page": "https://github.com/hajee/connect",
   "issues_url": "https://github.com/hajee/connect/issues",
-  "description": "A replacement for YAML in hiera. Connect allows you to describe and transform your data for usage in Puppet modules",
   "dependencies": [
+
   ],
   "operatingsystem_support": [
-      {
-        "operatingsystem": "RedHat",
-        "operatingsystemrelease": [
-          "4",
-          "5",
-          "6",
-          "7"
-        ]
-      },
-      {
-        "operatingsystem": "CentOS",
-        "operatingsystemrelease": [
-          "4",
-          "5",
-          "6",
-          "7"
-        ]
-      },
-      {
-        "operatingsystem": "OracleLinux",
-        "operatingsystemrelease": [
-          "4",
-          "5",
-          "6"
-        ]
-      },
-      {
-        "operatingsystem": "Scientific",
-        "operatingsystemrelease": [
-          "4",
-          "5",
-          "6",
-          "7"
-        ]
-      },
-      {
-        "operatingsystem": "SLES",
-        "operatingsystemrelease": [
-          "11 SP1"
-        ]
-      },
-      {
-        "operatingsystem": "Debian",
-        "operatingsystemrelease": [
-          "6",
-          "7"
-        ]
-      },
-      {
-        "operatingsystem": "Ubuntu",
-        "operatingsystemrelease": [
-          "10.04",
-          "12.04"
-        ]
-      },
-      {
-        "operatingsystem": "Solaris",
-        "operatingsystemrelease": [
-          "10",
-          "11"
-        ]
-      }
-    ],
-    "requirements": [
-      {
-        "name": "puppet",
-        "version_requirement": ">=3.4.3"
-      }
-    ]
+    {
+      "operatingsystem": "RedHat",
+      "operatingsystemrelease": [
+        "4",
+        "5",
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "CentOS",
+      "operatingsystemrelease": [
+        "4",
+        "5",
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "OracleLinux",
+      "operatingsystemrelease": [
+        "4",
+        "5",
+        "6"
+      ]
+    },
+    {
+      "operatingsystem": "Scientific",
+      "operatingsystemrelease": [
+        "4",
+        "5",
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "SLES",
+      "operatingsystemrelease": [
+        "11 SP1"
+      ]
+    },
+    {
+      "operatingsystem": "Debian",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "Ubuntu",
+      "operatingsystemrelease": [
+        "10.04",
+        "12.04"
+      ]
+    },
+    {
+      "operatingsystem": "Solaris",
+      "operatingsystemrelease": [
+        "10",
+        "11"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "name": "puppet",
+      "version_requirement": ">=3.4.3"
+    }
+  ],
+  "description": "A replacement for YAML in hiera. Connect allows you to describe and transform your data for usage in Puppet modules",
+  "pdk-version": "1.15.0",
+  "template-url": "https://github.com/enterprisemodules/pdksync_configs.git#master",
+  "template-ref": "heads/master-0-g3ff47a6"
 }
