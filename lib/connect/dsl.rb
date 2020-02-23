@@ -41,7 +41,7 @@ module Connect
   Xref = Struct.new(:file_name, :lineno)
   Xdef = Struct.new(:file_name, :lineno)
 
-  # rubocop:disable ClassLength
+  # rubocop:disable Metrics/ClassLength
   ##
   #
   # This class contains all methods called by the DSL parser
@@ -464,5 +464,5 @@ module Connect
       end
     end
   end
-  # rubocop:enable ClassLength
+  # rubocop:enable Metrics/ClassLength
 end

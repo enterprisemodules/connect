@@ -11,7 +11,7 @@ module HashExtensions
   # @param block [Proc] proc to yield
   # @return [Hash] the transformed hash
   #
-  # rubocop:disable CaseEquality, ElseAlignment, EndAlignment, IndentationWidth, BlockAlignment, EachWithObject
+  # rubocop:disable Style/CaseEquality, Layout/ElseAlignment, Layout/EndAlignment, Layout/IndentationWidth, Layout/BlockAlignment, Style/EachWithObject
   def transform_hash(options = {}, &block)
      inject({}) do |result, (key, value)|
       value = if options[:deep] && Hash === value
@@ -23,7 +23,7 @@ module HashExtensions
       result
     end
   end
-  # rubocop:enable CaseEquality, ElseAlignment, EndAlignment, IndentationWidth, BlockAlignment, EachWithObject
+  # rubocop:enable Style/CaseEquality, Layout/ElseAlignment, Layout/EndAlignment, Layout/IndentationWidth, Layout/BlockAlignment, Style/EachWithObject
 
   #
   # Convert all keys in the hash to strings
