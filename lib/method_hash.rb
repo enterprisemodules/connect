@@ -6,7 +6,6 @@ module MethodHashMethods
   #
   # Implements the lookup of hash entries based on the method call
   #
-  # rubocop:disable Style/MethodMissingSuper
   # rubocop:disable Style/MissingRespondToMissing
   def method_missing(method_sym, *_arguments, &_block)
     key = method_sym.to_s
@@ -14,7 +13,7 @@ module MethodHashMethods
 
     raise ArgumentError, "requested unassigned attribute #{key} from #{self}"
   end
-  # rubocop:enable Style/MethodMissingSuper
+
   # rubocop:enable Style/MissingRespondToMissing
 
   ##
