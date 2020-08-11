@@ -40,8 +40,6 @@ module Connect
   #
   Xref = Struct.new(:file_name, :lineno)
   Xdef = Struct.new(:file_name, :lineno)
-
-  # rubocop:disable Metrics/ClassLength
   ##
   #
   # This class contains all methods called by the DSL parser
@@ -259,9 +257,6 @@ module Connect
       add_objects_to_space(type, iterator_values, values, max_size, name, xdef)
     end
 
-    #
-    # rubocop:disable Metrics/ParameterLists
-    #
     def add_objects_to_space(type, iterator_values, values, max_size, name, xdef)
       (0..max_size).each do |index|
         value_hash    = value_hash_output(iterator_values, index)
@@ -270,9 +265,6 @@ module Connect
         add_object(type, object_name, object_values, xdef)
       end
     end
-    #
-    # rubocop:enable Metrics/ParameterLists
-    #
 
     def value_hash_output(iterator_values, index)
       iterator_values.keys.reduce({}) { |v, k| v.merge!(k.to_sym => iterator_values[k][index]) }
@@ -464,5 +456,4 @@ module Connect
       end
     end
   end
-  # rubocop:enable Metrics/ClassLength
 end
