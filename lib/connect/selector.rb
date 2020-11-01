@@ -115,7 +115,7 @@ module Connect
       resource = Puppet::Type.type(resource_type)
       all_attributes = resource.allattrs.collect(&:to_s)
       cleaned_value = @value.value.collect { |k, v| all_attributes.include?(k) ? [k, v] : nil }.compact
-      { @value.keys.first => Hash[cleaned_value] }
+      { @value.keys.first => cleaned_value.to_h }
     end
 
     ##
@@ -128,7 +128,7 @@ module Connect
       return {} if items.empty?
       return singlar_hash if items.size == 1
 
-      Hash[@value.select { |key, _value| items.include?(key) }]
+      @value.select { |key, _value| items.include?(key) }.to_h
     end
 
     def singlar_hash
@@ -151,7 +151,7 @@ module Connect
 
     def small_object_slice
       first_item_string if items[0].is_a?(Symbol)
-      ObjectRepresentation[object_name, Hash[values.select { |key, _value| key.to_s.match(items.first) }]]
+      ObjectRepresentation[object_name, values.select { |key, _value| key.to_s.match(items.first) }.to_h]
     end
 
     def first_item_string
@@ -159,19 +159,19 @@ module Connect
     end
 
     def normal_object_slice
-      ObjectRepresentation[object_name, Hash[values.select { |key, _value| items.include?(key) }]]
+      ObjectRepresentation[object_name, values.select { |key, _value| items.include?(key) }.to_h]
     end
 
     def slice_content
       return {} if items.empty?
       return small_content_slice if items.size == 1
 
-      Hash[values.select { |key, _value| items.include?(key) }]
+      values.select { |key, _value| items.include?(key) }.to_h
     end
 
     def small_content_slice
       first_item_string if items[0].is_a?(Symbol)
-      Hash[values.select { |key, _value| key.to_s.match(items.first) }]
+      values.select { |key, _value| key.to_s.match(items.first) }.to_h
     end
 
     def values

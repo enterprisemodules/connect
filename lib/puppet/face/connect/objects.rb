@@ -1,5 +1,5 @@
-require_relative './../../../scope.rb'
-require_relative './../../../inspector.rb'
+require_relative './../../../scope'
+require_relative './../../../inspector'
 
 require 'puppet/face'
 
@@ -77,12 +77,12 @@ Puppet::Face.define(:connect, '0.0.1') do
     output = ''
     output << "# Object #{type}('#{name}') is referenced around:\n"
     references = backend.object_references(type, name)
-    if !references.empty?
+    if references.empty?
+      output << "#   not referenced in any connect config file\n"
+    else
       references.each do |file_name, linenno|
         output << "#   #{file_name}:#{linenno}\n"
       end
-    else
-      output << "#   not referenced in any connect config file\n"
     end
     output
   end

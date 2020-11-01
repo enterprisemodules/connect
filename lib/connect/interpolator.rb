@@ -8,8 +8,8 @@ module Connect
     #
     # The format of a value that needs to be interpolated
     #
-    CONNECT_REGEXP = /(\$\{\s*(?:[a-zA-Z][a-zA-Z0-9_]*::)*[a-zA-Z][a-zA-Z0-9_\.\:\&\[\]\'\(\),]*\s*\})/.freeze
-    PUPPET_REGEXP = /(\%\{\s*(?:::)?(?:[a-zA-Z][a-zA-Z0-9_]::)*[a-zA-Z][a-zA-Z0-9_]*\s*\})/.freeze
+    CONNECT_REGEXP = /(\$\{\s*(?:[a-zA-Z][a-zA-Z0-9_]*::)*[a-zA-Z][a-zA-Z0-9_.:&\[\]'(),]*\s*\})/.freeze
+    PUPPET_REGEXP = /(%\{\s*(?:::)?(?:[a-zA-Z][a-zA-Z0-9_]::)*[a-zA-Z][a-zA-Z0-9_]*\s*\})/.freeze
 
     def initialize(resolver)
       @resolver = resolver
@@ -67,7 +67,7 @@ module Connect
     end
 
     def connect_interpolate(variable, xref)
-      variable, selector = variable.split(/([\[\.].*)/)
+      variable, selector = variable.split(/([\[.].*)/)
       value = @resolver.lookup(variable)
       @resolver.register_reference(variable, xref)
       Selector.run(value, selector).to_s

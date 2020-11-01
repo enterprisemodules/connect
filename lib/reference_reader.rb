@@ -10,12 +10,12 @@ module ReferenceReader
     output = ''
     output << "# Parameter #{parameter} is referenced around:\n"
     references = backend.value_references(parameter)
-    if !references.empty?
+    if references.empty?
+      output << "#   not referenced in any connect config file\n"
+    else
       references.each do |file_name, linenno|
         output << "#   #{file_name}:#{linenno}\n"
       end
-    else
-      output << "#   not referenced in any connect config file\n"
     end
     output
   end

@@ -1,7 +1,7 @@
-require_relative './../../../scope.rb'
-require_relative './../../../definition_reader.rb'
-require_relative './../../../reference_reader.rb'
-require_relative './../../../inspector.rb'
+require_relative './../../../scope'
+require_relative './../../../definition_reader'
+require_relative './../../../reference_reader'
+require_relative './../../../inspector'
 
 require 'puppet/face'
 require 'hiera'

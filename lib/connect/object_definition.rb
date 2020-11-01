@@ -23,6 +23,7 @@ module Connect
     # @param name [String] the name of the object
     # @param data [Hash] the content of the object
     #
+    # rubocop: disable Lint/MissingSuper
     def initialize(type, name, data)
       @xref = []
       identify(type, name)
@@ -34,6 +35,7 @@ module Connect
       data = data.stringify_keys
       merge!(data)
     end
+    # rubocop: enable Lint/MissingSuper
 
     ##
     #
