@@ -97,6 +97,7 @@ module Connect
       new(nil, nil, nil, includer)
     end
 
+    # rubocop: disable Lint/MissingSuper
     def initialize(values_table  = nil,
                    objects_table = nil,
                    interpolator  = nil,
@@ -106,13 +107,12 @@ module Connect
       @objects_table = objects_table || ObjectsTable.new
       Connect::Entry::Base.values_table  = @values_table
       Connect::Entry::Base.objects_table = @objects_table
-      # rubocop: disable Layout/SpaceAroundOperators
       @interpolator  = interpolator || Interpolator.new(@values_table)
       @includer      = includer || Includer.new
       @include_stack = []
       @current_scope = []
-      # rubocop: enable Layout/SpaceAroundOperators
     end
+    # rubocop: enable Lint/MissingSuper
 
     ##
     #
@@ -211,7 +211,8 @@ module Connect
       Connect.debug "Loading datasource #{name}"
       source_name = name.to_s.split('_').collect(&:capitalize).join # Camelize
       klass_name = "Connect::Datasources::#{source_name}"
-      klass = Puppet::Pops::Types::ClassLoader.provide_from_string(klass_name)
+      # Use send, because in later versions of puppet it has become a private method
+      klass = Puppet::Pops::Types::ClassLoader.send(:provide_from_string, klass_name)
       return @current_importer = klass.new(name, *parameters) if klass
 
       raise ArgumentError, "specified importer '#{name}' doesn't exist"
@@ -363,7 +364,7 @@ module Connect
     end
 
     def as_value(iterator_value)
-      iterator_value.class == Connect::Entry::Reference ? iterator_value.final : iterator_value
+      iterator_value.instance_of?(Connect::Entry::Reference) ? iterator_value.final : iterator_value
     end
 
     def in_scope(scope)
@@ -393,7 +394,7 @@ module Connect
     end
 
     def scoped_name?(name)
-      !name.scan(/\:\:/).empty?
+      !name.scan(/::/).empty?
     end
 
     def validate_iterators(iterators)
@@ -410,8 +411,8 @@ module Connect
 
     def empty_iterator_keys_error(invalid_keys)
       raise ArgumentError, 'iterator contains unknown key(s):  ' \
-                            "#{invalid_keys}, error around line #{lineno} " \
-                            "of config file '#{current_file}'"
+                           "#{invalid_keys}, error around line #{lineno} " \
+                           "of config file '#{current_file}'"
     end
 
     def empty_iterator_from_error

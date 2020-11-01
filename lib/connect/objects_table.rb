@@ -33,7 +33,7 @@ module Connect
     def definitions(type, name)
       key = key(type, name)
       entry = @objects_table.fetch(key) { raise "internal error. Object #{type} #{name} not found" }
-      entry.xref.collect { |e| e.class == Connect::Xdef ? [e.file_name, e.lineno] : nil }.compact
+      entry.xref.collect { |e| e.instance_of?(Connect::Xdef) ? [e.file_name, e.lineno] : nil }.compact
     end
 
     ##
@@ -45,7 +45,7 @@ module Connect
     def references(type, name)
       key = key(type, name)
       entry = @objects_table.fetch(key) { raise "internal error. Object #{type} #{name} not found" }
-      entry.xref.collect { |e| e.class == Connect::Xref ? [e.file_name, e.lineno] : nil }.compact
+      entry.xref.collect { |e| e.instance_of?(Connect::Xref) ? [e.file_name, e.lineno] : nil }.compact
     end
 
     ##
@@ -126,7 +126,8 @@ module Connect
     def self.entry(type, name, values)
       type_name = type.to_s.capitalize
       klass_name = "Connect::Objects::#{type_name}"
-      klass = Puppet::Pops::Types::ClassLoader.provide_from_string(klass_name)
+      # Use send, because in later versions of puppet it has become a private method
+      klass = Puppet::Pops::Types::ClassLoader.send(:provide_from_string, klass_name)
       klass ? klass.new(type, name, values) : ObjectDefinition.new(type, name, values)
     end
 
