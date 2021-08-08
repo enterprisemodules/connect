@@ -30,13 +30,9 @@ PreCommit:
     enabled: false
   YamlSyntax:
     enabled: false
-  BundleCheck:
-    enabled: true
   RuboCop:
     enabled: true
   Fasterer:
-    enabled: true
-  BundleAudit:
     enabled: true
   Brakeman:
     enabled: true
