@@ -34,9 +34,7 @@ module Connect
       return slice_content if content?
       return slice_hash if hash?
 
-      # rubocop: disable Style/DocumentDynamicEvalDefinition
       instance_eval("@selection_value#{@selector}", __FILE__, __LINE__)
-      # rubocop: enable Style/DocumentDynamicEvalDefinition
     rescue StandardError => e
       raise ArgumentError, "usage of invalid selector '#{@selector}' on value '#{@selection_value}',
         resulted in Ruby error #{e.message}"
@@ -116,7 +114,7 @@ module Connect
       resource_type = @selector.scan(TO_RESOURCE_REGEX).flatten.first
       resource = Puppet::Type.type(resource_type)
       all_attributes = resource.allattrs.collect(&:to_s)
-      cleaned_value = @value.value.collect { |k, v| all_attributes.include?(k) ? [k, v] : nil }.compact
+      cleaned_value = @value.value.filter_map { |k, v| all_attributes.include?(k) ? [k, v] : nil }
       { @value.keys.first => cleaned_value.to_h }
     end
 

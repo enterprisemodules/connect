@@ -78,7 +78,7 @@ module Connect
     def include_file(name)
       unless included?(name)
         register_file(name)
-        yield(IO.read(name), name)
+        yield(File.read(name), name)
       end
     end
     # rubocop:enable Style/GuardClause

@@ -33,7 +33,7 @@ module Connect
     def definitions(type, name)
       key = key(type, name)
       entry = @objects_table.fetch(key) { raise "internal error. Object #{type} #{name} not found" }
-      entry.xref.collect { |e| e.instance_of?(Connect::Xdef) ? [e.file_name, e.lineno] : nil }.compact
+      entry.xref.filter_map { |e| e.instance_of?(Connect::Xdef) ? [e.file_name, e.lineno] : nil }
     end
 
     ##
@@ -45,7 +45,7 @@ module Connect
     def references(type, name)
       key = key(type, name)
       entry = @objects_table.fetch(key) { raise "internal error. Object #{type} #{name} not found" }
-      entry.xref.collect { |e| e.instance_of?(Connect::Xref) ? [e.file_name, e.lineno] : nil }.compact
+      entry.xref.filter_map { |e| e.instance_of?(Connect::Xref) ? [e.file_name, e.lineno] : nil }
     end
 
     ##

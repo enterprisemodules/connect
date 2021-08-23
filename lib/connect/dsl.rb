@@ -355,7 +355,7 @@ module Connect
 
     def invalid_arguments_error
       raise "Invalid arguments for Object iterator, around line #{lineno} of " \
-            " config file '#{current_file}'"
+            "config file '#{current_file}'"
     end
 
     def too_much_elements_error(name, elements)

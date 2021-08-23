@@ -27,96 +27,6 @@ AllCops:
     - 'spec/**/*.rb'
     - 'spec/**/*'
 
-# Layout/EmptyLinesAroundAttributeAccessor:
-#   Enabled: false # (0.83)
-# Layout/SpaceAroundMethodCallOperator:
-#   Enabled: false # (0.82)
-# Lint/BinaryOperatorWithIdenticalOperands:
-#   Enabled: false # (0.89)
-# Lint/DeprecatedOpenSSLConstant:
-#   Enabled: false # (0.84)
-# Lint/DuplicateElsifCondition:
-#   Enabled: false # (0.88)
-# Lint/DuplicateRescueException:
-#   Enabled: false # (0.89)
-# Lint/EmptyConditionalBody:
-#   Enabled: false # (0.89)
-# Lint/FloatComparison:
-#   Enabled: false # (0.89)
-# Lint/MissingSuper:
-#   Enabled: false # (0.89)
-# Lint/MixedRegexpCaptureTypes:
-#   Enabled: false # (0.85)
-# Lint/OutOfRangeRegexpRef:
-#   Enabled: false # (0.89)
-# Lint/RaiseException:
-#   Enabled: false # (0.81)
-# Lint/SelfAssignment:
-#   Enabled: false # (0.89)
-# Lint/StructNewOverride:
-#   Enabled: false # (0.81)
-# Lint/TopLevelReturnWithArgument:
-#   Enabled: false # (0.89)
-# Lint/UnreachableLoop:
-#   Enabled: false # (0.89)
-# Style/AccessorGrouping:
-#   Enabled: false # (0.87)
-# Style/ArrayCoercion:
-#   Enabled: false # (0.88)
-# Style/BisectedAttrAccessor:
-#   Enabled: false # (0.87)
-# Style/CaseLikeIf:
-#   Enabled: false # (0.88)
-# Style/ExplicitBlockArgument:
-#   Enabled: false # (0.89)
-# Style/ExponentialNotation:
-#   Enabled: false # (0.82)
-# Style/GlobalStdStream:
-#   Enabled: false # (0.89)
-# Style/HashAsLastArrayItem:
-#   Enabled: false # (0.88)
-# Style/HashEachMethods:
-#   Enabled: false # (0.80)
-# Style/HashLikeCase:
-#   Enabled: false # (0.88)
-# Style/HashTransformKeys:
-#   Enabled: false # (0.80)
-# Style/HashTransformValues:
-#   Enabled: false # (0.80)
-# Style/OptionalBooleanParameter:
-#   Enabled: false # (0.89)
-# Style/RedundantAssignment:
-#   Enabled: false # (0.87)
-# Style/RedundantFetchBlock:
-#   Enabled: false # (0.86)
-# Style/RedundantFileExtensionInRequire:
-#   Enabled: false # (0.88)
-# Style/RedundantRegexpCharacterClass:
-#   Enabled: false # (0.85)
-# Style/RedundantRegexpEscape:
-#   Enabled: false # (0.85)
-# Style/SingleArgumentDig:
-#   Enabled: false # (0.89)
-# Style/SlicingWithRange:
-#   Enabled: false # (0.83)
-# Style/StringConcatenation:
-#   Enabled: false # (0.89)
-# Performance/AncestorsInclude:
-#   Enabled: false # (1.7)
-# Performance/BigDecimalWithNumericArgument:
-#   Enabled: false # (1.7)
-# Performance/RedundantSortBlock:
-#   Enabled: false # (1.7)
-# Performance/RedundantStringChars:
-#   Enabled: false # (1.7)
-# Performance/ReverseFirst:
-#   Enabled: false # (1.7)
-# Performance/SortReverse:
-#   Enabled: false # (1.7)
-# Performance/Squeeze:
-#   Enabled: false # (1.7)
-# Performance/StringInclude:
-#   Enabled: false # (1.7)
 
 Style/SafeNavigation:
   Enabled: false
@@ -156,9 +66,20 @@ Style/ClassAndModuleChildren:
 Naming/ClassAndModuleCamelCase:
   Enabled: false
 
-
 Metrics:
   Enabled: false
 
 Performance/RegexpMatch:
+  Enabled: false
+
+Style/SlicingWithRange:
+  Enabled: false
+
+Lint/EmptyBlock:
+  Enabled: false
+
+Style/OpenStructUse:
+  Enabled: false
+
+Style/DocumentDynamicEvalDefinition:
   Enabled: false

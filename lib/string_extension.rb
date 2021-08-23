@@ -9,7 +9,7 @@ if RUBY_VERSION < '1.9.2'
       if arg.is_a?(Hash)
         gsub(/%\{(.*?)\}/) { arg[Regexp.last_match(1).to_sym] }
       else
-        old_format.bind(self).call(arg)
+        old_format.bind_call(self, arg)
       end
     end
   end

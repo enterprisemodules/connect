@@ -36,7 +36,7 @@ module Connect
     #
     def definitions(parameter)
       entry = @values_table.fetch(parameter) { raise "internal error. Parameter entry #{parameter} not found" }
-      entry.xref.collect { |e| e.instance_of?(Connect::Xdef) ? [e.file_name, e.lineno] : nil }.compact
+      entry.xref.filter_map { |e| e.instance_of?(Connect::Xdef) ? [e.file_name, e.lineno] : nil }
     end
 
     ##
@@ -47,7 +47,7 @@ module Connect
     #
     def references(parameter)
       entry = @values_table.fetch(parameter) { raise "internal error. Parameter entry #{parameter} not found" }
-      entry.xref.collect { |e| e.instance_of?(Connect::Xref) ? [e.file_name, e.lineno] : nil }.compact
+      entry.xref.filter_map { |e| e.instance_of?(Connect::Xref) ? [e.file_name, e.lineno] : nil }
     end
 
     ##
